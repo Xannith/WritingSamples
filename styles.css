@@ -8,6 +8,24 @@ h1 {
     text-align: center;
 }
 
+/* HEADER */
+
+.site-header {
+    text-align: center;
+    padding: 40px 20px 10px;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 2.6rem;
+}
+
+.tagline {
+    margin-top: 6px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
 /* MAIN CONTENT AREA */
 
 #content {
@@ -53,22 +71,4 @@ ol {
 .form-wrapper iframe {
     width: 100%;
     border: none;
-}
-
-/* HEADER */
-
-.site-header {
-    text-align: center;
-    padding: 40px 20px 10px;
-}
-
-.site-header h1 {
-    margin: 0;
-    font-size: 2.6rem;
-}
-
-.tagline {
-    margin-top: 6px;
-    color: #666;
-    font-size: 1.1rem;
 }
