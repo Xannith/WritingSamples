@@ -7,3 +7,37 @@ body {
 h1 {
     text-align: center;
 }
+
+/* MAIN CONTENT AREA */
+
+#content {
+    padding: 64px 72px 120px;
+    max-width: none;
+    width: 100%;
+}
+
+/* TEXT WIDTH (readable but not cramped) */
+
+p,
+ul,
+ol {
+    max-width: 900px;
+}
+
+/* SPECIAL BLOCKS */
+
+.callout {
+    max-width: 900px;
+}
+
+.principle-grid,
+.agents,
+.toc-grid,
+.maturity {
+    max-width: 960px;
+}
+
+.arch-stack,
+.pipeline {
+    max-width: 900px;
+}
