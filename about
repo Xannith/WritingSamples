@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Me | Joshua Bechtel</title>
+  <meta
+    name="description"
+    content="About Joshua Bechtel: technical writer, content architect, knowledge strategist, project leader, and builder of scalable information systems."
+  />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --accent-soft: #93c5fd;
+      --border: #334155;
+      --maxw: 960px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0b1120 0%, #111827 100%);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+
+    .nav {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-title {
+      font-weight: bold;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      opacity: 0.9;
+    }
+
+    main {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .hero {
+      padding: 2rem 0 1rem;
+    }
+
+    .eyebrow {
+      color: var(--accent-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.2;
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    .lead {
+      font-size: 1.15rem;
+      color: #dbeafe;
+      max-width: 800px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+    }
+
+    .card h3 {
+      margin-bottom: 0.6rem;
+      font-size: 1.1rem;
+      color: #ffffff;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 1.5rem;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.85rem 1.15rem;
+      border-radius: 10px;
+      font-weight: bold;
+      border: 1px solid var(--border);
+      transition: 0.2s ease;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: #0b1120;
+      border-color: var(--accent);
+    }
+
+    .button.primary:hover {
+      background: #93c5fd;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--text);
+    }
+
+    .button.secondary:hover {
+      background: rgba(255, 255, 255, 0.04);
+      text-decoration: none;
+    }
+
+    .section {
+      margin-top: 3rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .quote {
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #dbeafe;
+      font-style: italic;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      padding: 2rem 1.25rem;
+      max-width: var(--maxw);
+      margin: 0 auto;
+    }
+
+    @media (max-width: 640px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="nav-title">Joshua Bechtel</div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html" aria-current="page">About Me</a>
+        <a href="samples.html">Samples</a>
+        <a href="knowledge-management.html">Knowledge Management</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">About Me</div>
+      <h1>I build clarity out of complexity.</h1>
+      <p class="lead">
+        I am a technical writer, content architect, knowledge strategist, and project leader who loves
+        turning scattered information into systems people can actually use. My work sits at the intersection
+        of communication, structure, governance, discoverability, and emerging AI.
+      </p>
+
+      <div class="cta-row">
+        <a class="button primary" href="files/Joshua-Bechtel-Resume.pdf" target="_blank" rel="noopener noreferrer">
+          View Resume
+        </a>
+        <a class="button secondary" href="samples.html">
+          Explore Writing Samples
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid">
+        <article class="card">
+          <h3>What I do</h3>
+          <p>
+            I design content and knowledge systems that help organizations scale understanding. That can mean
+            technical documentation, learning content, internal communications, playbooks, operating guidance,
+            structured information models, or AI-ready content ecosystems.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>What I care about</h3>
+          <p>
+            Good information should be clear, usable, governed, discoverable, and maintainable. I care about
+            reducing friction, eliminating redundancy, and helping people get the right answer at the right time.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>What makes me different</h3>
+          <p>
+            I do not just write pages. I think in systems. I connect policy, process, procedure, metadata,
+            user intent, business outcomes, and information architecture so content becomes a real operational asset.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>A little more personally</h2>
+      <p>
+        I genuinely love this work. I love technical writing. I love structured thinking. I love the weird,
+        beautiful challenge of organizing information so that it serves both beginners and experts without
+        collapsing under its own weight.
+      </p>
+      <p>
+        I am especially energized by content architecture, knowledge management, modular content, taxonomy,
+        metadata strategy, AI enablement, and the practical realities of maintaining information at scale.
+        To me, this is not dry work. It is one of the most important invisible disciplines inside any serious organization.
+      </p>
+      <p>
+        I also believe the world runs on the effort of thoughtful builders, patient organizers, systems-minded
+        communicators, and yes, super nerds. The people who care enough to make things understandable are often
+        the ones quietly holding entire operations together. I am proud to be one of them.
+      </p>
+
+      <div class="quote">
+        My favorite problems live where writing, systems, and strategy overlap.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Areas I work in</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Technical Writing</h3>
+          <p class="muted">
+            Clear documentation, operational guidance, process design, SOPs, internal enablement, and user-centered communication.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Content Architecture</h3>
+          <p class="muted">
+            Structured authoring, modular content, content models, metadata design, reusable components, and scalable governance.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Knowledge Management</h3>
+          <p class="muted">
+            Information hubs, discoverability, library design, navigation systems, content lifecycle management, and knowledge operations.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>AI Enablement</h3>
+          <p class="muted">
+            Preparing content for AI retrieval, supporting enterprise search and chatbot experiences, and improving information quality for modern systems.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Project Leadership</h3>
+          <p class="muted">
+            Cross-functional coordination, stakeholder alignment, roadmap execution, and translating ambiguity into deliverable outcomes.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Communications Strategy</h3>
+          <p class="muted">
+            Messaging frameworks, content planning, editorial thinking, organizational communication, and business-facing clarity.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Resume highlights</h2>
+      <p>
+        My background includes leadership across technical writing, documentation strategy, learning and enablement,
+        content operations, issue and incident support content, internal communications, and enterprise-scale
+        information design. I have worked in environments where the challenge was not simply to write content,
+        but to bring order to fragmented systems, scattered repositories, shifting priorities, and growing demands for speed.
+      </p>
+      <ul>
+        <li>Built and improved documentation, playbooks, and enablement content for enterprise teams</li>
+        <li>Led or supported projects involving process clarity, content discoverability, and structured knowledge systems</li>
+        <li>Bridged technical, operational, and business audiences through strong writing and systems thinking</li>
+        <li>Helped organizations move toward more scalable, reusable, and AI-ready information practices</li>
+      </ul>
+      <p>
+        For the full story, please view or download my resume:
+        <a href="files/Joshua-Bechtel-Resume.pdf" target="_blank" rel="noopener noreferrer">Joshua Bechtel Resume (PDF)</a>
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Why this site exists</h2>
+      <p>
+        This site is a practical portfolio and a living record of how I think. It brings together my resume,
+        writing samples, and my perspective on knowledge management and content architecture.
+      </p>
+      <p>
+        I want future collaborators, hiring leaders, and curious fellow nerds to see not only what I have done,
+        but how I approach problems: with rigor, imagination, structure, and a serious respect for the craft of making things understandable.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      © 2026 Joshua Bechtel. Built for clarity, curiosity, and useful information.
+    </p>
+  </footer>
+</body>
+</html>
