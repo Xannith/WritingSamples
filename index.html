@@ -1,180 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Josh Writing Samples</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Josh Writing Samples</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
 
-<link rel="stylesheet" href="style.css">
+        nav {
+            background: #222;
+            padding: 16px 24px;
+        }
 
-<style>
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-    background-color: #f5f7fa;
-    color: #333;
-}
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 22px;
+            font-weight: bold;
+        }
 
-header {
-    background: #1e2a38;
-    color: white;
-    padding: 40px 20px;
-    text-align: center;
-}
+        nav a:hover {
+            text-decoration: underline;
+        }
 
-header h1 {
-    margin: 0;
-    font-size: 2.5rem;
-}
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 70px 32px 50px;
+        }
 
-nav {
-    background: #2e3e50;
-    padding: 10px;
-    text-align: center;
-}
+        .hero-text h1 {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin: 0 0 20px;
+            text-align: left;
+        }
 
-nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-weight: bold;
-}
+        .hero-text p {
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+            max-width: 700px;
+        }
 
-nav a:hover {
-    text-decoration: underline;
-}
+        .hero-buttons {
+            margin-top: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
 
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 40px 20px;
-}
+        .btn {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-.card {
-    background: white;
-    padding: 25px;
-    margin-bottom: 25px;
-    border-radius: 8px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-}
+        .btn-primary {
+            background: #222;
+            color: white;
+        }
 
-.card h2 {
-    margin-top: 0;
-}
+        .btn-secondary {
+            background: white;
+            color: #222;
+            border: 1px solid #bbb;
+        }
 
-footer {
-    text-align: center;
-    padding: 20px;
-    background: #1e2a38;
-    color: white;
-}
-</style>
+        .hero-image {
+            min-height: 420px;
+            border: 2px dashed #bbb;
+            border-radius: 12px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 32px 60px;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .pitch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            margin-top: 28px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .closing-callout {
+            background: #222;
+            color: white;
+            border-radius: 12px;
+            padding: 36px;
+            margin-top: 36px;
+        }
+
+        .closing-callout h2 {
+            margin-top: 0;
+            color: white;
+        }
+
+        .closing-callout p {
+            max-width: 850px;
+        }
+
+        footer {
+            padding: 30px 32px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+            background: white;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .pitch-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-    <h1>Josh Writing Samples</h1>
-    <p>Technical Writing • Knowledge Architecture • Documentation Strategy</p>
-</header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About Me</a>
+        <a href="samples/index.html">Samples</a>
+        <a href="knowledge.html">Knowledge Management</a>
+        <a href="contact.html">Contact</a>
+    </nav>
 
-<nav>
-    <a href="/about.html">About Me</a>
-    <a href="/samples/index.html">Samples</a>
-    <a href="/knowledge.html">Knowledge Management</a>
-    <a href="/contact.html">Contact</a>
-</nav>
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Buried in legacy documentation, scattered knowledge, and systems nobody can untangle anymore?</h1>
 
-<div class="container">
+            <p>
+                Are you trying to modernize a knowledge base, rescue decades of archived information,
+                or turn disconnected documentation into something structured, searchable, and actually useful?
+            </p>
 
-<div class="card" id="about">
-<h2>About Me</h2>
-<p>
-This page will introduce my background in technical writing, knowledge management,
-documentation strategy, and enterprise content architecture.
-</p>
+            <p>
+                Are you staring at fifty years of policy, process, procedure, videos, notes, and tribal knowledge
+                wondering how any of it becomes a modern content system in 2026?
+            </p>
 
-<p>
-My work focuses on turning complex systems into clear, usable knowledge for engineers,
-business leaders, and operational teams.
-</p>
+            <p>
+                You are in the right place. This site showcases the writing, frameworks, and architecture thinking
+                Josh brings to knowledge transformation, stateless content design, and enterprise-scale documentation strategy.
+            </p>
 
-<p>
-Full biography coming soon.
-</p>
-</div>
+            <div class="hero-buttons">
+                <a class="btn btn-primary" href="samples/index.html">Explore the Writing Samples</a>
+                <a class="btn btn-secondary" href="knowledge.html">See the Knowledge Architecture</a>
+            </div>
+        </div>
 
-<div class="card" id="samples">
-<h2>Writing Samples</h2>
-<p>
-A curated collection of documentation samples, architectural writing, and strategic
-knowledge frameworks will be available here.
-</p>
+        <div class="hero-image">
+            <div>
+                <strong>Image Placeholder</strong><br>
+                Add your hero image here<br>
+                such as a dramatic knowledge system graphic,<br>
+                archive-to-architecture visual, or branded illustration.
+            </div>
+        </div>
+    </section>
 
-<p>
-Examples will include:
-</p>
+    <section class="section">
+        <h2>What this site is built to show</h2>
+        <p>
+            This is not just a portfolio. It is a demonstration of how serious knowledge work can be transformed
+            into scalable systems, sharper writing, and more intelligent enterprise content.
+        </p>
 
-<ul>
-<li>Enterprise documentation frameworks</li>
-<li>Operational playbooks</li>
-<li>Knowledge architecture design</li>
-<li>Strategic writing and analysis</li>
-</ul>
+        <div class="pitch-grid">
+            <div class="card">
+                <h3>Legacy to Modern</h3>
+                <p>
+                    See how old archives, outdated documentation, and scattered knowledge can be rethought into modern,
+                    structured, stateless content systems.
+                </p>
+            </div>
 
-<p>Content coming soon.</p>
-</div>
+            <div class="card">
+                <h3>Writing with Architecture</h3>
+                <p>
+                    Explore writing samples that do more than explain. They organize, connect, and elevate information
+                    so people can actually use it when it matters.
+                </p>
+            </div>
 
-<div class="card" id="knowledge">
-<h2>Knowledge Management</h2>
+            <div class="card">
+                <h3>Knowledge that Lives</h3>
+                <p>
+                    Static documentation dies. Living knowledge systems evolve, adapt, and reveal what people need,
+                    what they ignore, and what the business should improve next.
+                </p>
+            </div>
+        </div>
 
-<p>
-This section will explore ideas and examples related to modern knowledge management
-and content architecture.
-</p>
+        <div class="closing-callout">
+            <h2>Documentation heaven might be a stretch. Clarity, structure, and usable knowledge are not.</h2>
+            <p>
+                Dive into this site to explore writing samples, knowledge management models, and architecture concepts
+                designed to help organizations move from documentation chaos to information systems that actually scale.
+            </p>
+            <p>
+                If your team needs help with content architecture, knowledge transformation, technical writing strategy,
+                or modernizing legacy information, start here.
+            </p>
+            <div class="hero-buttons">
+                <a class="btn btn-primary" href="contact.html">Contact Josh</a>
+                <a class="btn btn-secondary" href="about.html">Learn More About Josh</a>
+            </div>
+        </div>
+    </section>
 
-<p>
-Topics will include:
-</p>
-
-<ul>
-<li>Stateless content systems</li>
-<li>AI-ready documentation design</li>
-<li>Information architecture</li>
-<li>Enterprise knowledge frameworks</li>
-</ul>
-
-<p>Articles and diagrams coming soon.</p>
-
-</div>
-
-<div class="card" id="contact">
-
-<h2>Contact</h2>
-
-<p>
-If you would like to discuss technical writing, documentation strategy,
-or knowledge architecture projects, please reach out.
-</p>
-
-<p>
-Email: <a href="mailto:your@email.com">your@email.com</a>
-</p>
-
-<p>
-LinkedIn profile and additional contact options coming soon.
-</p>
-
-</div>
-
-</div>
-
-<footer>
-<p>© 2026 Josh Writing Samples</p>
-</footer>
+    <footer>
+        Josh Writing Samples | Knowledge Architecture, Technical Writing, and Enterprise Content Strategy
+    </footer>
 
 </body>
 </html>
-
-
-
