@@ -4,10 +4,6 @@ body {
     line-height: 1.6;
 }
 
-h1 {
-    text-align: center;
-}
-
 /* HEADER */
 
 .site-header {
@@ -39,13 +35,13 @@ h1 {
 p,
 ul,
 ol {
-    max-width: 900px;
+    max-width: 960px;
 }
 
 /* SPECIAL BLOCKS */
 
 .callout {
-    max-width: 900px;
+    max-width: 960px;
 }
 
 .principle-grid,
@@ -57,7 +53,7 @@ ol {
 
 .arch-stack,
 .pipeline {
-    max-width: 900px;
+    max-width: 960px;
 }
 
 /* FORM WRAPPER */
