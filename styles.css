@@ -41,3 +41,16 @@ ol {
 .pipeline {
     max-width: 900px;
 }
+
+/* FORM WRAPPER */
+
+.form-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.form-wrapper iframe {
+    width: 100%;
+    border: none;
+}
