@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stateless Knowledge Architecture — Technical Whitepaper</title>
+<meta name="description" content="A Composable Framework for Enterprise Learning, Documentation, and AI-Ready Knowledge Systems">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0E0F11;--bg2:#141518;--bg3:#1A1C21;--bg4:#222429;
+  --surface:#272A30;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#E8E6E0;--text-dim:#9B998F;--text-faint:#5A5855;
+  --amber:#D4943A;--amber-dim:rgba(212,148,58,0.15);--amber-glow:rgba(212,148,58,0.08);
+  --teal:#4EADA8;--teal-dim:rgba(78,173,168,0.12);
+  --blue:#6B9FD4;--blue-dim:rgba(107,159,212,0.12);
+  --sidebar-w:268px;
+  --serif:'Playfair Display','Georgia',serif;
+  --body:'Source Serif 4','Georgia',serif;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--body);
+  font-size:16px;line-height:1.8;display:flex;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+
+/* SIDEBAR */
+#sidebar{
+  position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;z-index:200;
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.sb-brand{padding:28px 24px 20px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sb-wordmark{font-family:var(--serif);font-size:0.95rem;font-weight:700;color:var(--text);line-height:1.35;}
+.sb-sub{font-family:var(--mono);font-size:0.6rem;color:var(--text-faint);letter-spacing:0.12em;text-transform:uppercase;margin-top:6px;}
+.sb-pill{
+  display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+  padding:3px 10px;background:var(--amber-dim);border:1px solid rgba(212,148,58,0.3);
+  border-radius:2px;font-family:var(--mono);font-size:0.6rem;font-weight:500;
+  letter-spacing:0.1em;color:var(--amber);text-transform:uppercase;
+}
+.sb-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--amber);box-shadow:0 0 6px var(--amber);}
+.sb-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0 24px;scrollbar-width:thin;scrollbar-color:var(--bg4) transparent;}
+.sb-nav::-webkit-scrollbar{width:3px;}
+.sb-nav::-webkit-scrollbar-thumb{background:var(--bg4);}
+.sb-group{padding:16px 20px 5px;font-family:var(--mono);font-size:0.58rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-faint);user-select:none;}
+.sb-nav a{
+  display:block;padding:5px 20px 5px 22px;font-family:var(--body);font-size:0.78rem;
+  color:var(--text-dim);text-decoration:none;border-left:2px solid transparent;
+  transition:all 0.15s;line-height:1.45;
+}
+.sb-nav a:hover{color:var(--text);background:rgba(255,255,255,0.035);border-left-color:rgba(212,148,58,0.4);}
+.sb-nav a.active{color:var(--amber);border-left-color:var(--amber);background:var(--amber-glow);}
+
+/* MAIN */
+#main{margin-left:var(--sidebar-w);flex:1;min-width:0;position:relative;z-index:1;}
+
+/* HERO */
+#hero{position:relative;padding:90px 72px 80px;overflow:hidden;border-bottom:1px solid var(--border);}
+#hero::before{content:'';position:absolute;top:-100px;right:-60px;width:600px;height:600px;background:radial-gradient(ellipse,rgba(212,148,58,0.06) 0%,transparent 65%);pointer-events:none;}
+#hero::after{content:'';position:absolute;bottom:-80px;left:10%;width:400px;height:400px;background:radial-gradient(ellipse,rgba(78,173,168,0.05) 0%,transparent 65%);pointer-events:none;}
+.hero-eyebrow{font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;display:flex;align-items:center;gap:10px;}
+.hero-eyebrow::before{content:'';display:inline-block;width:28px;height:1px;background:var(--amber);opacity:0.6;}
+.hero-title{font-family:var(--serif);font-size:clamp(2.6rem,5vw,4.2rem);font-weight:700;line-height:1.06;color:var(--text);max-width:700px;letter-spacing:-0.01em;position:relative;z-index:1;}
+.hero-title em{font-style:italic;color:var(--amber);}
+.hero-sub{margin-top:18px;font-size:1.08rem;font-weight:300;color:var(--text-dim);max-width:580px;line-height:1.65;position:relative;z-index:1;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px;position:relative;z-index:1;}
+.hero-tag{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);padding:4px 12px;border:1px solid var(--border2);border-radius:1px;}
+
+/* CONTENT */
+#content{padding:64px 72px 120px;max-width:960px;}
+
+/* SECTIONS */
+.sec{margin-bottom:80px;opacity:0;transform:translateY(20px);transition:opacity 0.55s ease,transform 0.55s ease;}
+.sec.visible{opacity:1;transform:none;}
+.sec-number{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.18em;color:var(--amber);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.sec-number::after{content:'';display:inline-block;flex:1;max-width:40px;height:1px;background:var(--amber);opacity:0.4;}
+h1.sec-title{font-family:var(--serif);font-size:2.15rem;font-weight:700;color:var(--text);line-height:1.15;margin-bottom:24px;letter-spacing:-0.01em;}
+h2.sub-title{font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--text);margin-top:44px;margin-bottom:14px;line-height:1.3;}
+h3.subsub-title{font-family:var(--body);font-size:0.95rem;font-weight:500;color:var(--teal);margin-top:28px;margin-bottom:10px;letter-spacing:0.02em;}
+
+p{font-size:0.975rem;color:var(--text-dim);margin-bottom:16px;max-width:720px;}
+p strong{color:var(--text);font-weight:500;}
+ul,ol{padding-left:1.4em;margin-bottom:16px;max-width:720px;}
+li{font-size:0.95rem;color:var(--text-dim);margin-bottom:9px;line-height:1.7;}
+li strong{color:var(--text);font-weight:500;}
+ol{list-style:decimal;}
+code{font-family:var(--mono);font-size:0.8em;background:var(--bg4);color:var(--teal);padding:1px 6px;border-radius:2px;border:1px solid var(--border2);}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin:28px 0;border:1px solid var(--border2);border-radius:4px;}
+table{width:100%;border-collapse:collapse;font-size:0.855rem;}
+thead tr{background:var(--bg4);}
+thead th{padding:10px 15px;text-align:left;font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);white-space:nowrap;border-bottom:1px solid var(--border2);}
+tbody td{padding:10px 15px;color:var(--text-dim);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;}
+tbody td:first-child{font-family:var(--mono);font-size:0.78rem;color:var(--amber);white-space:nowrap;font-weight:500;}
+tbody tr:hover td{background:rgba(255,255,255,0.02);}
+tbody tr:last-child td{border-bottom:none;}
+
+/* CALLOUTS */
+.callout{position:relative;padding:20px 22px 20px 52px;margin:28px 0;max-width:720px;border-radius:3px;border:1px solid var(--border2);background:var(--bg3);}
+.callout::before{content:attr(data-icon);position:absolute;left:18px;top:20px;font-size:1rem;line-height:1;}
+.callout.amber{border-left:3px solid var(--amber);background:var(--amber-glow);}
+.callout.teal{border-left:3px solid var(--teal);background:var(--teal-dim);}
+.callout.blue{border-left:3px solid var(--blue);background:var(--blue-dim);}
+.callout-label{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+.callout.teal .callout-label{color:var(--teal);}
+.callout.blue .callout-label{color:var(--blue);}
+.callout p{font-size:0.9rem;max-width:100%;margin-bottom:8px;}
+.callout p:last-child{margin-bottom:0;}
+
+/* PRINCIPLES */
+.principle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:28px 0;max-width:720px;}
+.p-card{background:var(--bg3);border:1px solid var(--border2);border-radius:3px;overflow:hidden;display:flex;transition:border-color 0.2s,transform 0.2s;}
+.p-card:hover{border-color:rgba(212,148,58,0.3);transform:translateY(-1px);}
+.p-num{width:42px;flex-shrink:0;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--amber);border-right:1px solid var(--border);}
+.p-body{padding:13px 15px;flex:1;}
+.p-body strong{display:block;font-size:0.8rem;font-weight:500;color:var(--text);margin-bottom:5px;font-family:var(--body);}
+.p-body p{font-size:0.77rem;color:var(--text-dim);margin:0;line-height:1.55;max-width:100%;}
+
+/* PIPELINE */
+.pipeline{margin:28px 0;max-width:680px;position:relative;}
+.pipeline::before{content:'';position:absolute;left:19px;top:28px;bottom:28px;width:1px;background:linear-gradient(to bottom,var(--amber),var(--teal));opacity:0.3;}
+.pipe-step{display:flex;gap:18px;align-items:flex-start;padding-bottom:22px;position:relative;}
+.pipe-step:last-child{padding-bottom:0;}
+.pipe-dot{width:40px;height:40px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--amber);position:relative;z-index:1;}
+.pipe-content{padding-top:8px;}
+.pipe-content strong{display:block;font-size:0.88rem;font-weight:500;color:var(--text);margin-bottom:4px;}
+.pipe-content p{font-size:0.82rem;color:var(--text-dim);margin:0;max-width:100%;}
+
+/* MATURITY */
+.maturity{margin:24px 0;max-width:720px;display:flex;flex-direction:column;gap:6px;}
+.m-row{display:flex;align-items:stretch;border:1px solid var(--border2);border-radius:3px;overflow:hidden;transition:border-color 0.2s;}
+.m-row:hover{border-color:rgba(255,255,255,0.15);}
+.m-lvl{width:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.1rem;font-weight:700;color:#fff;}
+.m-name{width:155px;flex-shrink:0;padding:12px 14px;background:var(--bg3);border-left:1px solid var(--border);border-right:1px solid var(--border);display:flex;align-items:center;}
+.m-name strong{font-size:0.8rem;font-weight:500;color:var(--text);}
+.m-desc{flex:1;padding:12px 16px;background:var(--bg2);font-size:0.8rem;color:var(--text-dim);line-height:1.6;display:flex;align-items:center;}
+
+/* ARCH STACK */
+.arch-stack{margin:24px 0;max-width:620px;border:1px solid var(--border2);border-radius:4px;overflow:hidden;}
+.arch-row{display:flex;align-items:center;padding:13px 20px;border-bottom:1px solid var(--border);gap:16px;}
+.arch-row:last-child{border-bottom:none;}
+.arch-row.top{background:linear-gradient(90deg,rgba(212,148,58,0.08),transparent);}
+.arch-n{width:26px;height:26px;border-radius:50%;border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.68rem;font-weight:500;color:var(--text-faint);}
+.arch-lbl{font-size:0.85rem;font-weight:500;color:var(--text);flex:1;font-family:var(--body);}
+.arch-desc{font-size:0.75rem;color:var(--text-faint);flex:2;line-height:1.5;}
+
+/* AGENTS */
+.agents{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0;max-width:720px;}
+.agent-card{border:1px solid var(--border2);border-radius:4px;overflow:hidden;transition:border-color 0.2s,transform 0.2s;}
+.agent-card:hover{border-color:rgba(212,148,58,0.35);transform:translateY(-2px);}
+.agent-head{padding:20px 20px 16px;background:var(--bg4);border-bottom:1px solid var(--border);}
+.agent-icon{font-size:1.5rem;margin-bottom:8px;display:block;}
+.agent-head h4{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:4px;}
+.agent-head span{font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);}
+.agent-body{padding:16px 18px;background:var(--bg3);}
+.agent-body p{font-size:0.82rem;max-width:100%;margin-bottom:10px;}
+.agent-body ul{padding-left:1.2em;}
+.agent-body li{font-size:0.8rem;margin-bottom:5px;}
+
+/* TOC */
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 40px;margin:20px 0;max-width:720px;}
+.toc-link{display:flex;gap:12px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border);text-decoration:none;transition:border-color 0.15s;}
+.toc-link:hover{border-bottom-color:var(--amber);}
+.toc-link:hover .toc-name{color:var(--amber);}
+.toc-n{font-family:var(--mono);font-size:0.68rem;color:var(--text-faint);flex-shrink:0;width:24px;}
+.toc-name{font-size:0.85rem;color:var(--text-dim);transition:color 0.15s;line-height:1.4;}
+
+/* FOOTER */
+#footer{margin-left:var(--sidebar-w);background:var(--bg2);border-top:1px solid var(--border);padding:28px 72px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+#footer p{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.08em;color:var(--text-faint);margin:0;max-width:100%;}
+
+/* MOBILE */
+#mob-btn{display:none;position:fixed;bottom:20px;right:20px;z-index:400;width:46px;height:46px;border-radius:50%;border:1px solid var(--border2);background:var(--bg4);color:var(--text);font-size:1.1rem;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:none;}
+  #main,#footer{margin-left:0;}
+  #mob-btn{display:flex;}
+  #content,#hero{padding-left:24px;padding-right:24px;}
+  #hero{padding-top:52px;padding-bottom:48px;}
+  #content{padding-top:40px;padding-bottom:80px;}
+  .principle-grid,.agents,.toc-grid{grid-template-columns:1fr;}
+  #footer{padding-left:24px;padding-right:24px;flex-direction:column;gap:8px;}
+  .m-name{width:120px;}
+}
+</style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-wordmark">Stateless Knowledge<br>Architecture</div>
+    <div class="sb-sub">Technical Whitepaper</div>
+    <div class="sb-pill">v5.0 · 2025</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-group">Overview</div>
+    <a href="#abstract">Abstract</a>
+    <a href="#toc">Table of Contents</a>
+    <div class="sb-group">Foundations</div>
+    <a href="#s1">01 · Introduction</a>
+    <a href="#s2">02 · Problem Statement</a>
+    <a href="#s3">03 · Principles</a>
+    <a href="#s4">04 · Domain Taxonomy</a>
+    <a href="#s5">05 · Atomic Knowledge Objects</a>
+    <a href="#s6">06 · Governance Hierarchy</a>
+    <a href="#s7">07 · Knowledge Graph</a>
+    <a href="#s8">08 · Cognitive Chunking</a>
+    <div class="sb-group">Architecture</div>
+    <a href="#s9">09 · Composable Content</a>
+    <a href="#s10">10 · Template Delivery</a>
+    <a href="#s11">11 · Knowledge Mapping</a>
+    <a href="#s12">12 · Learning Pathways</a>
+    <a href="#s13">13 · Dojo Environments</a>
+    <a href="#s14">14 · Migration Pipeline</a>
+    <div class="sb-group">Runtime Model</div>
+    <a href="#s15">15 · Stage 1 &amp; Stage 2</a>
+    <a href="#s16">16 · Fragment Identity</a>
+    <a href="#s17">17 · Telemetry Architecture</a>
+    <a href="#s18">18 · Assembly Engine</a>
+    <a href="#s19">19 · Operational Example</a>
+    <div class="sb-group">Governance &amp; Strategy</div>
+    <a href="#s20">20 · Strategic Alignment</a>
+    <a href="#s21">21 · Maturity Model</a>
+    <a href="#s22">22 · Instrumented Systems</a>
+    <a href="#s23">23 · Architecture Layers</a>
+    <a href="#s24">24 · Authoring &amp; Governance</a>
+    <div class="sb-group">Knowledge OS &amp; AI</div>
+    <a href="#s25">25 · Knowledge OS</a>
+    <a href="#s26">26 · AI-Ready Systems</a>
+    <a href="#s27">27 · Intelligence Agents</a>
+    <a href="#s28">28 · Conclusion</a>
+    <a href="#glossary">Glossary</a>
+  </nav>
+</aside>
+
+<div id="main">
+
+<header id="hero">
+  <div class="hero-eyebrow">Technical Whitepaper · Complete Reference Architecture</div>
+  <h1 class="hero-title"><em>Stateless</em><br>Knowledge Architecture</h1>
+  <p class="hero-sub">A Composable Framework for Enterprise Learning, Documentation, and AI-Ready Knowledge Systems</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Version 5.0</span>
+    <span class="hero-tag">2025</span>
+    <span class="hero-tag">28 Sections</span>
+    <span class="hero-tag">Enterprise Architecture</span>
+    <span class="hero-tag">AI-Ready</span>
+  </div>
+</header>
+
+<div id="content">
+
+<section class="sec" id="abstract">
+  <div class="sec-number">Overview</div>
+  <h1 class="sec-title">Abstract</h1>
+  <p>This paper describes <strong>Stateless Knowledge Architecture (SKA)</strong> — a comprehensive architectural pattern for organizing, delivering, and continuously improving enterprise knowledge at scale. The architecture represents a synthesis of systems architecture, knowledge management theory, cognitive science, and organizational design.</p>
+  <p>The core proposition of SKA is that enterprise knowledge is most valuable when it is structured as <strong>typed, uniquely identified, independently governed fragments</strong> assembled dynamically into contextually appropriate experiences. A strict separation is maintained between the knowledge layer and the presentation layer. The same knowledge objects serve multiple audiences, delivery formats, progression levels, and AI retrieval contexts without duplication.</p>
+  <p>This edition constitutes the complete reference architecture specification, introducing: the two-stage content processing model; multimedia source processing including video transcription, audio indexing, and image metadata capture; the duplication-without-replication principle; the Fragment Identity Model; the Telemetry Architecture; the Assembly Engine; a complete operational lifecycle example; and the Knowledge Intelligence Layer agents — the <strong>Learning Sphinx</strong> and <strong>Awareness Lion</strong>.</p>
+  <div class="callout amber" data-icon="◆">
+    <div class="callout-label">Core Proposition</div>
+    <p>Knowledge is most valuable when it is structured, composable, and observable. Stateless Knowledge Architecture is the architectural framework for making enterprise knowledge all three.</p>
+  </div>
+</section>
+
+<section class="sec" id="toc">
+  <div class="sec-number">Navigation</div>
+  <h1 class="sec-title">Table of Contents</h1>
+  <div class="toc-grid">
+    <a class="toc-link" href="#s1"><span class="toc-n">01</span><span class="toc-name">Introduction</span></a>
+    <a class="toc-link" href="#s2"><span class="toc-n">02</span><span class="toc-name">Problem Statement</span></a>
+    <a class="toc-link" href="#s3"><span class="toc-n">03</span><span class="toc-name">Principles of SKA</span></a>
+    <a class="toc-link" href="#s4"><span class="toc-n">04</span><span class="toc-name">Domain Taxonomy</span></a>
+    <a class="toc-link" href="#s5"><span class="toc-n">05</span><span class="toc-name">Atomic Knowledge Objects</span></a>
+    <a class="toc-link" href="#s6"><span class="toc-n">06</span><span class="toc-name">Governance Hierarchy</span></a>
+    <a class="toc-link" href="#s7"><span class="toc-n">07</span><span class="toc-name">Knowledge Graph</span></a>
+    <a class="toc-link" href="#s8"><span class="toc-n">08</span><span class="toc-name">Cognitive Chunking</span></a>
+    <a class="toc-link" href="#s9"><span class="toc-n">09</span><span class="toc-name">Composable Content</span></a>
+    <a class="toc-link" href="#s10"><span class="toc-n">10</span><span class="toc-name">Template Delivery</span></a>
+    <a class="toc-link" href="#s11"><span class="toc-n">11</span><span class="toc-name">Knowledge Mapping</span></a>
+    <a class="toc-link" href="#s12"><span class="toc-n">12</span><span class="toc-name">Learning Pathways</span></a>
+    <a class="toc-link" href="#s13"><span class="toc-n">13</span><span class="toc-name">Dojo Environments</span></a>
+    <a class="toc-link" href="#s14"><span class="toc-n">14</span><span class="toc-name">Migration Pipeline</span></a>
+    <a class="toc-link" href="#s15"><span class="toc-n">15</span><span class="toc-name">Stage 1 &amp; Stage 2 Processing</span></a>
+    <a class="toc-link" href="#s16"><span class="toc-n">16</span><span class="toc-name">Fragment Identity Model</span></a>
+    <a class="toc-link" href="#s17"><span class="toc-n">17</span><span class="toc-name">Telemetry Architecture</span></a>
+    <a class="toc-link" href="#s18"><span class="toc-n">18</span><span class="toc-name">Assembly Engine</span></a>
+    <a class="toc-link" href="#s19"><span class="toc-n">19</span><span class="toc-name">Operational Example</span></a>
+    <a class="toc-link" href="#s20"><span class="toc-n">20</span><span class="toc-name">Strategic Alignment</span></a>
+    <a class="toc-link" href="#s21"><span class="toc-n">21</span><span class="toc-name">Maturity Model</span></a>
+    <a class="toc-link" href="#s22"><span class="toc-n">22</span><span class="toc-name">Instrumented Systems</span></a>
+    <a class="toc-link" href="#s23"><span class="toc-n">23</span><span class="toc-name">Architecture Layers</span></a>
+    <a class="toc-link" href="#s24"><span class="toc-n">24</span><span class="toc-name">Authoring &amp; Governance</span></a>
+    <a class="toc-link" href="#s25"><span class="toc-n">25</span><span class="toc-name">Knowledge Operating System</span></a>
+    <a class="toc-link" href="#s26"><span class="toc-n">26</span><span class="toc-name">AI-Ready Systems</span></a>
+    <a class="toc-link" href="#s27"><span class="toc-n">27</span><span class="toc-name">Knowledge Intelligence Agents</span></a>
+    <a class="toc-link" href="#s28"><span class="toc-n">28</span><span class="toc-name">Conclusion</span></a>
+    <a class="toc-link" href="#glossary"><span class="toc-n">—</span><span class="toc-name">Glossary</span></a>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sec-number">Section 01</div>
+  <h1 class="sec-title">Introduction</h1>
+  <p>Enterprise knowledge systems have historically been constructed around the metaphor of the document. A policy is a document. A procedure is a document. A training module is a document. These documents are placed into folders or hierarchies, linked with navigation menus, and managed as discrete units. This model works at small scale, but it does not compose well.</p>
+  <p>As organizations grow, documents proliferate. The same information is duplicated across multiple files. Updates made in one location are not reflected in another. Navigation structures become unwieldy. Search becomes the primary — and often only — route to knowledge, and search is unreliable when content is unstructured or inconsistently maintained.</p>
+  <p>The Stateless Knowledge Architecture (SKA) replaces the document metaphor with a <strong>knowledge fragment model</strong>. Instead of authoring pages, authors create atomic knowledge objects: typed, uniquely identified, independently governed fragments of organizational knowledge. These fragments are stored in a stateless content repository and assembled dynamically into experiences by a rendering layer entirely decoupled from the content layer.</p>
+  <p>The same procedure can appear simultaneously in an onboarding tutorial, a practitioner playbook, and a reference knowledge hub without being duplicated. A policy change is made once and is immediately reflected everywhere that policy is referenced. New experience formats can be designed and deployed without requiring content to be restructured.</p>
+</section>
+
+<section class="sec" id="s2">
+  <div class="sec-number">Section 02</div>
+  <h1 class="sec-title">Problem Statement</h1>
+  <p>Organizations face recurring and compounding problems in enterprise knowledge management arising from a shared root cause: the conflation of content with its presentation container, and the absence of a formal model for what enterprise knowledge actually is.</p>
+  <h2 class="sub-title">2.1 The Document Hierarchy Problem</h2>
+  <p>Traditional systems organize content as documents within folder hierarchies. This creates tight coupling between content and its location, making reorganization painful and inhibiting reuse across multiple contexts.</p>
+  <h2 class="sub-title">2.2 The Content Duplication Problem</h2>
+  <p>When the same knowledge must serve multiple contexts, the typical response is duplication. Knowledge drift accumulates. Different audiences receive different versions of the same information. Trust in the knowledge system erodes.</p>
+  <h2 class="sub-title">2.3 The Taxonomy Absence Problem</h2>
+  <p>Most document-centric systems lack a formal taxonomy of knowledge types. There is no semantic distinction between a governing policy, an operational process, an executable procedure, and a training video. This absence makes it impossible to apply differentiated governance, reuse strategies, or delivery logic based on the nature of the knowledge itself.</p>
+  <h2 class="sub-title">2.4 The Static Structure Problem</h2>
+  <p>Static documentation structures do not adapt to the reader. The system has no model of the reader's role, progression level, or current context, and therefore cannot assemble a tailored experience.</p>
+  <h2 class="sub-title">2.5 The Legacy Migration Problem</h2>
+  <p>Organizations that recognize the limitations of their current systems face a practical barrier: years of accumulated knowledge in legacy format requiring significant effort to extract, classify, and restructure.</p>
+  <h2 class="sub-title">2.6 The Strategic Disconnection Problem</h2>
+  <p>Knowledge management is frequently treated as an operational support function disconnected from organizational strategy. Its relationship to objectives, key results, and strategic initiatives is undefined and unmeasured.</p>
+  <h2 class="sub-title">2.7 The Instrumentation Gap</h2>
+  <p>Most documentation systems collect minimal usage data. Without fragment-level telemetry, it is impossible to improve the knowledge system systematically, identify high-value content, or detect knowledge gaps before they cause operational failures.</p>
+  <h2 class="sub-title">2.8 The AI-Readiness Problem</h2>
+  <p>Emerging AI-augmented knowledge applications require well-structured, semantically rich, properly typed knowledge inputs. Document-centric systems that store knowledge in unstructured prose are poorly suited for AI augmentation at any level of sophistication.</p>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sec-number">Section 03</div>
+  <h1 class="sec-title">Principles of Stateless Knowledge Architecture</h1>
+  <p>The following ten principles are architectural commitments that constrain design decisions throughout the system.</p>
+  <div class="principle-grid">
+    <div class="p-card"><div class="p-num">P1</div><div class="p-body"><strong>Content and Presentation Are Separated</strong><p>A knowledge fragment contains only its own content. Layout, navigation, and context selection are entirely the responsibility of the presentation layer.</p></div></div>
+    <div class="p-card"><div class="p-num">P2</div><div class="p-body"><strong>Knowledge Stored as Fragments, Not Pages</strong><p>Pages are not authored; they are assembled at runtime by display templates selecting from the knowledge repository.</p></div></div>
+    <div class="p-card"><div class="p-num">P3</div><div class="p-body"><strong>Every Object Has a Unique, Stable Identity</strong><p>Identities are not derived from location, file path, or hierarchy. This stability allows fragments to be referenced without references becoming stale.</p></div></div>
+    <div class="p-card"><div class="p-num">P4</div><div class="p-body"><strong>Objects Are Typed Within a Formal Taxonomy</strong><p>Every fragment belongs to a defined type. Type governs authoring standards, governance responsibilities, delivery logic, and reuse patterns.</p></div></div>
+    <div class="p-card"><div class="p-num">P5</div><div class="p-body"><strong>Objects Participate in a Typed Relationship Graph</strong><p>Fragments are connected by explicit, typed relationships that are first-class entities enabling graph traversal and intelligent assembly.</p></div></div>
+    <div class="p-card"><div class="p-num">P6</div><div class="p-body"><strong>Always Rendered From the Current Source</strong><p>Because content is assembled at runtime, every rendered experience reflects the current state of the repository. No synchronization lag; no stale copy problem.</p></div></div>
+    <div class="p-card"><div class="p-num">P7</div><div class="p-body"><strong>The System Is Observable</strong><p>Every knowledge delivery event is instrumented. Knowledge systems that cannot measure their own usage cannot improve systematically.</p></div></div>
+    <div class="p-card"><div class="p-num">P8</div><div class="p-body"><strong>The Architecture Is Composable</strong><p>Every layer is composable with every other layer. New experience types can be constructed from existing fragments without restructuring either.</p></div></div>
+    <div class="p-card"><div class="p-num">P9</div><div class="p-body"><strong>Knowledge Aligns to Strategy</strong><p>Knowledge objects are traceable to organizational objectives and initiatives, making knowledge investment defensible and gaps identifiable as strategic risks.</p></div></div>
+    <div class="p-card"><div class="p-num">P10</div><div class="p-body"><strong>The System Improves Continuously</strong><p>Instrumentation data, gap analysis, review cycles, and authoring workflows form a closed loop. The knowledge system is a continuously improving capability, not a static artifact.</p></div></div>
+  </div>
+</section>
+
+<section class="sec" id="s4">
+  <div class="sec-number">Section 04</div>
+  <h1 class="sec-title">Enterprise Knowledge Domain Taxonomy</h1>
+  <p>The atomic knowledge object model operates within a broader enterprise knowledge domain taxonomy. This taxonomy classifies all organizational knowledge into primary domains, each with distinct characteristics governing how content is authored, stored, delivered, and governed.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Domain</th><th>Description</th><th>Primary Object Types</th><th>Governance Owner</th></tr></thead>
+    <tbody>
+      <tr><td>Policy</td><td>Governing principles, compliance requirements, and organizational commitments.</td><td>POL — Policy objects</td><td>Legal, Compliance, or Executive Governance</td></tr>
+      <tr><td>Process</td><td>End-to-end operational workflows defining how work moves through an organization.</td><td>PCS — Process objects</td><td>Operations, Engineering, or Functional Leaders</td></tr>
+      <tr><td>Procedure</td><td>Step-by-step execution instructions defining exactly how a bounded task is performed.</td><td>PCD — Procedure objects</td><td>Domain Subject Matter Experts</td></tr>
+      <tr><td>Learning</td><td>Structured educational content: tutorials, assessments, learning pathways, progression frameworks.</td><td>PBK — Playbooks; pathway configs</td><td>Learning and Development</td></tr>
+      <tr><td>Video / Multimedia</td><td>Non-textual knowledge assets: recorded demonstrations, narrated walkthroughs, visual explanations.</td><td>Media objects referenced by textual objects</td><td>Content Production or Domain Teams</td></tr>
+      <tr><td>Code / Technical</td><td>Executable code samples, API references, configuration templates, and technical specifications.</td><td>Technical procedure objects; code-typed fragments</td><td>Engineering or Platform Teams</td></tr>
+      <tr><td>Leadership / Governance</td><td>Strategic guidance, organizational principles, mission and values documentation.</td><td>Leadership policy objects; governance framework objects</td><td>Executive Leadership or Strategy</td></tr>
+      <tr><td>Reference &amp; Definitions</td><td>Terminology, glossaries, concept definitions, and standards references.</td><td>Definition objects; reference objects</td><td>Knowledge Architecture Team</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sec-number">Section 05</div>
+  <h1 class="sec-title">Atomic Knowledge Objects and Identity Architecture</h1>
+  <h2 class="sub-title">5.1 Primary Object Types</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Type Code</th><th>ID Pattern</th><th>Description</th><th>Primary Relationships</th></tr></thead>
+    <tbody>
+      <tr><td>POL</td><td><code>POL#####</code></td><td>Policy — A governing commitment, constraint, or principle.</td><td>governs → PCS; references → external standards</td></tr>
+      <tr><td>PCS</td><td><code>PCS#####</code></td><td>Process — A structured end-to-end operational workflow.</td><td>governed-by → POL; produces → PCD; aggregated-by → PBK</td></tr>
+      <tr><td>PCD</td><td><code>PCD#####</code></td><td>Procedure — Step-by-step executable instructions for a bounded task.</td><td>produced-by → PCS; aggregated-by → PBK; references → definitions</td></tr>
+      <tr><td>PBK</td><td><code>PBK#####</code></td><td>Playbook — A curated assembly of policies, processes, and procedures for a domain or role.</td><td>aggregates → POL, PCS, PCD; references → media, code objects</td></tr>
+    </tbody>
+  </table></div>
+  <h2 class="sub-title">5.2 The Identity Architecture</h2>
+  <p>SKA replaces location-based addressing with <strong>identity-based addressing</strong>. Every knowledge object has a unique, stable, location-independent identifier assigned at creation time. The identifier is the primary key — used in all references, relationship declarations, and template queries.</p>
+  <div class="callout amber" data-icon="◆">
+    <div class="callout-label">Identity Architecture Principle</div>
+    <p>The physical location of the content file is irrelevant to the object's addressability. An object can be moved, refiled, or migrated without any change to the identifier, and all references remain valid.</p>
+  </div>
+</section>
+
+<section class="sec" id="s6">
+  <div class="sec-number">Section 06</div>
+  <h1 class="sec-title">Knowledge Governance Hierarchy</h1>
+  <p>The knowledge governance hierarchy describes how operational knowledge is organized from the level of strategic principle to the level of executable instruction: <strong>Topic → Policy → Process → Procedure</strong>.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Level</th><th>Object</th><th>Function</th><th>Answers</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Topic</td><td>A domain or subject area serving as the organizational entry point for a cluster of related knowledge.</td><td>What is this domain about?</td></tr>
+      <tr><td>2</td><td>Policy (POL)</td><td>Defines the governing principles, constraints, and commitments that apply within a topic domain. Normative — defines what must, should, or must not occur.</td><td>What are the rules and principles?</td></tr>
+      <tr><td>3</td><td>Process (PCS)</td><td>Defines the operational workflows that implement the governing policies. Describes how work moves through the organization in compliance with policy.</td><td>How does work happen, in what sequence?</td></tr>
+      <tr><td>4</td><td>Procedure (PCD)</td><td>Defines specific, executable instructions for performing each bounded task. Operational — tells a practitioner exactly what to do.</td><td>How do I perform this task, step by step?</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="s7">
+  <div class="sec-number">Section 07</div>
+  <h1 class="sec-title">Knowledge Graph Relationships</h1>
+  <p>Relationships between knowledge objects are first-class architectural constructs. They give the system its semantic richness, enable navigation beyond simple search, and provide the relational context that makes AI augmentation effective.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Relationship</th><th>Direction</th><th>Semantic Meaning</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>governs</td><td>POL → PCS</td><td>The policy establishes constraints the process must satisfy.</td><td>Data Handling Policy governs Customer Data Processing</td></tr>
+      <tr><td>produces</td><td>PCS → PCD</td><td>The process stage requires the procedure as its operational implementation.</td><td>Customer Data Processing produces Data Anonymization procedure</td></tr>
+      <tr><td>aggregates</td><td>PBK → any</td><td>The playbook includes the target object as a constituent element.</td><td>PBK00005 aggregates POL00012, PCS00034, PCD00078</td></tr>
+      <tr><td>references</td><td>any → any</td><td>A weak relationship indicating relevance or supplementary connection.</td><td>PCD00078 references PCD00091</td></tr>
+      <tr><td>supersedes</td><td>new → old</td><td>A newer version supersedes an older one.</td><td>PCD00142 supersedes PCD00088</td></tr>
+      <tr><td>aligns-to</td><td>any → strategic obj.</td><td>The knowledge object supports a defined organizational objective or key result.</td><td>POL00012 aligns-to OKR: Q3 Compliance Certification</td></tr>
+      <tr><td>defines</td><td>REF → any</td><td>A reference object provides the authoritative definition of a term used by another object.</td><td>REF00003 defines 'data residency'</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="s8">
+  <div class="sec-number">Section 08</div>
+  <h1 class="sec-title">Cognitive Chunking Model</h1>
+  <p>The decision to store knowledge as fragments is informed by the cognitive science of how humans process and retain information. Human working memory has a limited capacity for processing new information simultaneously. Bounded, discrete information units are processed more effectively than large, undifferentiated prose.</p>
+  <h2 class="sub-title">8.1 Chunking Principles</h2>
+  <ul>
+    <li><strong>Conceptual Boundedness:</strong> Each fragment should address one coherent conceptual unit. If a fragment needs to address multiple distinct topics to be comprehensible, it should be decomposed.</li>
+    <li><strong>Cognitive Completeness:</strong> A fragment should be independently meaningful — complete enough to be understood without requiring the reader to hold the content of other fragments simultaneously in working memory.</li>
+    <li><strong>Appropriate Density:</strong> Procedures benefit from stepwise structure with one instruction per step. Policies benefit from discrete clause-per-principle structure. These are implementations of the chunking principle at the content level.</li>
+    <li><strong>Progressive Disclosure:</strong> The template and pathway models implement progressive disclosure by presenting foundational knowledge before dependent knowledge, and conceptual overviews before procedural detail.</li>
+  </ul>
+</section>
+
+<section class="sec" id="s9">
+  <div class="sec-number">Section 09</div>
+  <h1 class="sec-title">Composable Content Systems</h1>
+  <p>Composability is the property of a system whose components can be selected and assembled in multiple ways to produce different outputs without modification to the components themselves. SKA is a composable content system: its fragments can be assembled into an arbitrary variety of content experiences without restructuring, reformatting, or duplication.</p>
+  <h2 class="sub-title">9.1 The Reuse Principle in Practice</h2>
+  <p>Consider procedure object <code>PCD00142</code> defining steps for rotating API credentials. In a document-centric system, this procedure exists in multiple places: the security operations runbook, the new engineer onboarding handbook, the infrastructure provisioning guide, and the security training curriculum — four copies, each diverging over time.</p>
+  <p>In SKA, <code>PCD00142</code> is authored once and referenced by all four contexts. One canonical object; four contexts; zero duplication; perfect consistency. When the procedure changes, it is updated once and the change is immediately reflected in all four contexts.</p>
+  <h2 class="sub-title">9.2 Content Federation</h2>
+  <p>Knowledge fragments are stored in a stateless, version-controlled repository. Different teams own different portions of the knowledge repository while the metadata layer maintains the unified graph across all partitions.</p>
+</section>
+
+<section class="sec" id="s10">
+  <div class="sec-number">Section 10</div>
+  <h1 class="sec-title">Template-Driven Knowledge Delivery</h1>
+  <p>Display templates are the mechanism by which SKA assembles knowledge fragments into experiences. A template is a structured layout that queries the content repository, selects relevant knowledge objects, and arranges them into a coherent rendering. Templates contain no prose and no knowledge fragments — their function is structural, not editorial.</p>
+  <h2 class="sub-title">10.1 Template Types</h2>
+  <ul>
+    <li><strong>Article Template:</strong> Renders a focused, contextual response to a specific knowledge query.</li>
+    <li><strong>Playbook Template:</strong> Renders a domain- or role-specific operational guide by traversing the relationship graph.</li>
+    <li><strong>Tutorial Template:</strong> Renders a step-by-step instructional experience with context-setting policy and process framing.</li>
+    <li><strong>Learning Module Template:</strong> Renders a structured educational unit at a specific Crawl/Walk/Run level.</li>
+    <li><strong>Knowledge Hub Template:</strong> Renders a domain overview serving as a navigational entry point.</li>
+    <li><strong>Dojo Environment Template:</strong> A specialized template for interactive, simulation-based training.</li>
+  </ul>
+  <h2 class="sub-title">10.2 Template Execution Model</h2>
+  <div class="pipeline">
+    <div class="pipe-step"><div class="pipe-dot">1</div><div class="pipe-content"><strong>Identify context</strong><p>The delivery layer identifies the topic or context of the request — from a URL parameter, user session attribute, search query, or direct object reference.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">2</div><div class="pipe-content"><strong>Select template</strong><p>A display template appropriate to the request context is selected based on request type, user role, delivery channel, or explicit specification.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">3</div><div class="pipe-content"><strong>Graph traversal query</strong><p>The template executes a graph traversal query against the metadata layer to discover the set of knowledge objects relevant to the identified topic.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">4</div><div class="pipe-content"><strong>Retrieve content fragments</strong><p>The content fragments for the identified objects are retrieved from the Base Content Layer.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">5</div><div class="pipe-content"><strong>Assemble experience</strong><p>The template arranges the fragments into the experience structure, applying layout, navigation, and contextual annotations.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">6</div><div class="pipe-content"><strong>Record telemetry</strong><p>The instrumentation layer records the delivery event with full fragment-level context.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">7</div><div class="pipe-content"><strong>Deliver to user</strong><p>The assembled page is delivered to the user.</p></div></div>
+  </div>
+</section>
+
+<section class="sec" id="s11">
+  <div class="sec-number">Section 11</div>
+  <h1 class="sec-title">Knowledge Mapping and Domain Modeling</h1>
+  <p>Knowledge mapping is the process of systematically identifying the knowledge objects that constitute a domain and declaring the relationships between them. For any topic, the knowledge map should capture: definitions and prerequisites; governing policies; operational processes; execution procedures; training assets; and learning pathways.</p>
+  <p>A <strong>domain model</strong> is a formalized knowledge map stored as metadata configuration, not as a document. It is version-controlled, reviewed, and updated as the organizational knowledge landscape changes. Because templates read domain models to configure their assembly logic, a well-maintained domain model is the primary mechanism by which changes to organizational knowledge structure are propagated to user-facing experiences.</p>
+</section>
+
+<section class="sec" id="s12">
+  <div class="sec-number">Section 12</div>
+  <h1 class="sec-title">Learning Pathways and Experience Assembly</h1>
+  <p>SKA supports progressive learning pathways from the same pool of knowledge fragments, sequenced according to a model of progressive competency development.</p>
+  <h2 class="sub-title">12.1 The Crawl-Walk-Run Model</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Level</th><th>Name</th><th>Audience</th><th>Content Focus</th></tr></thead>
+    <tbody>
+      <tr><td>Crawl</td><td>Foundational</td><td>New practitioners requiring support</td><td>Domain introduction, governing policies, high-level processes, most essential procedures. Prioritizes orientation and operational safety.</td></tr>
+      <tr><td>Walk</td><td>Intermediate</td><td>Practitioners operating independently</td><td>Full process model, complete set of standard procedures, judgment frameworks for selecting appropriate responses.</td></tr>
+      <tr><td>Run</td><td>Advanced</td><td>Experienced practitioners in complex scenarios</td><td>Edge cases, exception procedures, cross-domain relationships, governance and decision-making frameworks.</td></tr>
+    </tbody>
+  </table></div>
+  <p>The three-level model uses the <em>same underlying knowledge objects</em> at every level — assembled, sequenced, and scaffolded differently. There is no 'beginner content' separate from 'expert content.'</p>
+</section>
+
+<section class="sec" id="s13">
+  <div class="sec-number">Section 13</div>
+  <h1 class="sec-title">Dojo Learning Environments</h1>
+  <p>A <strong>Dojo environment</strong> is a simulation-based learning context in which practitioners apply procedure objects in guided practice scenarios — a controlled, consequence-free operational environment rather than reading instructions as passive content.</p>
+  <h2 class="sub-title">13.1 Dojo Architecture</h2>
+  <ul>
+    <li><strong>Scenario Structure:</strong> A scenario object declares which knowledge objects are relevant to its resolution and defines a realistic operational situation requiring the learner to identify and apply relevant procedures.</li>
+    <li><strong>On-Demand Knowledge Access:</strong> Rather than presenting procedure objects sequentially, the Dojo makes them available on demand — as reference material accessed while working through the scenario, just as in a live operational context.</li>
+    <li><strong>Guided Assessment:</strong> The Dojo template includes assessment logic evaluating whether the learner identified and applied the correct procedures in the correct sequence, providing structured feedback referenced to the knowledge objects involved.</li>
+  </ul>
+  <p>Dojo environments use the <em>same PCD objects</em> as operational playbooks and reference documentation. Practitioners learn to work with operational knowledge directly, not simplified paraphrases.</p>
+</section>
+
+<section class="sec" id="s14">
+  <div class="sec-number">Section 14</div>
+  <h1 class="sec-title">Knowledge Extraction and Migration Pipeline</h1>
+  <p>SKA is not only a system for authoring new knowledge — it is also a migration strategy for organizations with accumulated legacy documentation. The six-stage pipeline moves content from legacy format to structured SKA knowledge objects.</p>
+  <div class="pipeline">
+    <div class="pipe-step"><div class="pipe-dot">1</div><div class="pipe-content"><strong>Existing Content Review</strong><p>An audit of the current documentation landscape: inventories all existing assets, identifies types, owners, estimated currency, and usage frequency.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">2</div><div class="pipe-content"><strong>Exploratory Knowledge Extraction</strong><p>Structured analysis of a sample of existing documents to identify which portions correspond to which knowledge object types.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">3</div><div class="pipe-content"><strong>Knowledge Chunk Creation</strong><p>Active decomposition of existing documents into knowledge objects. Each chunk is assigned a type code, provisional identifier, and structured metadata envelope.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">4</div><div class="pipe-content"><strong>Relationship Mapping</strong><p>Declaration of relationships between extracted knowledge objects. Transforms the extracted object inventory into a knowledge graph.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">5</div><div class="pipe-content"><strong>Content Gap Analysis</strong><p>Systematic comparison of the extracted knowledge graph against domain models. Identifies missing objects and flags them as authoring priorities.</p></div></div>
+    <div class="pipe-step"><div class="pipe-dot">6</div><div class="pipe-content"><strong>Definition of Ready</strong><p>A quality gate each extracted knowledge object must pass: complete metadata envelope, schema validation, consistent relationship declarations, and domain owner review.</p></div></div>
+  </div>
+</section>
+
+<section class="sec" id="s15">
+  <div class="sec-number">Section 15</div>
+  <h1 class="sec-title">Stage 1 and Stage 2 Content Processing</h1>
+  <p>Most enterprise knowledge does not begin its life in a structured, validated, uniquely identified form. The SKA accommodates this reality through a <strong>two-stage content processing model</strong>. Stage 1 describes raw enterprise knowledge as it exists in the wild. Stage 2 describes the structured state that knowledge must reach before it can participate fully in the knowledge graph.</p>
+  <h2 class="sub-title">15.1 Stage 1 Content</h2>
+  <p>Stage 1 content is any enterprise information source that contains potentially valuable knowledge but has not yet been processed into structured knowledge fragments. The SKA model does not reject Stage 1 content on quality grounds — the processing pipeline, not rejection of sources, is the appropriate quality mechanism. Sources include:</p>
+  <ul>
+    <li>Internal blog posts and knowledge articles from communication platforms</li>
+    <li>Engineering notes, design documents, and architecture decision records</li>
+    <li>Vendor documentation imported into internal systems</li>
+    <li>HR policy communications and employee handbook pages</li>
+    <li>Troubleshooting notes and resolved incident records</li>
+    <li><strong>Video recordings</strong> — product demonstrations, training sessions, recorded meetings</li>
+    <li><strong>Audio recordings</strong> — podcasts, voice memos, recorded interviews, conference call transcripts</li>
+    <li><strong>Presentation files</strong> — slide decks, pitch materials, onboarding decks</li>
+    <li><strong>Images with embedded knowledge</strong> — architecture diagrams, annotated screenshots, whiteboard captures</li>
+    <li><strong>Training materials</strong> — course files, e-learning exports, certification study guides</li>
+  </ul>
+  <h3 class="subsub-title">15.1.1 Multimedia Stage 1 Sources</h3>
+  <p>Multimedia Stage 1 sources require specialized pre-processing before knowledge extraction can occur. The pre-processing layer does not alter the original source artifact; it produces a derived textual representation alongside the original.</p>
+  <ul>
+    <li><strong>Video recordings:</strong> Processed through automated speech-to-text transcription, producing a timestamped transcript as the primary extraction surface. Fragments reference the source video with timestamp anchors, linking directly to the relevant segment of the source recording.</li>
+    <li><strong>Audio recordings:</strong> Transcribed with speaker identification preserved. Topics detected in the transcript are compared against the knowledge graph to identify which existing domains and objects the audio content relates to.</li>
+    <li><strong>Presentation files:</strong> Slide deck content is extracted at the slide level. Each slide produces a discrete extraction unit: title, body text, speaker notes, and any embedded image captions or alt text.</li>
+    <li><strong>Images and diagrams:</strong> Processed through metadata extraction and optical character recognition. The image becomes a referenced media object within the knowledge graph, linked to the domain objects it depicts.</li>
+  </ul>
+  <div class="callout teal" data-icon="◈">
+    <div class="callout-label">Multimedia Processing and Searchability</div>
+    <p>A video recording of a senior engineer explaining an architectural decision is valuable institutional knowledge. Without transcription and extraction, it is findable only if a user knows it exists. With transcription and extraction, the knowledge it contains is searchable, relatable to graph objects, and extractable as Stage 2 fragments that can be assembled alongside any other knowledge type. The video remains the canonical source; the extraction layer makes its content discoverable.</p>
+  </div>
+  <h2 class="sub-title">15.2 Stage 2 Content</h2>
+  <p>Stage 2 content consists of validated knowledge fragments extracted or derived from Stage 1 material. Stage 2 fragments are structured, semantically classified, uniquely identified, deduplicated, and reusable. They are context-independent — expressing one bounded knowledge unit without embedding the framing of the Stage 1 source document.</p>
+  <h2 class="sub-title">15.3 Duplication Without Replication</h2>
+  <p>When a Stage 1 source is processed and candidate fragments are extracted, each candidate is compared semantically against the existing Stage 2 corpus. If a sufficiently similar fragment already exists, the system does not create a new duplicate. Instead, it links the new Stage 1 source to the existing Stage 2 fragment, preserves author lineage, and consolidates rather than replicates.</p>
+  <div class="callout amber" data-icon="◆">
+    <div class="callout-label">The Jira Feature Example</div>
+    <p>Eighteen authors independently publish articles about the same Jira workflow feature. The Stage 2 processing pipeline extracts candidate fragments from all eighteen sources and compares them against the existing corpus.</p>
+    <p>The result is not eighteen duplicate procedure fragments — it is three canonical Stage 2 fragments: one covering the feature's conceptual explanation, one covering its operational usage workflow, and one covering its configuration options. Each of the eighteen Stage 1 sources is linked to the relevant fragments as a lineage reference. No redundant content propagates through the graph.</p>
+  </div>
+</section>
+
+<section class="sec" id="s16">
+  <div class="sec-number">Section 16</div>
+  <h1 class="sec-title">Fragment Identity Model</h1>
+  <p>A fragment's identity is not derived from where it lives — not from a file path, a page URL, or a folder location. It is an intrinsic property of the fragment itself, assigned at promotion to Stage 2 and stable for the life of the fragment regardless of how its content, location, or relationships change.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Attribute</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Fragment ID</td><td><code>TYPE#####</code> string</td><td>Stable, unique identifier assigned at Stage 2 promotion. Never reused, even after deprecation.</td></tr>
+      <tr><td>Information Type</td><td>Taxonomy code</td><td>Semantic type of the fragment — policy, process, procedure, definition, reference, technical, learning, or multimedia.</td></tr>
+      <tr><td>Domain Classification</td><td>Domain tag set</td><td>One or more domain tags identifying which knowledge domains this fragment belongs to. Enables graph traversal by domain.</td></tr>
+      <tr><td>Policy / Operational Linkage</td><td>Relationship declarations</td><td>Typed relationship references to the governance objects this fragment is connected to.</td></tr>
+      <tr><td>Version History</td><td>Version sequence</td><td>Sequential record tracking each modification. Current version always resolved for delivery; prior versions archived for audit and rollback.</td></tr>
+      <tr><td>Lineage References</td><td>Stage 1 source list</td><td>Ordered list of Stage 1 source documents that contributed to this fragment. Preserves attribution across the consolidation process.</td></tr>
+      <tr><td>Lifecycle Status</td><td>Status code</td><td>Current governance state: draft, under review, active, deprecated, or archived. Only active fragments enter template assembly.</td></tr>
+      <tr><td>Audience Tags</td><td>Role/persona set</td><td>One or more audience identifiers indicating which roles this fragment is relevant to.</td></tr>
+      <tr><td>Strategic Alignment Refs</td><td>OKR/initiative links</td><td>Optional references to organizational objectives, key results, or strategic initiatives this fragment supports.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="s17">
+  <div class="sec-number">Section 17</div>
+  <h1 class="sec-title">Telemetry Architecture</h1>
+  <p>The telemetry architecture observes every interaction between the knowledge delivery system and its users at the <strong>fragment level</strong>, not the page level. This granularity separates a knowledge intelligence system from a conventional web analytics implementation and enables the Knowledge Intelligence Layer agents to produce meaningful operational signals.</p>
+  <h2 class="sub-title">17.1 Observed Signal Categories</h2>
+  <ul>
+    <li><strong>Fragment usage frequency:</strong> Rate at which each Stage 2 fragment is included in delivered assemblies and subsequently interacted with. Trending frequency — rising, stable, or declining — is more operationally significant than absolute frequency.</li>
+    <li><strong>Assembly context:</strong> For each delivery event: which template rendered, which fragments were co-delivered, which domain was served, which role context was presented. Enables relational analysis — which fragments are consistently co-consumed, which templates surface a given fragment most effectively.</li>
+    <li><strong>Search discovery paths:</strong> When a user arrives at a fragment through search, the telemetry layer records the query string, the result set returned, and which fragment the user ultimately engaged with.</li>
+    <li><strong>User role interaction:</strong> Role and organizational context for each delivery event. Role-level aggregation reveals which fragments are consumed primarily by one role versus broadly across roles.</li>
+    <li><strong>Time on fragment:</strong> Dwell time per fragment within a larger assembly. Anomalously low dwell time may indicate that the fragment is being skipped; anomalously high dwell time may indicate confusion or insufficient clarity.</li>
+    <li><strong>Abandonment signals:</strong> When a user exits an assembly at a specific fragment position without completing the experience. Consistent abandonment at the same fragment is a quality signal.</li>
+  </ul>
+  <h2 class="sub-title">17.2 Capabilities Enabled</h2>
+  <ul>
+    <li><strong>High-value knowledge detection:</strong> Fragments with high usage frequency, broad role distribution, and positive engagement signals are the most valuable knowledge assets in the repository.</li>
+    <li><strong>Unused fragment identification:</strong> Fragments with zero usage over a sustained period are candidates for review — possibly superseded or representing a coverage gap in template and graph configuration.</li>
+    <li><strong>Emerging knowledge demand detection:</strong> A rising trend in usage frequency for a fragment or cluster indicates increasing organizational demand for that knowledge.</li>
+    <li><strong>Automatic knowledge resurfacing:</strong> When demand for a previously high-usage fragment begins to rise after a period of low activity, the telemetry history enables the system to proactively surface that knowledge.</li>
+  </ul>
+</section>
+
+<section class="sec" id="s18">
+  <div class="sec-number">Section 18</div>
+  <h1 class="sec-title">Assembly Engine</h1>
+  <p>The Assembly Engine is the runtime component responsible for constructing knowledge experiences from Stage 2 fragments on demand. <strong>Assemblies are ephemeral constructions</strong> — they exist at the moment of delivery and are reconstructed on every subsequent request from the current state of the fragment corpus. Fragments are persistent; assemblies are transient.</p>
+  <h2 class="sub-title">18.1 Output Types</h2>
+  <ul>
+    <li><strong>Operational procedures:</strong> A sequenced assembly of procedure fragments, prefaced with the relevant process context and governing policy reference.</li>
+    <li><strong>Training modules:</strong> A pedagogically ordered assembly at a specific Crawl/Walk/Run level and role context, with assessment checkpoints from Dojo scenario objects.</li>
+    <li><strong>Troubleshooting flows:</strong> A conditional assembly presenting diagnostic procedure fragments in a decision-tree structure.</li>
+    <li><strong>Policy guidance:</strong> An assembly of policy fragments relevant to a given domain, structured with governing rationale and references to implementing processes.</li>
+    <li><strong>AI-generated responses:</strong> The Assembly Engine provides structured fragment context to the AI generation model — a set of precisely selected, typed fragments rather than an unstructured document corpus.</li>
+    <li><strong>Contextual documentation:</strong> A dynamically assembled reference page presenting the full governance chain for a topic.</li>
+  </ul>
+  <h2 class="sub-title">18.2 Assembly Determination Factors</h2>
+  <ul>
+    <li><strong>User role:</strong> The role and organizational context determines which audience-tagged fragments are included. An engineer and a product manager requesting the same topic receive assemblies from overlapping but distinct fragment sets.</li>
+    <li><strong>Task context:</strong> The specific task determines which template type is applied. The same user requesting the same topic in a Dojo training scenario versus a live operational incident may receive different assemblies.</li>
+    <li><strong>System state:</strong> In integrated environments, system state signals — current incident classification, deployment status, active regulatory period — can filter fragment selection.</li>
+    <li><strong>Telemetry signals:</strong> If telemetry indicates that a fragment is consistently abandoned at a specific position in a standard sequence, the Assembly Engine can try an alternative ordering or insert a bridging definition fragment.</li>
+  </ul>
+  <div class="callout blue" data-icon="◇">
+    <div class="callout-label">Assemblies Are Temporary; Fragments Are Persistent</div>
+    <p>An organization can completely redesign its delivery templates, replace its UX layer, adopt a new AI generation framework, or restructure its domain taxonomy without losing any accumulated knowledge. The fragments persist. New assemblies are constructed from the same fragments under the new template configurations.</p>
+  </div>
+</section>
+
+<section class="sec" id="s19">
+  <div class="sec-number">Section 19</div>
+  <h1 class="sec-title">Operational Example: Multi-Source Knowledge Consolidation</h1>
+  <p>This example traces the complete lifecycle of knowledge through the Stateless Knowledge Architecture — from initial creation as Stage 1 content through consolidation, fragment promotion, and multi-audience assembly delivery.</p>
+  <h2 class="sub-title">19.1 The Scenario</h2>
+  <p>A software organization rolls out a new integration between its development workflow and project management platform. Over the following weeks, eighteen individuals across engineering, product management, customer support, and onboarding independently publish articles, documentation updates, and workflow notes about the integration. Each is a Stage 1 source — accurate, but inconsistent in depth and terminology. Several directly contradict each other on minor operational details due to version differences during the rollout period.</p>
+  <h2 class="sub-title">19.2 Fragment Extraction and Deduplication</h2>
+  <p>AI-assisted extraction analyzes all eighteen documents and identifies seven distinct knowledge units: a conceptual explanation; the authentication and permissions model; a configuration procedure; a daily workflow procedure; known limitations; a troubleshooting procedure for common errors; and a version-specific technical note marked with a scheduled deprecation date.</p>
+  <p>All seven are genuinely novel. They are assigned identifiers — <code>PCS00208</code>, <code>PCS00209</code>, <code>PCD00341</code>, <code>PCD00342</code>, <code>PCD00343</code>, <code>REF00044</code>, and a bounded technical note object — and promoted to Stage 2 status with full lineage references to all eighteen contributing sources.</p>
+  <h2 class="sub-title">19.3 Assembly for Multiple Audiences</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Audience</th><th>Assembly Type</th><th>Fragments</th><th>Characteristics</th></tr></thead>
+    <tbody>
+      <tr><td>Engineering Team</td><td>Operational Procedure</td><td>PCS00208, PCS00209, PCD00341, PCD00342, PCD00343, tech note</td><td>Full technical depth; all procedures; troubleshooting included; version note active.</td></tr>
+      <tr><td>Customer Support</td><td>Reference + Troubleshooting</td><td>REF00044, PCS00208, PCD00343</td><td>Conceptual framing; error troubleshooting only; configuration excluded.</td></tr>
+      <tr><td>Product Managers</td><td>Knowledge Hub Overview</td><td>REF00044, PCS00208, PCS00209</td><td>Process overview; limitations note included; procedures excluded.</td></tr>
+      <tr><td>New Employee Onboarding</td><td>Training Module — Crawl</td><td>REF00044, PCS00208, PCD00342</td><td>Conceptual definition; high-level process; daily workflow procedure; scaffolding and assessment checkpoint.</td></tr>
+      <tr><td>AI Knowledge Assistant</td><td>Structured Context Package</td><td>All seven with type metadata</td><td>All fragments delivered as a typed context package for AI generation.</td></tr>
+    </tbody>
+  </table></div>
+  <h2 class="sub-title">19.4 What the Architecture Prevented</h2>
+  <ul>
+    <li><strong>Knowledge duplication:</strong> 18 Stage 1 documents consolidated into 7 canonical Stage 2 fragments. 5 distinct audience experiences from the same 7 fragments, with zero content replication.</li>
+    <li><strong>Documentation drift:</strong> A correction to any fragment is immediately reflected in all five experiences. No manual update to multiple documents required.</li>
+    <li><strong>Loss of institutional knowledge:</strong> All eighteen contributing authors are recorded in fragment lineage references. If any contributor leaves, the knowledge they contributed remains encoded in Stage 2 fragments.</li>
+    <li><strong>Version-specific knowledge contamination:</strong> The time-bounded technical note is automatically excluded from new assemblies after its deprecation date, with no manual removal required.</li>
+  </ul>
+</section>
+
+<section class="sec" id="s20">
+  <div class="sec-number">Section 20</div>
+  <h1 class="sec-title">Strategic Alignment Layer</h1>
+  <p>The Strategic Alignment Layer connects knowledge objects to the organizational objectives, key results, and strategic initiatives they support. This layer transforms the knowledge system from an operational support function into a measurable contributor to organizational strategy.</p>
+  <div class="callout amber" data-icon="◆">
+    <div class="callout-label">Strategic Traceability Chain</div>
+    <p>Strategic Objective → Key Result → Strategic Initiative → Knowledge Domain → Policy (POL) → Process (PCS) → Procedure (PCD)</p>
+    <p>This chain allows an organization to ask: "What operational knowledge exists to support this strategic objective?" and receive a structured answer from the knowledge graph — a curated view of the policies, processes, and procedures aligned to that objective.</p>
+  </div>
+  <p>When an objective is declared but the knowledge graph shows incomplete process coverage, that gap is not merely a documentation deficiency — it is a <strong>strategic risk</strong>. The combination of strategic alignment metadata and instrumentation data enables measurement of knowledge contribution to outcomes, transforming knowledge system reporting from activity metrics to outcome metrics.</p>
+</section>
+
+<section class="sec" id="s21">
+  <div class="sec-number">Section 21</div>
+  <h1 class="sec-title">Knowledge Architecture Maturity Model</h1>
+  <p>The Knowledge Architecture Maturity Model (KAMM) provides a structured framework for assessing current knowledge management capability and charting a progression path toward a fully instrumented, continuously improving knowledge ecosystem.</p>
+  <div class="maturity">
+    <div class="m-row"><div class="m-lvl" style="background:#B71C1C">0</div><div class="m-name"><strong>Unstructured</strong></div><div class="m-desc">Knowledge exists informally in people's heads, emails, and ad-hoc documents. No systematic capture, no governance, no discoverability.</div></div>
+    <div class="m-row"><div class="m-lvl" style="background:#E65100">1</div><div class="m-name"><strong>Document-Based</strong></div><div class="m-desc">Knowledge captured in documents in shared drives or wikis. Structure is folder-based. Search unreliable. Duplication common. No relationship model.</div></div>
+    <div class="m-row"><div class="m-lvl" style="background:#F57F17">2</div><div class="m-name"><strong>Structured Docs</strong></div><div class="m-desc">Documentation follows templates and conventions. Taxonomy exists. Ownership is assigned. Review cycles defined. Content more consistent but still page-centric.</div></div>
+    <div class="m-row"><div class="m-lvl" style="background:#2E7D32">3</div><div class="m-name"><strong>Fragment Architecture</strong></div><div class="m-desc">Content decomposed into typed knowledge objects with unique IDs. Relationship graph exists. Composable templates assemble experiences dynamically. The SKA base layer is operational.</div></div>
+    <div class="m-row"><div class="m-lvl" style="background:#1565C0">4</div><div class="m-name"><strong>Instrumented Systems</strong></div><div class="m-desc">Every delivery event is recorded. Usage density, pathway effectiveness, and knowledge gaps are measured. Content decisions are data-driven.</div></div>
+    <div class="m-row"><div class="m-lvl" style="background:#6A1B9A">5</div><div class="m-name"><strong>Knowledge Ecosystem</strong></div><div class="m-desc">The knowledge system learns from its own usage. AI augmentation is operational. Strategic alignment is maintained. Knowledge gaps are identified and closed automatically.</div></div>
+  </div>
+</section>
+
+<section class="sec" id="s22">
+  <div class="sec-number">Section 22</div>
+  <h1 class="sec-title">Instrumented Knowledge Systems and Telemetry</h1>
+  <p>Instrumentation is a core architectural layer — not an analytics add-on. The instrumentation model produces the data necessary to measure the health of the knowledge system, identify gaps, and improve content and pathway quality continuously.</p>
+  <h2 class="sub-title">22.1 Telemetry Event Model</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>user_token</td><td>Pseudonymous ID</td><td>Pseudonymous identifier for the requesting user, linked to their role, team, and organizational context.</td></tr>
+      <tr><td>client_id</td><td>Device ID</td><td>Device-level identifier that supports session reconstruction and multi-session analysis.</td></tr>
+      <tr><td>timestamp</td><td>ISO 8601 datetime</td><td>Precise time of the request, used for temporal analysis of usage patterns.</td></tr>
+      <tr><td>object_refs</td><td>Array of object IDs</td><td>Identifiers of all knowledge objects included in the assembled page.</td></tr>
+      <tr><td>template_id</td><td>Template identifier</td><td>Identifier of the display template used for assembly.</td></tr>
+      <tr><td>session_context</td><td>Structured object</td><td>Pathway level, role context, domain context, and session duration of the delivery event.</td></tr>
+      <tr><td>interaction_signals</td><td>Array of signals</td><td>For interactive templates: sections engaged, dwell time per section, navigation direction in a pathway.</td></tr>
+      <tr><td>query_string</td><td>Optional text</td><td>For search-initiated deliveries: the search query that led to this knowledge delivery.</td></tr>
+      <tr><td>resolution_outcome</td><td>Optional code</td><td>For Dojo environments: whether the learner successfully resolved the scenario and the path taken.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="s23">
+  <div class="sec-number">Section 23</div>
+  <h1 class="sec-title">System Architecture Layers</h1>
+  <div class="arch-stack">
+    <div class="arch-row top">
+      <div class="arch-n" style="border-color:var(--amber);color:var(--amber)">5</div>
+      <div class="arch-lbl" style="color:var(--amber)">UX Layer</div>
+      <div class="arch-desc">Search interfaces, role-based dashboards, curated learning journeys, Dojo environments, AI-augmented delivery channels.</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-n">4</div>
+      <div class="arch-lbl">Structured Content Layer</div>
+      <div class="arch-desc">Assembled experience types: playbooks, training hubs, learning pathways, Dojo environments. Constructed via template configuration.</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-n">3</div>
+      <div class="arch-lbl">Base Content Layer</div>
+      <div class="arch-desc">Atomic knowledge chunks authored in Markdown, version-controlled in Git. The content source of truth.</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-n">2</div>
+      <div class="arch-lbl">Metadata Layer</div>
+      <div class="arch-desc">Tags, relationship declarations, audience annotations, strategic alignment references, API registry, and cross-object identifier index.</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-n">1</div>
+      <div class="arch-lbl">Backstage Layer</div>
+      <div class="arch-desc">Source of truth for organizational nouns: teams, systems, products, services, strategic objectives, and the relationships between them.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s24">
+  <div class="sec-number">Section 24</div>
+  <h1 class="sec-title">Authoring and Governance Workflow</h1>
+  <p>The authoring model supports distributed, high-velocity contribution while maintaining the structural integrity of the knowledge graph. Knowledge objects are authored in Markdown with structured YAML frontmatter defining required and optional metadata fields for each object type.</p>
+  <h2 class="sub-title">24.1 Authoring Workflow</h2>
+  <ol>
+    <li>A contributor creates a branch from the main repository trunk.</li>
+    <li>The contributor authors or modifies one or more knowledge objects on the branch.</li>
+    <li>On commit, automated linting validates the frontmatter schema, checks for required fields, and verifies that declared relationship targets exist.</li>
+    <li>The contributor opens a pull request. The pull request triggers a review workflow assigning reviewers based on the domain tags of the modified objects.</li>
+    <li>Reviewers validate content accuracy, relationship correctness, cognitive quality, and adherence to authoring standards.</li>
+    <li>On approval, the branch is merged and the new or modified objects become available to the delivery layer.</li>
+  </ol>
+  <h2 class="sub-title">24.2 Governance Model</h2>
+  <p>Governance in SKA is domain-scoped. Each knowledge domain has a designated domain owner responsible for quality and currency. Domain owners are registered in the Backstage Layer and their ownership is reflected in automated review routing. Domain ownership responsibilities include: reviewing and approving pull requests; initiating periodic review cycles; declaring deprecations; and maintaining the domain model governing template configuration.</p>
+</section>
+
+<section class="sec" id="s25">
+  <div class="sec-number">Section 25</div>
+  <h1 class="sec-title">The Knowledge Operating System</h1>
+  <p>SKA is not a documentation pattern, a learning management architecture, or a content management framework. Viewed as an integrated whole, it is a <strong>Knowledge Operating System</strong> — the substrate on which organizational intelligence runs.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Capability</th><th>Description</th><th>SKA Components</th></tr></thead>
+    <tbody>
+      <tr><td>Knowledge Architecture</td><td>The formal model for what organizational knowledge is, how it is typed, identified, and related.</td><td>Domain taxonomy, atomic object model, identity scheme, knowledge graph</td></tr>
+      <tr><td>Content Architecture</td><td>Infrastructure for authoring, storing, versioning, and federating knowledge content at scale.</td><td>Base Content Layer, Markdown/Git repository, authoring workflow, governance model</td></tr>
+      <tr><td>Learning Architecture</td><td>Framework for assembling knowledge into progressive, role-appropriate, measurable learning experiences.</td><td>Learning pathways, Crawl/Walk/Run model, Dojo environments, pathway templates</td></tr>
+      <tr><td>Experience Architecture</td><td>Composable template system for assembling knowledge into any delivery context without content modification.</td><td>Template library, knowledge hub templates, playbook templates, UX Layer</td></tr>
+      <tr><td>Analytics Infrastructure</td><td>Telemetry model and reporting framework for measuring knowledge usage, effectiveness, and gaps.</td><td>Instrumentation layer, telemetry event model, usage density analysis, gap identification</td></tr>
+      <tr><td>Strategic Alignment</td><td>Model connecting knowledge objects to organizational objectives, key results, and strategic initiatives.</td><td>Backstage Layer, alignment metadata, strategic traceability chain, outcome metrics</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="s26">
+  <div class="sec-number">Section 26</div>
+  <h1 class="sec-title">Benefits and Implications for AI-Ready Knowledge Systems</h1>
+  <p>A Knowledge OS-compliant repository is architecturally well-suited for AI augmentation in ways that document-centric knowledge systems are not.</p>
+  <ul>
+    <li><strong>Retrieval-Augmented Generation (RAG):</strong> SKA knowledge objects are precisely scoped by the chunking model, typed with a formal taxonomy, uniquely identified, and version-controlled. Instead of retrieving the top-N documents by vector similarity, a RAG system can traverse the knowledge graph to retrieve a structured set of objects — the governing policy, the relevant process, the specific procedure — that together constitute a contextually coherent answer.</li>
+    <li><strong>Semantic Search:</strong> The metadata layer's typed relationships, domain tags, and audience annotations enable structured semantic search. A query about credential rotation can retrieve not only the procedure by keyword match but all objects related to it through the graph.</li>
+    <li><strong>AI-Assisted Authoring and Migration:</strong> The formal structure of SKA knowledge objects makes them suitable as AI authoring assistant inputs and outputs. AI systems can perform the knowledge extraction stage of the migration pipeline — classifying existing document content, proposing chunk boundaries, and drafting initial relationship declarations.</li>
+    <li><strong>Knowledge Graph as AI Reasoning Context:</strong> An AI system that understands the graph structure can reason about the implications of a policy change — traversing the graph to identify all dependent processes and procedures — and surface those objects for human review.</li>
+    <li><strong>Instrumentation Data as Training Signal:</strong> The telemetry layer produces a continuous stream of structured usage data. AI systems fine-tuned with this instrumentation data become progressively better at selecting, assembling, and presenting knowledge.</li>
+  </ul>
+</section>
+
+<section class="sec" id="s27">
+  <div class="sec-number">Section 27</div>
+  <h1 class="sec-title">Knowledge Intelligence Agents</h1>
+  <p>When a knowledge system is fully instrumented, it produces a continuously flowing stream of structured telemetry that describes, in granular detail, how the organization's knowledge is being created, consumed, and sought. The <strong>Knowledge Intelligence Layer</strong> houses autonomous agents that operate on this stream continuously, identifying patterns, detecting anomalies, and raising situational awareness without waiting for a human analyst to schedule a review.</p>
+  <div class="agents">
+    <div class="agent-card">
+      <div class="agent-head">
+        <span class="agent-icon">🦁</span>
+        <h4>The Learning Sphinx</h4>
+        <span>Knowledge Governance Agent</span>
+      </div>
+      <div class="agent-body">
+        <p>Continuously evaluates the health, quality, and structural integrity of the knowledge ecosystem. Guards the quality of the repository, ensuring that what the system delivers meets standards that make knowledge trustworthy and discoverable.</p>
+        <ul>
+          <li>Validates metadata completeness and structural consistency</li>
+          <li>Monitors style guide compliance</li>
+          <li>Tracks knowledge freshness and review dates</li>
+          <li>Identifies unused or underutilized fragments</li>
+          <li>Detects relationship graph anomalies and orphaned objects</li>
+          <li>Analyzes search behavior for knowledge gap signals</li>
+          <li>Monitors learning pathway completion and abandonment</li>
+        </ul>
+      </div>
+    </div>
+    <div class="agent-card">
+      <div class="agent-head">
+        <span class="agent-icon">🦊</span>
+        <h4>The Awareness Lion</h4>
+        <span>Demand Monitoring Agent</span>
+      </div>
+      <div class="agent-body">
+        <p>Analyzes knowledge interaction telemetry in real time to detect patterns that indicate emerging operational events or organizational information demand spikes. Transforms the knowledge system from a passive repository into an active organizational sensor.</p>
+        <ul>
+          <li>Detects search query frequency spikes above baseline</li>
+          <li>Monitors knowledge object access concentration</li>
+          <li>Tracks playbook activation patterns</li>
+          <li>Detects learning pathway engagement spikes</li>
+          <li>Analyzes topic navigation clustering</li>
+          <li>Monitors cross-domain demand correlation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <h2 class="sub-title">27.1 Awareness Lion Signal Classification</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Tier</th><th>Type</th><th>Trigger Condition</th><th>Output Routing</th></tr></thead>
+    <tbody>
+      <tr><td>Tier 1</td><td>Informational</td><td>Notable increase in demand for a specific topic that exceeds baseline. Does not yet indicate a definitive operational event.</td><td>Dashboard indicator for domain owners and knowledge architects.</td></tr>
+      <tr><td>Tier 2</td><td>Situational Alert</td><td>Statistically significant demand spike in a specific domain, or correlated demand across two or more domains.</td><td>Alert to domain owners and, for operationally critical domains, to operational team leads.</td></tr>
+      <tr><td>Tier 3</td><td>Operational Signal</td><td>High-confidence pattern: simultaneous playbook activation, cross-domain correlated spikes, or concentration of access events on incident-specific objects.</td><td>Alert to operational teams and leadership with a summary of the detected pattern and affected knowledge objects.</td></tr>
+    </tbody>
+  </table></div>
+  <h2 class="sub-title">27.2 The Closed Feedback Loop</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Phase</th><th>Activity</th><th>Agent Role</th></tr></thead>
+    <tbody>
+      <tr><td>Creation</td><td>Authors produce knowledge objects; governance workflow validates and publishes them.</td><td>Learning Sphinx validates structural completeness, style compliance, and relationship consistency at publication time and continuously thereafter.</td></tr>
+      <tr><td>Delivery</td><td>Templates assemble objects into experiences; practitioners access them through the UX layer.</td><td>Awareness Lion monitors delivery events in real time for demand concentration patterns and operational signals. Learning Sphinx tracks usage density per object.</td></tr>
+      <tr><td>Observation</td><td>Telemetry records delivery events, search queries, pathway interactions, and assessment outcomes continuously.</td><td>Both agents consume telemetry continuously. Learning Sphinx builds rolling health metrics. Awareness Lion maintains sliding-window demand baselines.</td></tr>
+      <tr><td>Improvement</td><td>Domain owners receive health signals and gap indicators; authoring backlog is updated; review cycles are initiated.</td><td>Learning Sphinx produces the health metrics and gap indicators that drive the improvement backlog. Awareness Lion identifies demand patterns requiring urgent knowledge response.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="s28">
+  <div class="sec-number">Section 28</div>
+  <h1 class="sec-title">Conclusion</h1>
+  <p>The Stateless Knowledge Architecture represents a systematic and comprehensive response to the structural limitations of document-centric enterprise knowledge management. By replacing the page as the unit of authoring and storage with the typed knowledge fragment, by organizing those fragments within a formal domain taxonomy, by connecting them through an explicit governance hierarchy and a typed relationship graph, by assembling them dynamically through composable templates, by measuring their usage and impact through an instrumentation layer, by connecting them to organizational strategy, and by integrating these capabilities into a coherent Knowledge Operating System, SKA achieves a set of capabilities that conventional documentation systems cannot provide.</p>
+  <p>The Knowledge Architecture Maturity Model situates this framework in a realistic organizational context. Most organizations are at Level 0, 1, or 2 today. The path to Level 3 through Level 5 is defined and achievable, but it requires deliberate architectural investment and a sequenced implementation roadmap.</p>
+  <p>The increasing relevance of AI augmentation to enterprise knowledge work adds strategic urgency to these architectural choices. The organizations best positioned to benefit from AI-augmented knowledge retrieval, AI-assisted authoring, and AI-enhanced learning experiences are those whose knowledge is already structured according to the principles of the Knowledge OS.</p>
+  <div class="callout amber" data-icon="◆">
+    <div class="callout-label">The Core Proposition</div>
+    <p>Knowledge is most valuable when it is structured, composable, and observable. Stateless Knowledge Architecture is the architectural framework for making enterprise knowledge all three.</p>
+  </div>
+</section>
+
+<section class="sec" id="glossary">
+  <div class="sec-number">Appendix</div>
+  <h1 class="sec-title">Glossary</h1>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td>Assembly Engine</td><td>The runtime component that dynamically constructs knowledge experiences from Stage 2 fragments on demand. Assemblies are transient; fragments are persistent.</td></tr>
+      <tr><td>Atomic Knowledge Object</td><td>An independently authored, uniquely identified, typed knowledge fragment that is the base unit of the SKA content model.</td></tr>
+      <tr><td>Awareness Lion</td><td>A Knowledge Intelligence Layer agent that monitors real-time knowledge demand telemetry to detect collective access patterns indicative of emerging operational events.</td></tr>
+      <tr><td>Backstage Layer</td><td>The organizational registry of teams, systems, products, strategic objectives, and their relationships. Provides context for knowledge metadata and strategic alignment.</td></tr>
+      <tr><td>Base Content Layer</td><td>The version-controlled Markdown repository of knowledge fragments serving as the content source of truth.</td></tr>
+      <tr><td>Chunking</td><td>The principled decomposition of documentation into bounded, cognitively appropriate, reusable knowledge fragments aligned with the object type taxonomy.</td></tr>
+      <tr><td>Composability</td><td>The architectural property allowing knowledge fragments to be assembled in multiple ways without modification to the fragments themselves.</td></tr>
+      <tr><td>Crawl-Walk-Run</td><td>The three-level progressive learning model used in SKA pathways, corresponding to foundational, intermediate, and advanced competency.</td></tr>
+      <tr><td>Display Template</td><td>A layout structure that queries the knowledge repository and assembles fragments into a rendered experience without containing any content itself.</td></tr>
+      <tr><td>Dojo Environment</td><td>A simulation-based learning context in which practitioners apply knowledge objects in guided practice scenarios rather than reading them as instructional content.</td></tr>
+      <tr><td>Domain Model</td><td>A formalized knowledge map capturing objects within a domain, their types, relationships, and connections to adjacent domains. Stored as metadata configuration.</td></tr>
+      <tr><td>Duplication Without Replication</td><td>The SKA principle that multiple Stage 1 sources expressing the same knowledge are consolidated into a single Stage 2 fragment with lineage references to all contributing sources.</td></tr>
+      <tr><td>Fragment Lineage</td><td>The ordered list of Stage 1 source documents recorded in a Stage 2 fragment's metadata envelope, preserving attribution and provenance.</td></tr>
+      <tr><td>KAMM</td><td>Knowledge Architecture Maturity Model. A six-level framework (0–5) for assessing and advancing organizational knowledge management capability.</td></tr>
+      <tr><td>Knowledge Gap</td><td>A condition where sought knowledge is absent, undiscoverable, or insufficiently specific in the repository. Identified through telemetry signals.</td></tr>
+      <tr><td>Knowledge Graph</td><td>The network of typed, directed relationships between knowledge objects constituting the semantic structure of the repository.</td></tr>
+      <tr><td>Knowledge Intelligence Layer</td><td>The architectural tier housing autonomous agents — Learning Sphinx and Awareness Lion — that continuously monitor the knowledge graph and telemetry stream.</td></tr>
+      <tr><td>Knowledge Operating System</td><td>The conceptual framework unifying knowledge architecture, content architecture, learning architecture, experience architecture, analytics infrastructure, and strategic alignment into a coherent organizational capability.</td></tr>
+      <tr><td>Learning Sphinx</td><td>A Knowledge Intelligence Layer agent that continuously evaluates the health, structural integrity, and content quality of the knowledge ecosystem.</td></tr>
+      <tr><td>Multimedia Stage 1 Processing</td><td>The pre-processing pipeline that converts non-textual Stage 1 sources — video, audio, presentations, and images — into textual representations from which Stage 2 fragments can be extracted.</td></tr>
+      <tr><td>PBK — Playbook</td><td>A knowledge object type aggregating policies, processes, and procedures for a specific domain, role, or scenario.</td></tr>
+      <tr><td>PCD — Procedure</td><td>A knowledge object type defining step-by-step execution instructions for a bounded task.</td></tr>
+      <tr><td>PCS — Process</td><td>A knowledge object type defining a structured end-to-end operational workflow.</td></tr>
+      <tr><td>POL — Policy</td><td>A knowledge object type defining a governing commitment, constraint, or principle.</td></tr>
+      <tr><td>Stage 1 Content</td><td>Unstructured or semi-structured enterprise information sources that contain valuable knowledge but have not yet been processed into structured Stage 2 fragments.</td></tr>
+      <tr><td>Stage 2 Content</td><td>Validated, uniquely identified, semantically classified, deduplicated knowledge fragments eligible for full participation in the knowledge graph, template assembly, and telemetry tracking.</td></tr>
+      <tr><td>Stateless Content</td><td>Content stored as independent fragments with no embedded layout or context, assembled into experiences at runtime.</td></tr>
+      <tr><td>Strategic Alignment Layer</td><td>The architectural mechanism connecting knowledge objects to organizational objectives, key results, and strategic initiatives.</td></tr>
+      <tr><td>Telemetry</td><td>The structured data produced by the instrumentation layer, used for usage density analysis, learning effectiveness measurement, and knowledge gap identification.</td></tr>
+      <tr><td>UX Layer</td><td>The user-facing delivery surface: search, dashboards, learning journeys, Dojo environments, and AI-augmented delivery channels.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</div>
+</div>
+
+<footer id="footer">
+  <p>Stateless Knowledge Architecture · Technical Whitepaper · v5.0 · 2025</p>
+  <p>Complete Reference Architecture Edition</p>
+</footer>
+
+<button id="mob-btn" aria-label="Toggle navigation">☰</button>
+
+<script>
+const allSec = [...document.querySelectorAll('section[id]')];
+const allLinks = [...document.querySelectorAll('#sidebar .sb-nav a[href^="#"]')];
+
+function setActive() {
+  const y = window.scrollY + 120;
+  let cur = '';
+  allSec.forEach(s => { if (y >= s.offsetTop) cur = s.id; });
+  allLinks.forEach(a => {
+    const on = a.getAttribute('href') === '#' + cur;
+    a.classList.toggle('active', on);
+    if (on) a.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+}
+window.addEventListener('scroll', setActive, { passive: true });
+setActive();
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.sec').forEach(s => obs.observe(s));
+
+const sidebar = document.getElementById('sidebar');
+document.getElementById('mob-btn').addEventListener('click', () => sidebar.classList.toggle('open'));
+sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
+</script>
+</body>
+</html>
