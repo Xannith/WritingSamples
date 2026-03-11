@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Knowledge Library Framework — Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  /* Dark base */
+  --bg:       #0A0D0A;
+  --bg2:      #0F1410;
+  --bg3:      #151C15;
+  --bg4:      #1C251C;
+  --bg5:      #222D22;
+  /* Borders */
+  --border:   rgba(255,255,255,0.05);
+  --border2:  rgba(255,255,255,0.09);
+  --border3:  rgba(255,255,255,0.14);
+  /* Text */
+  --text:     #DDE8DC;
+  --dim:      #7E9A7C;
+  --faint:    #3E5240;
+  /* Green accent system */
+  --green:    #4E9A5F;
+  --green-b:  #6BBF7C;
+  --green-d:  rgba(78,154,95,0.12);
+  --green-g:  rgba(78,154,95,0.06);
+  --green-glow: rgba(78,154,95,0.22);
+  /* Secondary accents */
+  --sage:     #8FB8A0;
+  --moss:     #3D6B4A;
+  --teal:     #4AADA0;
+  --teal-d:   rgba(74,173,160,0.12);
+  --gold:     #C4A84A;
+  --gold-d:   rgba(196,168,74,0.12);
+  /* Fonts */
+  --serif:    'Playfair Display', Georgia, serif;
+  --body:     'Source Serif 4', Georgia, serif;
+  --mono:     'JetBrains Mono', 'Fira Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+/* Grid texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(78,154,95,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,154,95,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── TOP NAV ── */
+/* ── SITE NAV ── */
+#sitenav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(10,13,10,0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border2);
+}
+.sitenav-inner {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 48px;
+  gap: 0;
+}
+.sitenav-brand {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-right: auto;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.sitenav-brand::before {
+  content: '◆';
+  color: var(--green);
+  font-size: 0.6rem;
+  flex-shrink: 0;
+}
+.sitenav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.sitenav-link {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.sitenav-link:hover {
+  color: var(--text);
+  background: var(--bg3);
+  border-color: var(--border2);
+}
+.sitenav-link.active {
+  color: var(--green-b);
+  background: var(--green-g);
+  border-color: rgba(78,154,95,0.28);
+}
+/* Breadcrumb strip below main nav */
+.nav-breadcrumb {
+  height: 30px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.nav-bc-item {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-bc-item:hover { color: var(--dim); }
+.nav-bc-sep {
+  color: var(--faint);
+  font-size: 0.5rem;
+}
+.nav-bc-item.current { color: var(--green); }
+/* Mobile hamburger */
+.nav-hamburger {
+  display: none;
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 5px 9px;
+  cursor: pointer;
+  color: var(--dim);
+  font-size: 1rem;
+  line-height: 1;
+}
+.nav-mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  padding: 8px 0;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-link {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  padding: 10px 28px;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+.nav-mobile-link:hover { color: var(--text); background: var(--bg3); }
+.nav-mobile-link.active { color: var(--green-b); border-left-color: var(--green); background: var(--green-g); }
+@media (max-width: 768px) {
+  .sitenav-links { display: none; }
+  .nav-hamburger { display: block; }
+  .sitenav-inner { padding: 0 20px; }
+  .nav-breadcrumb { padding: 0 20px; display: none; }
+}
+
+/* ── LAYOUT ── */
+#shell {
+  display: flex;
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 52px);
+}
+
+/* ── LEFT SIDEBAR ── */
+#sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  height: calc(100vh - 86px);
+  position: sticky;
+  top: 86px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg4) transparent;
+  padding: 28px 0;
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--bg4); }
+
+.sb-section-label {
+  padding: 0 20px 10px;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.sb-meta {
+  padding: 0 20px 24px;
+}
+.sb-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.sb-meta-key {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.sb-meta-val {
+  font-size: 0.78rem;
+  color: var(--dim);
+}
+.sb-meta-val.accent { color: var(--green); font-family: var(--mono); font-size: 0.7rem; }
+
+.sb-divider { height: 1px; background: var(--border); margin: 0 0 20px; }
+
+.sb-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 20px;
+  text-decoration: none;
+  font-size: 0.76rem;
+  color: var(--dim);
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.sb-nav-link:hover { color: var(--text); border-left-color: rgba(78,154,95,0.4); background: var(--bg3); }
+.sb-nav-link.active { color: var(--green-b); border-left-color: var(--green); background: var(--green-g); }
+.sb-nav-num {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--faint);
+  flex-shrink: 0;
+  width: 16px;
+}
+
+/* ── MAIN ── */
+#main {
+  flex: 1;
+  min-width: 0;
+  padding: 0 0 120px;
+}
+
+/* ── HERO ── */
+#hero {
+  padding: 72px 80px 60px;
+  border-bottom: 1px solid var(--border2);
+  position: relative;
+  overflow: hidden;
+}
+#hero::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(78,154,95,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+#hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  left: 200px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(74,173,160,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--green);
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.08;
+  color: var(--text);
+  max-width: 720px;
+  margin-bottom: 24px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--green-b);
+}
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--dim);
+  max-width: 620px;
+  line-height: 1.75;
+  margin-bottom: 36px;
+}
+.hero-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border2);
+}
+.hero-tag.primary { background: var(--green-d); border-color: rgba(78,154,95,0.3); color: var(--green-b); }
+.hero-tag.secondary { background: var(--teal-d); border-color: rgba(74,173,160,0.25); color: var(--teal); }
+.hero-tag.tertiary { background: var(--gold-d); border-color: rgba(196,168,74,0.25); color: var(--gold); }
+
+/* ── CONTENT SECTIONS ── */
+.article-section {
+  padding: 60px 80px;
+  border-bottom: 1px solid var(--border);
+  max-width: 860px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.article-section.visible { opacity: 1; transform: translateY(0); }
+
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-eyebrow::before {
+  content: attr(data-num);
+  color: var(--faint);
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 22px;
+}
+.section-title em { font-style: italic; color: var(--green-b); }
+
+.section-lead {
+  font-size: 1rem;
+  color: var(--dim);
+  line-height: 1.85;
+  margin-bottom: 24px;
+  max-width: 680px;
+}
+
+p.body-text {
+  font-size: 0.95rem;
+  color: var(--dim);
+  line-height: 1.85;
+  margin-bottom: 18px;
+  max-width: 680px;
+}
+
+/* ── SUBSECTION ── */
+.subsection {
+  margin: 32px 0 16px;
+}
+.subsection-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.subsection-title::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+/* ── CALLOUT ── */
+.callout {
+  position: relative;
+  padding: 18px 20px 18px 50px;
+  margin: 24px 0;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  max-width: 680px;
+}
+.callout::before {
+  position: absolute;
+  left: 17px;
+  top: 18px;
+  font-size: 0.9rem;
+}
+.callout.green {
+  background: var(--green-g);
+  border-left: 3px solid var(--green);
+}
+.callout.green::before { content: '◆'; color: var(--green); }
+.callout.teal {
+  background: var(--teal-d);
+  border-left: 3px solid var(--teal);
+}
+.callout.teal::before { content: '◈'; color: var(--teal); }
+.callout.gold {
+  background: var(--gold-d);
+  border-left: 3px solid var(--gold);
+}
+.callout.gold::before { content: '◇'; color: var(--gold); }
+.callout-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.callout.green .callout-label { color: var(--green-b); }
+.callout.teal .callout-label { color: var(--teal); }
+.callout.gold .callout-label { color: var(--gold); }
+.callout p { font-size: 0.9rem; color: var(--dim); line-height: 1.7; margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* ── BULLET LIST ── */
+.bullet-list {
+  margin: 16px 0 20px;
+  max-width: 680px;
+}
+.bullet-list-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+.bullet-list ul {
+  list-style: none;
+  padding: 0;
+}
+.bullet-list li {
+  font-size: 0.92rem;
+  color: var(--dim);
+  line-height: 1.75;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+.bullet-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+
+/* ── ARCHITECTURE DIAGRAM (CSS) ── */
+.arch-diagram {
+  margin: 28px 0;
+  max-width: 680px;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.arch-layer {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.arch-layer:last-child { border-bottom: none; }
+.arch-layer:hover { background: rgba(78,154,95,0.04); }
+.arch-layer.top { background: linear-gradient(90deg, var(--green-g), transparent); }
+.arch-layer-num {
+  width: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--faint);
+  border-right: 1px solid var(--border);
+  background: var(--bg3);
+}
+.arch-layer.top .arch-layer-num { color: var(--green-b); background: var(--green-g); }
+.arch-layer-name {
+  width: 160px;
+  flex-shrink: 0;
+  padding: 14px 16px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+.arch-layer-name strong {
+  font-family: var(--serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.arch-layer.top .arch-layer-name strong { color: var(--green-b); }
+.arch-layer-desc {
+  flex: 1;
+  padding: 14px 18px;
+  font-size: 0.8rem;
+  color: var(--dim);
+  line-height: 1.55;
+  display: flex;
+  align-items: center;
+}
+
+/* ── PIPELINE STEPS ── */
+.pipeline {
+  margin: 24px 0;
+  max-width: 640px;
+  position: relative;
+}
+.pipeline::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 28px;
+  bottom: 28px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--green), var(--teal));
+  opacity: 0.2;
+}
+.pipe-step {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding-bottom: 20px;
+  position: relative;
+}
+.pipe-step:last-child { padding-bottom: 0; }
+.pipe-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--green-b);
+  z-index: 1;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pipe-step:hover .pipe-dot {
+  border-color: var(--green);
+  background: var(--green-g);
+}
+.pipe-body { padding-top: 8px; }
+.pipe-body strong {
+  display: block;
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.pipe-body p {
+  font-size: 0.81rem;
+  color: var(--dim);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 500px;
+}
+
+/* ── DATA TABLE ── */
+.data-table-wrap {
+  overflow-x: auto;
+  margin: 22px 0;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.data-table thead tr { background: var(--bg4); }
+.data-table thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border2);
+}
+.data-table tbody td {
+  padding: 10px 14px;
+  color: var(--dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.55;
+}
+.data-table tbody td:first-child {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--green-b);
+  white-space: nowrap;
+}
+.data-table tbody tr:hover td { background: rgba(78,154,95,0.03); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ── COMPONENT CARD GRID ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 22px 0;
+  max-width: 680px;
+}
+.component-card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.component-card:hover {
+  border-color: rgba(78,154,95,0.3);
+  transform: translateY(-2px);
+}
+.card-head {
+  padding: 13px 15px 11px;
+  background: var(--bg4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+  background: var(--green-d);
+  border: 1px solid rgba(78,154,95,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.card-head-text {}
+.card-head-title {
+  font-family: var(--serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.card-head-sub {
+  font-family: var(--mono);
+  font-size: 0.57rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-top: 2px;
+}
+.card-body {
+  padding: 12px 14px;
+}
+.card-body p {
+  font-size: 0.78rem;
+  color: var(--dim);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.card-body p:last-child { margin-bottom: 0; }
+.card-body ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 6px;
+}
+.card-body li {
+  font-size: 0.75rem;
+  color: var(--dim);
+  padding-left: 14px;
+  position: relative;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+.card-body li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--green);
+}
+
+/* ── HIGHLIGHT STAT BAND ── */
+.stat-band {
+  display: flex;
+  gap: 0;
+  margin: 28px 0;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 680px;
+}
+.stat-item {
+  flex: 1;
+  padding: 18px 20px;
+  border-right: 1px solid var(--border2);
+  text-align: center;
+  background: var(--bg3);
+  transition: background 0.15s;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: var(--bg4); }
+.stat-num {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--green-b);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* ── QUOTE BLOCK ── */
+.pull-quote {
+  margin: 32px 0;
+  padding: 28px 32px;
+  border-left: 3px solid var(--green);
+  background: var(--bg3);
+  border-radius: 0 4px 4px 0;
+  max-width: 640px;
+}
+.pull-quote p {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.pull-quote cite {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  font-style: normal;
+}
+
+/* ── CONCLUSION BAND ── */
+#conclusion {
+  background: linear-gradient(135deg, var(--bg2), var(--bg3));
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 32px 80px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+}
+.footer-brand {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.footer-brand::before { content: '◆'; color: var(--green); font-size: 0.5rem; }
+.footer-meta {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--faint);
+  letter-spacing: 0.08em;
+}
+
+/* ── SCROLL PROGRESS ── */
+#progress-bar {
+  position: fixed;
+  top: 86px;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+  z-index: 200;
+  width: 0%;
+  transition: width 0.1s;
+  box-shadow: 0 0 8px var(--green-glow);
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  background: var(--bg4);
+  color: var(--teal);
+  padding: 1px 6px;
+  border-radius: 2px;
+  border: 1px solid var(--border2);
+}
+
+@media (max-width: 960px) {
+  #sidebar { display: none; }
+  #hero, .article-section { padding-left: 28px; padding-right: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .stat-band { flex-wrap: wrap; }
+  footer { padding: 24px 28px; flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- SITE NAV -->
+<nav id="sitenav">
+  <div class="sitenav-inner">
+    <a href="https://joshwritingsamples.com" class="sitenav-brand">Josh Writing Samples</a>
+    <div class="sitenav-links">
+      <a href="https://joshwritingsamples.com" class="sitenav-link">Home</a>
+      <a href="https://joshwritingsamples.com/about.html" class="sitenav-link">About Me</a>
+      <a href="https://joshwritingsamples.com/samples.html" class="sitenav-link active">Samples</a>
+      <a href="https://joshwritingsamples.com/knowledge.html" class="sitenav-link">Knowledge Management</a>
+      <a href="https://joshwritingsamples.com/contact.html" class="sitenav-link">Contact</a>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">&#9776;</button>
+  </div>
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="https://joshwritingsamples.com" class="nav-mobile-link">Home</a>
+    <a href="https://joshwritingsamples.com/about.html" class="nav-mobile-link">About Me</a>
+    <a href="https://joshwritingsamples.com/samples.html" class="nav-mobile-link active">Samples</a>
+    <a href="https://joshwritingsamples.com/knowledge.html" class="nav-mobile-link">Knowledge Management</a>
+    <a href="https://joshwritingsamples.com/contact.html" class="nav-mobile-link">Contact</a>
+  </div>
+  <div class="nav-breadcrumb">
+    <a href="https://joshwritingsamples.com" class="nav-bc-item">Home</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <a href="https://joshwritingsamples.com/samples.html" class="nav-bc-item">Samples</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item">Architecture</span>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item current">AI Knowledge Library Framework</span>
+  </div>
+</nav>
+
+<div id="shell">
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sb-section-label">Document Info</div>
+  <div class="sb-meta">
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Category</span>
+      <span class="sb-meta-val">Architecture</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Type</span>
+      <span class="sb-meta-val">Framework Overview</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Audience</span>
+      <span class="sb-meta-val">Architects &amp; Engineers</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Object ID</span>
+      <span class="sb-meta-val accent">REF00012</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Version</span>
+      <span class="sb-meta-val">1.0 · 2025</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-section-label">Sections</div>
+
+  <a class="sb-nav-link active" href="#overview"><span class="sb-nav-num">01</span>Overview</a>
+  <a class="sb-nav-link" href="#problem"><span class="sb-nav-num">02</span>The Problem</a>
+  <a class="sb-nav-link" href="#architecture"><span class="sb-nav-num">03</span>Framework Architecture</a>
+  <a class="sb-nav-link" href="#components"><span class="sb-nav-num">04</span>Core Components</a>
+  <a class="sb-nav-link" href="#ingestion"><span class="sb-nav-num">05</span>Knowledge Ingestion</a>
+  <a class="sb-nav-link" href="#retrieval"><span class="sb-nav-num">06</span>AI Retrieval Model</a>
+  <a class="sb-nav-link" href="#governance"><span class="sb-nav-num">07</span>Governance Integration</a>
+  <a class="sb-nav-link" href="#implementation"><span class="sb-nav-num">08</span>Implementation Path</a>
+  <a class="sb-nav-link" href="#conclusion"><span class="sb-nav-num">09</span>Conclusion</a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-eyebrow">Architecture · Framework Overview</div>
+    <h1 class="hero-title"><em>AI Knowledge Library</em> Framework</h1>
+    <p class="hero-sub">A structured architectural pattern for building enterprise knowledge repositories that are natively optimized for AI retrieval, generation, and continuous improvement — without sacrificing human usability.</p>
+    <div class="hero-tags">
+      <span class="hero-tag primary">Architecture</span>
+      <span class="hero-tag primary">AI-Ready</span>
+      <span class="hero-tag secondary">Knowledge Management</span>
+      <span class="hero-tag secondary">RAG</span>
+      <span class="hero-tag tertiary">REF00012</span>
+    </div>
+  </section>
+
+  <!-- 01 OVERVIEW -->
+  <section id="overview" class="article-section">
+    <div class="section-eyebrow" data-num="01">Overview</div>
+    <h2 class="section-title">What Is an AI Knowledge Library?</h2>
+    <p class="section-lead">An AI Knowledge Library is an enterprise knowledge repository designed from the ground up to serve two consumers simultaneously: the human practitioner who reads and applies knowledge, and the AI system that retrieves, reasons over, and generates from it.</p>
+
+    <p class="body-text">Most enterprise documentation systems were designed for one consumer — the human reader — and adapted for AI after the fact. This retrofit approach produces retrieval systems that are imprecise, context-poor, and difficult to govern. The results are AI responses that are sometimes accurate, sometimes outdated, and rarely traceable to a specific authoritative source.</p>
+
+    <p class="body-text">The AI Knowledge Library Framework (AKLF) inverts this sequence. It establishes an architectural pattern in which the structural requirements of high-quality AI retrieval — typed content, stable identity, explicit relationships, version control, and governance lineage — are treated as first-class requirements from the beginning of the knowledge system's design, not added as an afterthought.</p>
+
+    <div class="callout green">
+      <div class="callout-label">Core Proposition</div>
+      <p>A knowledge library that is well-structured for AI is also better structured for humans. The disciplines of typing, identification, chunking, and relationship declaration that make knowledge AI-ready also make it more discoverable, more consistent, and more maintainable at any scale.</p>
+    </div>
+
+    <div class="stat-band">
+      <div class="stat-item">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Architectural Layers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Object Types</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Relationship Kinds</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Processing Stages</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 THE PROBLEM -->
+  <section id="problem" class="article-section">
+    <div class="section-eyebrow" data-num="02">The Problem</div>
+    <h2 class="section-title">Why Existing Libraries Fail <em>AI Systems</em></h2>
+    <p class="section-lead">Document-centric repositories present a specific set of structural problems for AI retrieval that cannot be resolved by tuning the retrieval algorithm alone. The problems are architectural.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Chunking Problem</h3>
+      <p class="body-text">Vector-based retrieval systems divide unstructured documents into chunks for embedding. When the source document is a long, heterogeneous prose document containing policy language, procedural steps, context-setting narrative, and footnotes in undifferentiated sequence, any chunking strategy produces fragments that are semantically mixed. The AI receives a chunk that partially answers the query but carries noise from adjacent content — and has no way to know where the authoritative answer ends and the context begins.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Staleness Problem</h3>
+      <p class="body-text">Document-centric systems do not maintain reliable version lineage at the content level. When a policy is updated, the old document may persist in the index. AI systems operating on these repositories may retrieve and generate from superseded content without any signal that the version is outdated. The problem is not that AI makes mistakes — it is that the knowledge system provides no reliable currency signal for AI to act on.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Relationship Blindness Problem</h3>
+      <p class="body-text">A governing policy, the process it governs, and the procedures that implement that process are semantically connected. In a document-centric system, those connections exist only as hyperlinks or cross-references in prose — structures that vector retrieval cannot traverse. An AI system asked about a policy has no mechanism to automatically retrieve the processes and procedures it governs, producing a response that is technically correct but contextually incomplete.</p>
+    </div>
+
+    <div class="callout teal">
+      <div class="callout-label">The Structural Diagnosis</div>
+      <p>These are not retrieval model failures. They are knowledge structure failures. No retrieval model, however sophisticated, can reliably compensate for content that is not typed, not identified, not versioned, and not relationally connected at the authoring layer.</p>
+    </div>
+  </section>
+
+  <!-- 03 FRAMEWORK ARCHITECTURE -->
+  <section id="architecture" class="article-section">
+    <div class="section-eyebrow" data-num="03">Framework Architecture</div>
+    <h2 class="section-title">The <em>Six-Layer</em> Architecture</h2>
+    <p class="section-lead">The AI Knowledge Library Framework is organized as a six-layer stack. Each layer has a distinct function, and each is composable with the others. The AI retrieval interface sits above the stack as a consumer of all layers simultaneously.</p>
+
+    <div class="arch-diagram">
+      <div class="arch-layer top">
+        <div class="arch-layer-num">6</div>
+        <div class="arch-layer-name"><strong>AI Interface Layer</strong></div>
+        <div class="arch-layer-desc">The structured retrieval and generation interface. Receives typed fragment sets, not document dumps. Graph-traversal-aware retrieval, context package assembly, response generation with source tracing.</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-num">5</div>
+        <div class="arch-layer-name"><strong>UX &amp; Delivery Layer</strong></div>
+        <div class="arch-layer-desc">Human-facing delivery surface: search, dashboards, learning journeys, operational playbooks, role-based views. Assembles from the same fragment corpus as the AI interface.</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-num">4</div>
+        <div class="arch-layer-name"><strong>Assembly Layer</strong></div>
+        <div class="arch-layer-desc">Template-driven experience construction. Assembles fragments into coherent experiences on demand. Assemblies are ephemeral; fragments are persistent.</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-num">3</div>
+        <div class="arch-layer-name"><strong>Fragment Layer</strong></div>
+        <div class="arch-layer-desc">The Stage 2 content corpus: typed, uniquely identified, deduplicated, versioned knowledge objects. The authoritative source of all knowledge in the library.</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-num">2</div>
+        <div class="arch-layer-name"><strong>Metadata &amp; Graph Layer</strong></div>
+        <div class="arch-layer-desc">Typed relationships, domain tags, audience annotations, version lineage, strategic alignment references, and the cross-object identifier index. The semantic structure of the library.</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-num">1</div>
+        <div class="arch-layer-name"><strong>Organizational Context Layer</strong></div>
+        <div class="arch-layer-desc">Registry of teams, systems, products, services, strategic objectives, and their relationships. Provides the organizational nouns that knowledge objects reference and align to.</div>
+      </div>
+    </div>
+
+    <p class="body-text">The key architectural property is that the AI Interface Layer and the UX &amp; Delivery Layer draw from the same fragment corpus and the same metadata graph. There is no "AI version" of the knowledge and a separate "human version." The library is unified; the retrieval and presentation layers are distinct consumers of the same source.</p>
+  </section>
+
+  <!-- 04 CORE COMPONENTS -->
+  <section id="components" class="article-section">
+    <div class="section-eyebrow" data-num="04">Core Components</div>
+    <h2 class="section-title">The <em>Fragment Model</em> and Object Taxonomy</h2>
+    <p class="section-lead">The knowledge fragment is the atomic unit of the library. Every piece of organizational knowledge is stored as a typed, uniquely identified, independently governed fragment rather than as part of a larger document.</p>
+
+    <div class="card-grid">
+      <div class="component-card">
+        <div class="card-head">
+          <div class="card-icon">POL</div>
+          <div class="card-head-text">
+            <div class="card-head-title">Policy Object</div>
+            <div class="card-head-sub">POL##### · Governing</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>A governing commitment, constraint, or principle. Normative — defines what must, should, or must not occur within a domain.</p>
+          <ul>
+            <li>Governs one or more Process objects</li>
+            <li>References external standards</li>
+            <li>Owned by Legal, Compliance, or Executive governance</li>
+            <li>Highest governance review frequency</li>
+          </ul>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="card-head">
+          <div class="card-icon">PCS</div>
+          <div class="card-head-text">
+            <div class="card-head-title">Process Object</div>
+            <div class="card-head-sub">PCS##### · Operational</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>A structured end-to-end operational workflow. Describes how work moves through an organization in compliance with policy.</p>
+          <ul>
+            <li>Governed by one or more Policy objects</li>
+            <li>Produces Procedure objects for each stage</li>
+            <li>Aggregated by Playbooks for role delivery</li>
+            <li>Owned by domain operations leads</li>
+          </ul>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="card-head">
+          <div class="card-icon">PCD</div>
+          <div class="card-head-text">
+            <div class="card-head-title">Procedure Object</div>
+            <div class="card-head-sub">PCD##### · Executable</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Step-by-step executable instructions for a bounded task. Operational — tells a practitioner exactly what to do, in what sequence.</p>
+          <ul>
+            <li>Produced by Process objects</li>
+            <li>Aggregated by Playbooks</li>
+            <li>References Definition objects for terminology</li>
+            <li>Owned by domain Subject Matter Experts</li>
+          </ul>
+        </div>
+      </div>
+      <div class="component-card">
+        <div class="card-head">
+          <div class="card-icon">PBK</div>
+          <div class="card-head-text">
+            <div class="card-head-title">Playbook Object</div>
+            <div class="card-head-sub">PBK##### · Curated Assembly</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>A curated assembly of policies, processes, and procedures scoped to a specific domain, role, or operational scenario.</p>
+          <ul>
+            <li>Aggregates POL, PCS, and PCD objects</li>
+            <li>References media and code objects</li>
+            <li>Role-tagged for targeted delivery</li>
+            <li>Owned by Learning &amp; Development or domain leads</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Identity Model</h3>
+      <p class="body-text">Every fragment receives a stable, location-independent identifier at creation — its primary key for all references, relationship declarations, and retrieval queries. The identifier is intrinsic to the fragment, not derived from its file path, folder location, or URL. A fragment can be moved, migrated, or refiled without invalidating any reference to it in the graph.</p>
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">Why Identity Matters for AI</div>
+      <p>When an AI system generates a response from a knowledge library, the ideal output includes not just the answer but a traceable citation to the specific fragment it drew from — with version information and governance lineage. Stable fragment identity makes this traceability possible and auditable. Without it, AI citations are to documents, not to authoritative content units, and cannot be reliably verified or updated.</p>
+    </div>
+  </section>
+
+  <!-- 05 KNOWLEDGE INGESTION -->
+  <section id="ingestion" class="article-section">
+    <div class="section-eyebrow" data-num="05">Knowledge Ingestion</div>
+    <h2 class="section-title">The Two-Stage <em>Processing Pipeline</em></h2>
+    <p class="section-lead">Most enterprise knowledge does not begin its life as a structured, typed fragment. The AKLF provides a two-stage pipeline that processes raw enterprise content — in any format — into library-grade knowledge objects.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Stage 1: Raw Enterprise Content</h3>
+      <p class="body-text">Stage 1 content is any enterprise information source that contains potentially valuable knowledge. The library does not reject Stage 1 content on quality grounds — the processing pipeline is the quality mechanism, not source rejection. Stage 1 sources include structured documents, but also the full range of enterprise content formats:</p>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-list-label">Stage 1 Source Types</div>
+      <ul>
+        <li>Authored documents — policy files, process guides, SOPs, runbooks, handbooks</li>
+        <li>Engineering artifacts — design documents, architecture decision records, incident reports</li>
+        <li>Video recordings — training sessions, product demonstrations, recorded meetings, conference talks</li>
+        <li>Audio recordings — podcasts, voice memos, recorded interviews, transcribed calls</li>
+        <li>Presentation files — slide decks, pitch materials, onboarding presentations</li>
+        <li>Images and diagrams — architecture diagrams, annotated screenshots, whiteboard captures</li>
+        <li>Communication exports — Slack threads, email chains, forum posts, wiki comments</li>
+      </ul>
+    </div>
+
+    <p class="body-text">Multimedia sources are pre-processed before knowledge extraction. Video is transcribed with timestamp anchors. Audio is transcribed with speaker identification preserved. Presentation files are extracted at the slide level. Images are processed through OCR and metadata capture. In each case, the original artifact is preserved; the pre-processing layer produces a derived textual representation alongside it.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Stage 2: Validated Knowledge Fragments</h3>
+      <p class="body-text">Stage 2 fragments are the library-grade output of the pipeline. Each fragment is typed, uniquely identified, semantically deduplicated, and context-independent. A Stage 2 fragment expresses one bounded knowledge unit without embedding the framing of its source document.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Duplication Without Replication</h3>
+      <p class="body-text">When multiple Stage 1 sources contain the same knowledge — eighteen engineers independently documenting the same integration, for instance — the pipeline consolidates rather than replicates. Candidate fragments are compared semantically against the existing Stage 2 corpus. If a sufficiently similar fragment exists, the new source is linked to it as a lineage reference rather than producing a duplicate object. All eighteen authors are credited; one fragment is authoritative.</p>
+    </div>
+
+    <div class="callout teal">
+      <div class="callout-label">The AI Implication of Deduplication</div>
+      <p>An AI system querying a library where the same procedure exists in eighteen slightly different forms will produce inconsistent responses depending on which version it retrieves. Deduplication ensures there is one authoritative answer, traceable to a single Stage 2 fragment with full lineage to its contributing sources. The AI's response is as consistent as the library.</p>
+    </div>
+  </section>
+
+  <!-- 06 AI RETRIEVAL MODEL -->
+  <section id="retrieval" class="article-section">
+    <div class="section-eyebrow" data-num="06">AI Retrieval Model</div>
+    <h2 class="section-title">Graph-Aware <em>Retrieval</em> Architecture</h2>
+    <p class="section-lead">The AKLF retrieval model goes beyond vector similarity search. Because fragments are typed and connected by a declared relationship graph, the AI interface can traverse the graph to construct contextually complete responses — not just return the top-N similar chunks.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-dot">1</div>
+        <div class="pipe-body">
+          <strong>Query classification</strong>
+          <p>The AI interface classifies the query by knowledge type. Is this a policy query, a process query, a procedure query, or a definition query? Type classification determines which graph traversal strategy is appropriate.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">2</div>
+        <div class="pipe-body">
+          <strong>Seed fragment retrieval</strong>
+          <p>Initial vector similarity search retrieves candidate fragments. Because fragments are typed and precisely scoped by the chunking model, candidates are semantically bounded — not mixed-content chunks from heterogeneous prose documents.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">3</div>
+        <div class="pipe-body">
+          <strong>Graph traversal for context completeness</strong>
+          <p>From the seed fragment, the retrieval layer traverses declared relationships to assemble contextual completeness. A retrieved procedure fragment automatically surfaces its governing process and governing policy. A policy fragment surfaces the processes it governs.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">4</div>
+        <div class="pipe-body">
+          <strong>Context package assembly</strong>
+          <p>The traversal produces a typed context package: a structured set of fragments — policy, process, procedure — with their types, identifiers, and version status explicitly declared. This package, not a raw document corpus, is delivered to the generation model.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">5</div>
+        <div class="pipe-body">
+          <strong>Response generation with source tracing</strong>
+          <p>The generation model produces a response grounded in the typed context package. Every claim in the response is traceable to a specific fragment ID with version and lifecycle status. Deprecated fragments are excluded from the package by lifecycle filter before generation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Retrieval Property</th>
+            <th>Document-Centric Library</th>
+            <th>AI Knowledge Library</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Content unit</td>
+            <td>Arbitrary chunk from prose document</td>
+            <td>Typed, bounded knowledge fragment</td>
+          </tr>
+          <tr>
+            <td>Semantic boundaries</td>
+            <td>Determined by chunk size, not meaning</td>
+            <td>Determined by knowledge type and cognitive completeness</td>
+          </tr>
+          <tr>
+            <td>Relationship traversal</td>
+            <td>Not supported — hyperlinks only</td>
+            <td>Graph traversal by declared relationship type</td>
+          </tr>
+          <tr>
+            <td>Version handling</td>
+            <td>All versions may be indexed; no currency signal</td>
+            <td>Lifecycle status filter excludes deprecated fragments</td>
+          </tr>
+          <tr>
+            <td>Source traceability</td>
+            <td>Document title and URL only</td>
+            <td>Fragment ID, type, version, governance lineage</td>
+          </tr>
+          <tr>
+            <td>Context completeness</td>
+            <td>Probabilistic — depends on retrieval quality</td>
+            <td>Structural — governance chain assembled by graph traversal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 07 GOVERNANCE INTEGRATION -->
+  <section id="governance" class="article-section">
+    <div class="section-eyebrow" data-num="07">Governance Integration</div>
+    <h2 class="section-title">Knowledge <em>Governance</em> as an AI Safety Layer</h2>
+    <p class="section-lead">In an AI Knowledge Library, governance is not only an operational concern — it is a direct AI safety mechanism. The lifecycle status, version history, and domain ownership of every fragment directly control what the AI interface can and cannot retrieve and generate from.</p>
+
+    <p class="body-text">The Fragment Identity Model assigns each Stage 2 fragment a lifecycle status: <code>draft</code>, <code>under review</code>, <code>active</code>, <code>deprecated</code>, or <code>archived</code>. Only fragments with <code>active</code> status enter template assembly and AI context packages. A deprecated fragment — one that has been superseded by a new version — is automatically excluded from all retrieval and generation without any manual intervention in the retrieval system.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Domain-Scoped Ownership</h3>
+      <p class="body-text">Each knowledge domain has a designated owner responsible for quality, currency, and review cadence. Domain ownership is declared in the organizational context layer and is reflected in automated review routing. When a fragment approaches its scheduled review date, the domain owner is notified. When a fragment fails a quality check, it is removed from active status — and therefore from AI retrieval — until it is reviewed and restored.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Strategic Alignment Traceability</h3>
+      <p class="body-text">Fragments carry optional strategic alignment references linking them to organizational objectives and key results. When an AI system generates a response, the alignment metadata in the context package allows the response to be traced not only to its source fragments but to the organizational objectives those fragments support. This transforms AI-generated knowledge responses from opaque outputs into auditable, strategy-linked artifacts.</p>
+    </div>
+
+    <div class="callout gold">
+      <div class="callout-label">Governance as Architecture, Not Process</div>
+      <p>The critical insight is that governance in an AI Knowledge Library is an architectural property, not a manual process. It is not that someone reviews content before the AI uses it — it is that the system architecture makes it structurally impossible for the AI to access content that has not met governance requirements. The lifecycle filter is automatic; the exclusion is structural.</p>
+    </div>
+  </section>
+
+  <!-- 08 IMPLEMENTATION PATH -->
+  <section id="implementation" class="article-section">
+    <div class="section-eyebrow" data-num="08">Implementation Path</div>
+    <h2 class="section-title">Building the Library in <em>Stages</em></h2>
+    <p class="section-lead">The AKLF is not an all-or-nothing implementation. It defines a maturity progression from unstructured legacy documentation to a fully instrumented, AI-augmented knowledge ecosystem. Each level delivers value independently while building toward the full capability.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-dot">L1</div>
+        <div class="pipe-body">
+          <strong>Typed Fragment Corpus</strong>
+          <p>Decompose existing documentation into typed, uniquely identified Stage 2 fragments. Establish the object taxonomy (POL/PCS/PCD/PBK/REF). Begin declaring relationships. This is the foundation — without it, higher levels are not possible. <em>Immediate benefit: elimination of duplication, consistent single source of truth.</em></p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">L2</div>
+        <div class="pipe-body">
+          <strong>Graph-Connected Repository</strong>
+          <p>Declare the full relationship graph across the fragment corpus. Establish domain models and domain ownership. Enable template-driven assembly for human delivery. <em>Benefit: navigation by relationship rather than search alone; role-tailored experiences without content duplication.</em></p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">L3</div>
+        <div class="pipe-body">
+          <strong>AI Retrieval Interface</strong>
+          <p>Connect the typed, graph-connected corpus to an AI interface layer. Implement lifecycle-filtered context package assembly for generation. Establish source traceability in AI responses. <em>Benefit: AI responses grounded in authoritative, versioned, traceable fragments rather than arbitrary document chunks.</em></p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">L4</div>
+        <div class="pipe-body">
+          <strong>Instrumented Knowledge System</strong>
+          <p>Implement fragment-level telemetry across human and AI delivery events. Establish usage density analysis, gap detection, and quality signals. <em>Benefit: data-driven governance; automatic identification of high-value fragments and knowledge gaps; AI demand detection.</em></p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">L5</div>
+        <div class="pipe-body">
+          <strong>Self-Improving Knowledge Ecosystem</strong>
+          <p>Deploy Knowledge Intelligence Layer agents (Learning Sphinx for quality governance; Awareness Lion for demand monitoring) operating continuously on the telemetry stream. Establish the closed improvement loop. <em>Benefit: the library improves automatically from its own usage; knowledge gaps close before they cause operational failures.</em></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 CONCLUSION -->
+  <section id="conclusion" class="article-section">
+    <div class="section-eyebrow" data-num="09">Conclusion</div>
+    <h2 class="section-title">The <em>Inevitable</em> Architecture</h2>
+
+    <p class="section-lead">The AI Knowledge Library Framework is not a new idea imposed on enterprise knowledge management from outside. It is the logical conclusion of applying rigorous architectural thinking to what enterprise knowledge systems have always needed: typed content, stable identity, explicit relationships, version discipline, and systematic governance.</p>
+
+    <p class="body-text">These requirements predated AI. Organizations that invested in structured, well-governed knowledge systems years ago are discovering that those investments are now paying a second dividend: their knowledge is natively suited for AI augmentation in ways that document-centric repositories cannot match. The architecture is not AI-specific — it is knowledge architecture done correctly.</p>
+
+    <p class="body-text">For organizations beginning this work now, the AKLF provides a sequenced implementation path that delivers value at every level of the maturity progression. The first level — a typed, identified fragment corpus — is achievable with existing tools and delivers immediate benefits for human knowledge workers before any AI interface is connected. Each subsequent level builds on the previous one without requiring the previous work to be redone.</p>
+
+    <div class="pull-quote">
+      <p>A knowledge library that cannot tell an AI system what type its content is, how old it is, who governs it, and how it relates to adjacent content will produce unreliable AI. The solution is not a better AI model. It is a better library.</p>
+      <cite>AI Knowledge Library Framework · Core Design Principle</cite>
+    </div>
+
+    <p class="body-text">The organizations best positioned for the next decade of AI-augmented knowledge work are those building the library now — not waiting for AI capabilities to mature, but recognizing that the architectural work of structuring, typing, identifying, and governing organizational knowledge is the prerequisite that determines the ceiling of what any AI system can do with it.</p>
+  </section>
+
+</main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Josh Writing Samples · Architecture Series</div>
+  <div class="footer-meta">AI Knowledge Library Framework · REF00012 · v1.0 · 2025</div>
+</footer>
+
+<script>
+// ── MOBILE MENU ──
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── SCROLL PROGRESS ──
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = pct + '%';
+});
+
+// ── INTERSECTION OBSERVER — section reveals ──
+const sections = document.querySelectorAll('.article-section');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+sections.forEach(s => revealObs.observe(s));
+
+// ── ACTIVE NAV LINK ──
+const navLinks = document.querySelectorAll('.sb-nav-link');
+const sectionEls = document.querySelectorAll('section[id]');
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sectionEls.forEach(s => navObs.observe(s));
+</script>
+</body>
+</html>
