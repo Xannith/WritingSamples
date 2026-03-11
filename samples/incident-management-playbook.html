@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Incident Management Playbook | Josh Writing Samples</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: #1d2a36;
+      background: #f3f8fd;
+    }
+
+    header {
+      background-color: #1f4d3a;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      flex-wrap: wrap;
+    }
+
+    .site-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1140px;
+      margin: 36px auto;
+      padding: 0 24px 50px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1f5f99, #4b84c4);
+      color: white;
+      border-radius: 16px;
+      padding: 34px 34px 30px;
+      box-shadow: 0 10px 26px rgba(30, 76, 120, 0.18);
+      margin-bottom: 26px;
+    }
+
+    .sample-label {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+      font-size: 0.84rem;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h1 {
+      margin: 0 0 12px 0;
+      font-size: 2.2rem;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: #ebf4ff;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid #d7e5f2;
+      border-radius: 14px;
+      padding: 26px 28px;
+      box-shadow: 0 5px 16px rgba(22, 57, 92, 0.06);
+      margin-bottom: 22px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      color: #245b8e;
+      font-size: 1.38rem;
+    }
+
+    .panel h3 {
+      color: #2f6ea8;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      font-size: 1.04rem;
+    }
+
+    .panel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .summary-box {
+      background: #edf5fd;
+      border-left: 6px solid #4b84c4;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-top: 16px;
+    }
+
+    .summary-box strong {
+      color: #1f5f99;
+    }
+
+    .step-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .step-card {
+      background: #f8fbff;
+      border: 1px solid #dbe8f4;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .step-number {
+      display: inline-block;
+      background: #dcecff;
+      color: #245b8e;
+      font-weight: bold;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.84rem;
+      margin-bottom: 10px;
+    }
+
+    .step-card h3 {
+      margin: 0 0 8px 0;
+      color: #245b8e;
+      font-size: 1rem;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: #43586d;
+      font-size: 0.96rem;
+    }
+
+    .sidebar-card {
+      background: white;
+      border: 1px solid #d7e5f2;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 5px 16px rgba(22, 57, 92, 0.06);
+      margin-bottom: 22px;
+    }
+
+    .sidebar-card h2 {
+      margin-top: 0;
+      color: #245b8e;
+      font-size: 1.14rem;
+    }
+
+    .fact-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #445a6d;
+    }
+
+    .fact-list li {
+      margin-bottom: 10px;
+    }
+
+    .metric {
+      background: #eef5fc;
+      border: 1px solid #d7e5f2;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #62809d;
+      margin: 0 0 6px 0;
+      font-weight: bold;
+    }
+
+    .metric-value {
+      margin: 0;
+      font-size: 1.08rem;
+      color: #245b8e;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.96rem;
+    }
+
+    th, td {
+      border: 1px solid #d7e5f2;
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #edf5fd;
+      color: #245b8e;
+    }
+
+    .decision-box {
+      background: linear-gradient(135deg, #edf5fd, #f8fbff);
+      border: 1px solid #d1e2f0;
+      border-radius: 14px;
+      padding: 22px 24px;
+    }
+
+    .decision-box h2 {
+      margin-top: 0;
+      color: #1f5f99;
+    }
+
+    .decision-box ul {
+      margin: 12px 0 0 20px;
+      padding: 0;
+    }
+
+    .decision-box li {
+      margin-bottom: 10px;
+      color: #344b60;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #647b8f;
+      font-size: 0.94rem;
+      padding-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      nav ul {
+        gap: 12px;
+      }
+
+      .hero,
+      .panel,
+      .sidebar-card {
+        padding: 22px;
+      }
+
+      main {
+        padding: 0 16px 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="topbar">
+      <div class="site-title">Josh Writing Samples</div>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about/index.html">About Me</a></li>
+          <li><a href="../samples/index.html">Samples</a></li>
+          <li><a href="../knowledge-management/index.html">Knowledge Management</a></li>
+          <li><a href="../contact/index.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="sample-label">Technical Sample</div>
+      <h1>Incident Management Playbook</h1>
+      <p>
+        An effective incident management process helps teams detect, assess, respond to, communicate through, and recover from service disruptions with speed and discipline. This playbook provides a structured operating model for incident definition, severity assignment, role clarity, escalation logic, operational response, and post-incident learning.
+      </p>
+    </section>
+
+    <div class="layout">
+      <div>
+        <section class="panel">
+          <h2>Purpose and Scope</h2>
+          <p>
+            Incident management exists to reduce harm during service disruption. The priority is not perfect diagnosis at the start. The priority is coordinated response, impact containment, timely communication, and restoration of service.
+          </p>
+          <p>
+            This playbook applies to incidents that affect system availability, performance, security posture, operational continuity, customer experience, or business-critical internal workflows. It is intended for engineers, operations teams, support partners, and incident responders who need a common language and a repeatable response model.
+          </p>
+
+          <div class="summary-box">
+            <strong>Bottom line:</strong> incident response should be fast, structured, role-based, and visible enough that teams can make decisions under pressure without losing coordination.
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Incident Definition</h2>
+          <p>
+            An incident is an unplanned interruption, degradation, or material risk event affecting a service, system, platform, or operational capability. Not every issue is an incident. The distinction matters because incident processes introduce elevated coordination, communication, and escalation expectations.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Meaning</th>
+                <th>Operational Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Incident</td>
+                <td>An active disruption, degradation, or serious risk requiring coordinated response.</td>
+                <td>Triggers formal response workflow.</td>
+              </tr>
+              <tr>
+                <td>Problem</td>
+                <td>The underlying cause or recurring issue behind one or more incidents.</td>
+                <td>Investigated after stabilization or restoration.</td>
+              </tr>
+              <tr>
+                <td>Request</td>
+                <td>A normal ask for service, access, enhancement, or support.</td>
+                <td>Handled through standard intake, not incident response.</td>
+              </tr>
+              <tr>
+                <td>Alert</td>
+                <td>A monitoring signal suggesting something may be wrong.</td>
+                <td>May lead to investigation or incident declaration.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <h2>Severity Levels</h2>
+          <p>
+            Severity should reflect business impact, operational risk, scope, and urgency. Teams should avoid inflating severity based only on visibility or anxiety. Severity exists to guide response behavior.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Severity</th>
+                <th>Description</th>
+                <th>Typical Characteristics</th>
+                <th>Expected Response</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SEV 1</td>
+                <td>Critical service outage or material business disruption.</td>
+                <td>Widespread customer or enterprise impact, major outage, major security concern, or inability to operate critical services.</td>
+                <td>Immediate incident bridge, executive visibility as needed, continuous coordination until stabilized.</td>
+              </tr>
+              <tr>
+                <td>SEV 2</td>
+                <td>High-impact degradation or partial outage.</td>
+                <td>Major functionality impaired, significant user impact, important deadlines threatened, workaround limited or unstable.</td>
+                <td>Fast coordinated response, active communications, formal ownership and escalation monitoring.</td>
+              </tr>
+              <tr>
+                <td>SEV 3</td>
+                <td>Moderate issue with contained impact.</td>
+                <td>Localized degradation, limited user group affected, workaround available, no enterprise-wide disruption.</td>
+                <td>Managed response during operational hours, owner assigned, escalation if conditions worsen.</td>
+              </tr>
+              <tr>
+                <td>SEV 4</td>
+                <td>Low-impact issue or early signal requiring observation.</td>
+                <td>Minor impairment, minimal user disruption, low risk, often suitable for normal queue handling.</td>
+                <td>Track, assess, and route through standard support or follow-up processes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <h2>Roles and Responsibilities</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Primary Responsibility</th>
+                <th>What Good Looks Like</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Incident Commander</td>
+                <td>Directs the overall response and keeps the team aligned.</td>
+                <td>Maintains focus, assigns actions, manages pace, and prevents confusion or duplicate effort.</td>
+              </tr>
+              <tr>
+                <td>Technical Lead</td>
+                <td>Guides technical diagnosis and restoration planning.</td>
+                <td>Coordinates engineering work, validates hypotheses, and drives practical remediation steps.</td>
+              </tr>
+              <tr>
+                <td>Communications Lead</td>
+                <td>Owns status updates and stakeholder messaging.</td>
+                <td>Provides timely, accurate updates without speculation or unnecessary technical noise.</td>
+              </tr>
+              <tr>
+                <td>Scribe</td>
+                <td>Captures timeline, decisions, actions, and material facts.</td>
+                <td>Maintains a clean record for handoffs, review, and post-incident analysis.</td>
+              </tr>
+              <tr>
+                <td>Resolver Teams</td>
+                <td>Execute investigation, containment, rollback, recovery, and validation tasks.</td>
+                <td>Act on assigned work quickly and report progress clearly.</td>
+              </tr>
+              <tr>
+                <td>Escalation Stakeholders</td>
+                <td>Provide authority, coordination, approvals, or business context when needed.</td>
+                <td>Remove blockers, support decisions, and avoid disrupting active responders with unnecessary noise.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <h2>Escalation Logic</h2>
+          <p>
+            Escalation should be tied to impact, uncertainty, and risk, not simply elapsed time. A team should escalate when the incident becomes broader, riskier, less understood, or harder to restore than initially believed.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Escalation Trigger</th>
+                <th>What It Means</th>
+                <th>Likely Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Impact grows</td>
+                <td>More users, systems, or business processes are affected than first understood.</td>
+                <td>Increase severity and add responder groups.</td>
+              </tr>
+              <tr>
+                <td>No clear owner</td>
+                <td>The issue spans boundaries or ownership is disputed.</td>
+                <td>Incident commander assigns interim ownership and escalates to operational leadership if needed.</td>
+              </tr>
+              <tr>
+                <td>No viable workaround</td>
+                <td>Users cannot continue work safely or effectively while restoration is in progress.</td>
+                <td>Raise urgency and prioritize containment or rollback decisions.</td>
+              </tr>
+              <tr>
+                <td>Recovery path fails</td>
+                <td>Initial remediation steps do not stabilize the service.</td>
+                <td>Expand technical support and reassess hypotheses quickly.</td>
+              </tr>
+              <tr>
+                <td>Security or compliance concern appears</td>
+                <td>The incident may involve data risk, unauthorized activity, or regulated exposure.</td>
+                <td>Engage security, legal, compliance, or other required governance partners immediately.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <h2>Operational Workflow</h2>
+          <div class="step-grid">
+            <div class="step-card">
+              <div class="step-number">Step 1</div>
+              <h3>Detect and assess</h3>
+              <p>
+                Identify the disruption through monitoring, support reports, automated alerts, or internal observation. Confirm whether the event meets the threshold for incident declaration.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 2</div>
+              <h3>Declare the incident</h3>
+              <p>
+                Assign an initial severity, identify the incident commander, create the incident record, and open the response channel or bridge. Early declaration is better than late informal handling when impact is real.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 3</div>
+              <h3>Contain impact</h3>
+              <p>
+                Focus first on reducing harm. This may include failover, rollback, traffic control, feature disablement, manual workarounds, or isolation of affected components.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 4</div>
+              <h3>Coordinate technical response</h3>
+              <p>
+                Assign technical workstreams, validate assumptions, and keep the response organized. Avoid having too many people acting without structure or too few people carrying the response alone.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 5</div>
+              <h3>Communicate status</h3>
+              <p>
+                Provide regular updates to responders and stakeholders. Communications should state what is known, what is being done, current impact, and when the next update will occur.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 6</div>
+              <h3>Restore and validate</h3>
+              <p>
+                Recover the affected service and verify that restoration is real, stable, and sufficient. Do not close the incident simply because the immediate symptoms appear quieter.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 7</div>
+              <h3>Close and learn</h3>
+              <p>
+                Record the timeline, disposition, root cause direction, follow-up actions, and ownership for any post-incident remediation or problem management work.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Communication Expectations</h2>
+          <p>
+            Incident communication should be factual, disciplined, and timed. Responders need clarity, not noise. Stakeholders need visibility, not speculation.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Audience</th>
+                <th>What They Need</th>
+                <th>Communication Standard</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Responders</td>
+                <td>Live status, decisions, assignments, blockers, and technical findings.</td>
+                <td>Real-time coordination in the active incident channel.</td>
+              </tr>
+              <tr>
+                <td>Operations Leadership</td>
+                <td>Impact, severity, mitigation posture, and major risks.</td>
+                <td>Concise updates at agreed intervals or major changes.</td>
+              </tr>
+              <tr>
+                <td>Business Stakeholders</td>
+                <td>Service impact, user effect, workaround status, and restoration estimate if known.</td>
+                <td>Plain language updates without unnecessary technical detail.</td>
+              </tr>
+              <tr>
+                <td>External Audiences</td>
+                <td>Confirmed facts, impact boundaries, and next steps if customer-facing communication is required.</td>
+                <td>Coordinated, reviewed, and approved messaging only.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel decision-box">
+          <h2>Playbook Principles</h2>
+          <ul>
+            <li>Declare early when business impact is real.</li>
+            <li>Assign clear roles instead of relying on informal coordination.</li>
+            <li>Contain harm before chasing perfect diagnosis.</li>
+            <li>Use severity to shape response behavior, not to dramatize the event.</li>
+            <li>Communicate on a rhythm so stakeholders are not left guessing.</li>
+            <li>Capture timelines and decisions while the incident is active.</li>
+            <li>Follow every material incident with remediation and learning.</li>
+          </ul>
+        </section>
+      </div>
+
+      <aside>
+        <section class="sidebar-card">
+          <h2>Audience</h2>
+          <ul class="fact-list">
+            <li>Engineers</li>
+            <li>Operations teams</li>
+            <li>Incident responders</li>
+            <li>Support and platform partners</li>
+          </ul>
+        </section>
+
+        <section class="sidebar-card">
+          <h2>Playbook Focus</h2>
+          <div class="metric">
+            <p class="metric-label">Primary Goal</p>
+            <p class="metric-value">Restore service quickly</p>
+          </div>
+          <div class="metric">
+            <p class="metric-label">Operational Benefit</p>
+            <p class="metric-value">Coordinated response</p>
+          </div>
+          <div class="metric">
+            <p class="metric-label">Success Measure</p>
+            <p class="metric-value">Lower impact and faster recovery</p>
+          </div>
+        </section>
+
+        <section class="sidebar-card">
+          <h2>What Teams Should Ask</h2>
+          <ul class="fact-list">
+            <li>Does this event meet the threshold for incident declaration?</li>
+            <li>What is the current impact and who is affected?</li>
+            <li>Who is leading the response right now?</li>
+            <li>What containment actions are available immediately?</li>
+            <li>How often are we updating responders and stakeholders?</li>
+          </ul>
+        </section>
+
+        <section class="sidebar-card">
+          <h2>Why This Sample Works</h2>
+          <ul class="fact-list">
+            <li>Structured operational writing</li>
+            <li>Clear severity and escalation logic</li>
+            <li>Role-based incident response framing</li>
+            <li>Readable under pressure</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <p class="footer-note">
+      This sample demonstrates process-centered technical documentation, incident response clarity, and operational communication for high-pressure environments.
+    </p>
+  </main>
+</body>
+</html>
