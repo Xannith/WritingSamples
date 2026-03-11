@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coded HTML Sample Page | Josh Writing Samples</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: #1f2a1f;
+      background-color: #f6fbf6;
+    }
+
+    header {
+      background-color: #1f4d3a;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      flex-wrap: wrap;
+    }
+
+    .site-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1150px;
+      margin: 40px auto;
+      padding: 0 24px 50px;
+    }
+
+    .sample-header {
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 28px;
+    }
+
+    .sample-label {
+      display: inline-block;
+      background: #dcefe1;
+      color: #1f4d3a;
+      font-size: 0.9rem;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .sample-header h1 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #1f4d3a;
+      font-size: 2.1rem;
+    }
+
+    .sample-header p {
+      margin-bottom: 0;
+      font-size: 1.03rem;
+    }
+
+    .skills-box {
+      margin-top: 22px;
+      background: #f0f8f2;
+      border: 1px solid #d3e7d7;
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+
+    .skills-box h3 {
+      margin-top: 0;
+      color: #295941;
+      font-size: 1rem;
+    }
+
+    .intro-section {
+      background: white;
+      padding: 28px 32px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+    }
+
+    .snippet-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .snippet-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: 1px solid #dce9de;
+    }
+
+    .snippet-head {
+      background: #edf7ef;
+      padding: 20px 24px 14px;
+      border-bottom: 1px solid #d7e8da;
+    }
+
+    .snippet-head h2 {
+      margin: 0 0 8px 0;
+      color: #295941;
+      font-size: 1.3rem;
+    }
+
+    .snippet-subtitle {
+      margin: 0;
+      color: #4a5a4d;
+      font-size: 0.98rem;
+    }
+
+    .snippet-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .code-panel,
+    .preview-panel {
+      padding: 22px 24px;
+    }
+
+    .code-panel {
+      background: #f8fbf8;
+      border-right: 1px solid #e2ece3;
+    }
+
+    .panel-label {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #355d43;
+      background: #dcefe1;
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #1f2a1f;
+      color: #dff5df;
+      padding: 18px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+
+    .preview-panel {
+      background: #ffffff;
+    }
+
+    .preview-shell {
+      background: #f6fbf6;
+      border: 1px solid #d8e7da;
+      border-radius: 12px;
+      padding: 18px;
+      min-height: 180px;
+    }
+
+    .preview-note {
+      margin-top: 14px;
+      color: #55665a;
+      font-size: 0.95rem;
+    }
+
+    .pill {
+      display: inline-block;
+      background: #dcefe1;
+      color: #1f4d3a;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .preview-title {
+      margin: 0 0 8px 0;
+      color: #1f4d3a;
+    }
+
+    .preview-small {
+      color: #55665a;
+      font-size: 0.95rem;
+      margin: 0 0 12px 0;
+    }
+
+    .preview-button {
+      display: inline-block;
+      background: #2c6a4e;
+      color: white;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    .preview-card {
+      background: white;
+      border: 1px solid #dce9de;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .alert-box {
+      background: #eef7f0;
+      border-left: 5px solid #4d8b63;
+      border-radius: 8px;
+      padding: 14px;
+      color: #294436;
+    }
+
+    .quote-box {
+      border-left: 4px solid #6b9b7d;
+      padding-left: 14px;
+      color: #35523f;
+      font-style: italic;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      flex: 1 1 120px;
+      background: white;
+      border: 1px solid #dce9de;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #1f4d3a;
+      margin: 0;
+    }
+
+    .stat-label {
+      margin: 4px 0 0 0;
+      color: #55665a;
+      font-size: 0.92rem;
+    }
+
+    table.preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table.preview-table th,
+    table.preview-table td {
+      border: 1px solid #dce9de;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.preview-table th {
+      background: #edf7ef;
+      color: #295941;
+    }
+
+    .footer-block {
+      background: white;
+      padding: 28px 32px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      margin-top: 24px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #4a5a4d;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .snippet-body {
+        grid-template-columns: 1fr;
+      }
+
+      .code-panel {
+        border-right: none;
+        border-bottom: 1px solid #e2ece3;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      nav ul {
+        gap: 12px;
+      }
+
+      .sample-header,
+      .intro-section,
+      .footer-block {
+        padding: 22px;
+      }
+
+      .snippet-head,
+      .code-panel,
+      .preview-panel {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="topbar">
+      <div class="site-title">Josh Writing Samples</div>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About Me</a></li>
+          <li><a href="../knowledge-management.html">Knowledge Management</a></li>
+          <li><a href="../samples/index.html">Samples</a></li>
+          <li><a href="../contact.html">Contact Me</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="sample-header">
+      <div class="sample-label">Creative Systems Sample</div>
+      <h1>Coded HTML Sample Page</h1>
+      <p>
+        This sample presents a structured snippet library designed to demonstrate how content models,
+        reusable code patterns, and preview-oriented documentation can work together. Each entry includes
+        a snippet name, a short purpose statement, a YAML example, and a visual representation of the
+        resulting output. The goal is to show not just code literacy, but the ability to explain technical
+        structures clearly for broader use.
+      </p>
+
+      <div class="skills-box">
+        <h3>Skills Demonstrated</h3>
+        <ul>
+          <li>HTML and CSS implementation</li>
+          <li>Structured content thinking</li>
+          <li>Technical explanation for mixed audiences</li>
+          <li>UI pattern documentation and reusable snippet presentation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="intro-section">
+      <h2 style="color:#295941; margin-top:0;">Repository Overview</h2>
+      <p>
+        In many content systems, examples are more useful when they are both human-readable and implementation-friendly.
+        YAML makes it easier to show underlying structure, while visual previews help audiences understand the intended
+        output quickly. This format is especially useful for design systems, modular content libraries, playbooks, and
+        internal publishing frameworks.
+      </p>
+    </div>
+
+    <div class="snippet-grid">
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>1. Hero Banner</h2>
+          <p class="snippet-subtitle">A prominent page opener used to establish title, framing, and initial action.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: hero_banner
+title: "Build Better Knowledge Systems"
+subtitle: "Clear structure helps people find, use, and trust information."
+button_text: "Explore Samples"
+button_link: "/samples/"
+theme: "green"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <h3 class="preview-title">Build Better Knowledge Systems</h3>
+              <p class="preview-small">Clear structure helps people find, use, and trust information.</p>
+              <a href="#" class="preview-button">Explore Samples</a>
+            </div>
+            <p class="preview-note">Use this when a page needs strong orientation and a clear first action.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>2. Callout Panel</h2>
+          <p class="snippet-subtitle">A visual emphasis block for notable guidance, warnings, or key ideas.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: callout_panel
+style: "advisory"
+headline: "Start with the reader's task"
+body: "Useful communication begins with what the audience is trying to accomplish."
+icon: "info"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div class="alert-box">
+                <strong>Start with the reader's task</strong><br />
+                Useful communication begins with what the audience is trying to accomplish.
+              </div>
+            </div>
+            <p class="preview-note">Callouts create scanning anchors and help reduce missed information.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>3. Tag Group</h2>
+          <p class="snippet-subtitle">A reusable metadata display for themes, skills, labels, or categories.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: tag_group
+label: "Skills Demonstrated"
+tags:
+  - "HTML"
+  - "Content Design"
+  - "Documentation"
+  - "Structured Writing"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <p class="preview-small"><strong>Skills Demonstrated</strong></p>
+              <span class="pill">HTML</span>
+              <span class="pill">Content Design</span>
+              <span class="pill">Documentation</span>
+              <span class="pill">Structured Writing</span>
+            </div>
+            <p class="preview-note">Tags help readers scan intent and can reinforce taxonomy across a site.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>4. Feature Card</h2>
+          <p class="snippet-subtitle">A compact content object for highlighting one distinct idea or offering.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: feature_card
+title: "Editorial Workflow"
+description: "A repeatable process for intake, review, layout, and publication."
+link_text: "Read Framework"
+link_url: "/samples/community-newsletter-framework.html"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div class="preview-card">
+                <h3 class="preview-title">Editorial Workflow</h3>
+                <p class="preview-small">A repeatable process for intake, review, layout, and publication.</p>
+                <a href="#" class="preview-button">Read Framework</a>
+              </div>
+            </div>
+            <p class="preview-note">Feature cards work well in sample galleries, dashboards, and content hubs.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>5. Quote Block</h2>
+          <p class="snippet-subtitle">A styled excerpt used to reinforce tone, principle, or key language.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: quote_block
+quote: "Clear communication is not about making ideas smaller. It is about making them easier to reach."
+attribution: "Public Communication Sample"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div class="quote-box">
+                “Clear communication is not about making ideas smaller. It is about making them easier to reach.”
+                <div style="margin-top:8px; font-style:normal; font-size:0.92rem; color:#55665a;">
+                  Public Communication Sample
+                </div>
+              </div>
+            </div>
+            <p class="preview-note">Quote blocks can create memorable moments and break up dense explanatory text.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>6. Two-Column Comparison</h2>
+          <p class="snippet-subtitle">A side-by-side layout for contrasting states, choices, or approaches.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: comparison_block
+left_title: "Ad Hoc Publishing"
+left_body: "Late submissions, inconsistent formatting, rushed production."
+right_title: "Structured Publishing"
+right_body: "Defined inputs, reusable workflows, stable release rhythm."</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div class="two-col">
+                <div class="preview-card">
+                  <h3 class="preview-title">Ad Hoc Publishing</h3>
+                  <p class="preview-small">Late submissions, inconsistent formatting, rushed production.</p>
+                </div>
+                <div class="preview-card">
+                  <h3 class="preview-title">Structured Publishing</h3>
+                  <p class="preview-small">Defined inputs, reusable workflows, stable release rhythm.</p>
+                </div>
+              </div>
+            </div>
+            <p class="preview-note">Comparison blocks help explain transformation, process maturity, or tradeoffs.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>7. Metric Tiles</h2>
+          <p class="snippet-subtitle">A lightweight stats display for counts, KPIs, or outcome signals.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: metrics_row
+metrics:
+  - value: "12"
+    label: "Writing Samples"
+  - value: "4"
+    label: "Sample Groups"
+  - value: "3"
+    label: "Creative Systems Pieces"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div class="stats-row">
+                <div class="stat-box">
+                  <p class="stat-number">12</p>
+                  <p class="stat-label">Writing Samples</p>
+                </div>
+                <div class="stat-box">
+                  <p class="stat-number">4</p>
+                  <p class="stat-label">Sample Groups</p>
+                </div>
+                <div class="stat-box">
+                  <p class="stat-number">3</p>
+                  <p class="stat-label">Creative Systems Pieces</p>
+                </div>
+              </div>
+            </div>
+            <p class="preview-note">Metric tiles give structure to outcome-oriented pages and portfolio summaries.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>8. Action Button Set</h2>
+          <p class="snippet-subtitle">A grouped CTA module for simple next-step navigation.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: action_set
+buttons:
+  - text: "View Resume"
+    url: "/about/resume.html"
+  - text: "Read Samples"
+    url: "/samples/"
+  - text: "Contact Me"
+    url: "/contact.html"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <a href="#" class="preview-button" style="margin-right:8px; margin-bottom:8px;">View Resume</a>
+              <a href="#" class="preview-button" style="margin-right:8px; margin-bottom:8px;">Read Samples</a>
+              <a href="#" class="preview-button" style="margin-bottom:8px;">Contact Me</a>
+            </div>
+            <p class="preview-note">Button sets are useful when a page should funnel visitors toward a few clear actions.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>9. Process Table</h2>
+          <p class="snippet-subtitle">A tabular pattern for step, action, and rationale.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: process_table
+columns:
+  - "Step"
+  - "Action"
+  - "Reason"
+rows:
+  - ["Submit", "Collect content", "Creates a stable intake point"]
+  - ["Review", "Edit for clarity", "Improves consistency"]
+  - ["Publish", "Release issue", "Delivers value to readers"]</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <table class="preview-table">
+                <thead>
+                  <tr>
+                    <th>Step</th>
+                    <th>Action</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Submit</td>
+                    <td>Collect content</td>
+                    <td>Creates a stable intake point</td>
+                  </tr>
+                  <tr>
+                    <td>Review</td>
+                    <td>Edit for clarity</td>
+                    <td>Improves consistency</td>
+                  </tr>
+                  <tr>
+                    <td>Publish</td>
+                    <td>Release issue</td>
+                    <td>Delivers value to readers</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="preview-note">Tables help when readers need both order and explanation in one view.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>10. Notice Banner</h2>
+          <p class="snippet-subtitle">A compact announcement strip for updates, deadlines, or temporary guidance.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: notice_banner
+message: "New writing samples are being added this month."
+priority: "standard"
+dismissible: false</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div style="background:#edf7ef; border:1px solid #cfe3d3; color:#295941; padding:12px 14px; border-radius:8px; font-weight:bold;">
+                New writing samples are being added this month.
+              </div>
+            </div>
+            <p class="preview-note">Banners are useful for timely notices that should sit above ordinary page content.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>11. Profile Card</h2>
+          <p class="snippet-subtitle">A reusable block for author, contributor, or speaker identity display.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: profile_card
+name: "Josh Bechtel"
+role: "Technical Writer and Content Architect"
+bio: "Builds structured systems that make information easier to govern and use."
+cta_text: "About Me"
+cta_link: "/about.html"</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div class="preview-card">
+                <h3 class="preview-title">Josh Bechtel</h3>
+                <p class="preview-small"><strong>Technical Writer and Content Architect</strong></p>
+                <p class="preview-small">Builds structured systems that make information easier to govern and use.</p>
+                <a href="#" class="preview-button">About Me</a>
+              </div>
+            </div>
+            <p class="preview-note">Profile cards are useful on about pages, team pages, and contributor spotlights.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="snippet-card">
+        <div class="snippet-head">
+          <h2>12. FAQ Block</h2>
+          <p class="snippet-subtitle">A repeatable question-and-answer model for common reader needs.</p>
+        </div>
+        <div class="snippet-body">
+          <div class="code-panel">
+            <div class="panel-label">YAML Example</div>
+<pre><code>component: faq_item
+question: "Why use YAML in examples?"
+answer: "Because it makes structure visible, readable, and easier to reuse across systems."
+expanded: true</code></pre>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">Rendered Preview</div>
+            <div class="preview-shell">
+              <div class="preview-card">
+                <h3 class="preview-title">Why use YAML in examples?</h3>
+                <p class="preview-small">Because it makes structure visible, readable, and easier to reuse across systems.</p>
+              </div>
+            </div>
+            <p class="preview-note">FAQ blocks are useful when readers are likely to arrive with repeated questions.</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="footer-block">
+      <h2 style="color:#295941; margin-top:0;">Closing Note</h2>
+      <p>
+        This page is intentionally designed as both a writing sample and a coded artifact. It demonstrates the ability
+        to present technical structures in a readable way, maintain a consistent visual system, and translate reusable
+        content patterns into an approachable interface. The result is not just code on a page, but a documented pattern
+        library that reflects both writing discipline and implementation skill.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Josh Writing Samples
+  </footer>
+
+</body>
+</html>
