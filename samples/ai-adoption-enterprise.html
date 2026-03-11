@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Brief: AI Adoption — Leadership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  /* Warm off-white executive palette */
+  --bg:        #FAF9F7;
+  --bg2:       #FFFFFF;
+  --bg3:       #F3F1EE;
+  --bg4:       #EAE8E3;
+  --border:    #DDD9D2;
+  --border2:   #C8C3BA;
+  /* Text */
+  --ink:       #141210;
+  --ink2:      #2A2621;
+  --ink3:      #4A4540;
+  --muted:     #7A7268;
+  --faint:     #AAA49C;
+  /* Green — same family throughout the site */
+  --green:     #3A8049;
+  --green-b:   #2D6B3C;
+  --green-l:   #4E9A5F;
+  --green-d:   rgba(58,128,73,0.09);
+  --green-g:   rgba(58,128,73,0.05);
+  --green-line:rgba(58,128,73,0.22);
+  /* Accent tones for signal panels */
+  --amber:     #9A6B1A;
+  --amber-d:   rgba(154,107,26,0.09);
+  --amber-line:rgba(154,107,26,0.22);
+  --slate:     #2E5C7A;
+  --slate-d:   rgba(46,92,122,0.09);
+  --slate-line:rgba(46,92,122,0.22);
+  --rose:      #8C3535;
+  --rose-d:    rgba(140,53,53,0.09);
+  --rose-line: rgba(140,53,53,0.22);
+  /* Typography */
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', system-ui, sans-serif;
+  --mono:    'DM Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink2);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.65;
+}
+
+/* Subtle paper texture via gradient */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(58,128,73,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 80%, rgba(46,92,122,0.025) 0%, transparent 70%);
+}
+
+/* ── SHARED SITE NAV (dark) ── */
+#sitenav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(10,13,10,0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+}
+.sitenav-inner {
+  display: flex; align-items: center;
+  height: 56px; padding: 0 48px;
+}
+.sitenav-brand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1rem; font-weight: 600;
+  color: #DDE8DC; text-decoration: none;
+  display: flex; align-items: center; gap: 9px;
+  margin-right: auto; white-space: nowrap;
+}
+.sitenav-brand::before { content: '&#9670;'; color: #4E9A5F; font-size: 0.55rem; }
+.sitenav-links { display: flex; align-items: center; gap: 2px; }
+.sitenav-link {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #7E9A7C; text-decoration: none;
+  padding: 6px 14px; border-radius: 3px; border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap;
+}
+.sitenav-link:hover  { color: #DDE8DC; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.09); }
+.sitenav-link.active { color: #6BBF7C; background: rgba(78,154,95,0.15); border-color: rgba(78,154,95,0.3); }
+.nav-breadcrumb {
+  height: 30px; padding: 0 48px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.nav-bc-item {
+  font-family: var(--mono); font-size: 0.57rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; transition: color 0.15s;
+}
+.nav-bc-item:hover { color: var(--ink3); }
+.nav-bc-sep { color: var(--faint); font-size: 0.5rem; }
+.nav-bc-item.current { color: var(--green); }
+.nav-hamburger {
+  display: none; background: none; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 3px; padding: 5px 9px; cursor: pointer; color: #7E9A7C; font-size: 1rem;
+}
+.nav-mobile-menu {
+  display: none; flex-direction: column;
+  background: #0F1410; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 8px 0;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-link {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #7E9A7C;
+  text-decoration: none; padding: 10px 28px; border-left: 2px solid transparent; transition: all 0.15s;
+}
+.nav-mobile-link:hover  { color: #DDE8DC; background: rgba(255,255,255,0.05); }
+.nav-mobile-link.active { color: #6BBF7C; border-left-color: #4E9A5F; background: rgba(78,154,95,0.1); }
+@media (max-width: 768px) {
+  .sitenav-links { display: none; }
+  .nav-hamburger { display: block; }
+  .sitenav-inner { padding: 0 20px; }
+  .nav-breadcrumb { display: none; }
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+  position: fixed; top: 86px; left: 0; height: 2px;
+  background: linear-gradient(90deg, var(--green-l), #4AADA0);
+  z-index: 300; width: 0%; transition: width 0.1s;
+  box-shadow: 0 0 6px rgba(78,154,95,0.35);
+}
+
+/* ══════════════════════════════════════
+   EXECUTIVE BRIEF LAYOUT
+   No sidebar — full-width prestige layout
+   ══════════════════════════════════════ */
+#page { position: relative; z-index: 1; }
+
+/* ── COVER BAND ── */
+#cover {
+  background: var(--ink);
+  padding: 72px 120px 64px;
+  position: relative; overflow: hidden;
+}
+#cover::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 50%; height: 100%;
+  background: linear-gradient(135deg, transparent 40%, rgba(58,128,73,0.12));
+  pointer-events: none;
+}
+#cover::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--green-l) 0%, #4AADA0 60%, transparent 100%);
+}
+.cover-label {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--green-l); margin-bottom: 28px;
+  display: flex; align-items: center; gap: 14px;
+}
+.cover-label::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--green-l); }
+.cover-title {
+  font-family: var(--display);
+  font-size: clamp(2.8rem, 5.5vw, 5rem);
+  font-weight: 600; line-height: 1.05;
+  color: #F5F3F0; margin-bottom: 6px; letter-spacing: -0.01em;
+}
+.cover-title-sub {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+  font-weight: 400; font-style: italic;
+  line-height: 1.1; color: #6BBF7C; margin-bottom: 32px;
+}
+.cover-description {
+  font-size: 1rem; font-weight: 300; color: #9AA89A;
+  max-width: 580px; line-height: 1.75; margin-bottom: 40px;
+}
+.cover-meta {
+  display: flex; gap: 32px; align-items: center;
+}
+.cover-meta-item { display: flex; flex-direction: column; gap: 3px; }
+.cover-meta-key {
+  font-family: var(--mono); font-size: 0.55rem; font-weight: 500;
+  letter-spacing: 0.15em; text-transform: uppercase; color: #4A5E48;
+}
+.cover-meta-val { font-size: 0.82rem; font-weight: 500; color: #8A9A88; }
+.cover-meta-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.08); }
+
+/* ── EXECUTIVE SUMMARY STRIP ── */
+#exec-summary {
+  background: var(--green-b);
+  padding: 40px 120px;
+  display: grid;
+  grid-template-columns: 1fr 2px 1fr 2px 1fr 2px 1fr;
+  gap: 0;
+}
+.es-divider { background: rgba(255,255,255,0.15); }
+.es-stat {
+  padding: 0 36px; text-align: center;
+}
+.es-stat:first-child { padding-left: 0; }
+.es-stat:last-child  { padding-right: 0; }
+.es-num {
+  font-family: var(--display);
+  font-size: 3.2rem; font-weight: 700;
+  line-height: 1; color: #FFFFFF; margin-bottom: 6px; letter-spacing: -0.02em;
+}
+.es-num sup { font-size: 1.4rem; vertical-align: super; }
+.es-label {
+  font-size: 0.78rem; font-weight: 400; color: rgba(255,255,255,0.65);
+  line-height: 1.4; max-width: 140px; margin: 0 auto;
+}
+
+/* ── CONTENT WRAPPER ── */
+#content-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
+/* ── BRIEF SECTIONS ── */
+.brief-section {
+  padding: 64px 0 0;
+  border-top: 1px solid var(--border);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.brief-section.visible { opacity: 1; transform: translateY(0); }
+.brief-section:first-of-type { border-top: none; padding-top: 56px; }
+
+.section-label {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::before { content: attr(data-n); color: var(--faint); }
+
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 600; line-height: 1.12;
+  color: var(--ink); margin-bottom: 24px; letter-spacing: -0.01em;
+}
+.section-title em { font-style: italic; color: var(--green-b); }
+
+p.lead {
+  font-size: 1.05rem; font-weight: 400; color: var(--ink3);
+  line-height: 1.8; margin-bottom: 20px; max-width: 680px;
+}
+p.body {
+  font-size: 0.92rem; color: var(--muted);
+  line-height: 1.8; margin-bottom: 16px; max-width: 680px;
+}
+
+/* ── PULL STAT (large inline number) ── */
+.pull-stat {
+  float: right; clear: right;
+  margin: 0 0 24px 40px;
+  text-align: center; width: 160px;
+}
+.pull-stat-num {
+  font-family: var(--display); font-size: 4rem; font-weight: 700;
+  line-height: 1; color: var(--green-b); letter-spacing: -0.03em;
+}
+.pull-stat-num sup { font-size: 1.6rem; vertical-align: super; }
+.pull-stat-label { font-size: 0.75rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+.clearfix::after { content: ''; display: table; clear: both; }
+
+/* ── SIGNAL PANELS (opportunity / risk / governance / value) ── */
+.panel-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin: 28px 0;
+}
+.panel {
+  border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.panel:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.panel-head {
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 10px;
+}
+.panel-icon {
+  width: 32px; height: 32px; border-radius: 3px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.panel-head-text {}
+.panel-head-label {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 2px;
+}
+.panel-head-title {
+  font-family: var(--display); font-size: 1rem; font-weight: 600; color: var(--ink);
+}
+.panel-body { padding: 0 18px 16px; }
+.panel-body ul { list-style: none; padding: 0; }
+.panel-body li {
+  font-size: 0.84rem; color: var(--ink3); line-height: 1.6;
+  padding: 6px 0 6px 18px; border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.panel-body li:last-child { border-bottom: none; }
+.panel-body li::before { position: absolute; left: 0; top: 7px; font-size: 0.7rem; }
+
+/* Panel colour variants */
+.panel.opportunity { background: var(--bg2); }
+.panel.opportunity .panel-head { background: var(--green-g); border-bottom: 1px solid var(--green-line); }
+.panel.opportunity .panel-icon { background: var(--green-d); }
+.panel.opportunity .panel-head-label { color: var(--green); }
+.panel.opportunity .panel-body li::before { content: '&#10003;'; color: var(--green); font-weight: 700; }
+
+.panel.risk { background: var(--bg2); }
+.panel.risk .panel-head { background: var(--rose-d); border-bottom: 1px solid var(--rose-line); }
+.panel.risk .panel-icon { background: var(--rose-d); }
+.panel.risk .panel-head-label { color: var(--rose); }
+.panel.risk .panel-body li::before { content: '&#9650;'; color: var(--rose); font-size: 0.55rem; top: 9px; }
+
+.panel.governance { background: var(--bg2); }
+.panel.governance .panel-head { background: var(--amber-d); border-bottom: 1px solid var(--amber-line); }
+.panel.governance .panel-icon { background: var(--amber-d); }
+.panel.governance .panel-head-label { color: var(--amber); }
+.panel.governance .panel-body li::before { content: '&#9670;'; color: var(--amber); font-size: 0.5rem; top: 9px; }
+
+.panel.value { background: var(--bg2); }
+.panel.value .panel-head { background: var(--slate-d); border-bottom: 1px solid var(--slate-line); }
+.panel.value .panel-icon { background: var(--slate-d); }
+.panel.value .panel-head-label { color: var(--slate); }
+.panel.value .panel-body li::before { content: '&#8594;'; color: var(--slate); }
+
+/* ── STRATEGIC PRIORITY TABLE ── */
+.priority-table-wrap { margin: 24px 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.priority-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.priority-table thead tr { background: var(--ink2); }
+.priority-table thead th {
+  padding: 11px 16px; text-align: left;
+  font-family: var(--mono); font-size: 0.57rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: #8A9A88; white-space: nowrap;
+}
+.priority-table tbody td {
+  padding: 11px 16px; border-bottom: 1px solid var(--border);
+  color: var(--ink3); vertical-align: top; line-height: 1.5;
+}
+.priority-table tbody td:first-child { font-weight: 600; color: var(--ink2); width: 28%; }
+.priority-table tbody tr:last-child td { border-bottom: none; }
+.priority-table tbody tr:hover td { background: var(--green-g); }
+.horizon {
+  display: inline-block; font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  padding: 2px 8px; border-radius: 2px; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.horizon.now   { background: var(--green-d);  color: var(--green-b);  border: 1px solid var(--green-line); }
+.horizon.near  { background: var(--amber-d);  color: var(--amber);   border: 1px solid var(--amber-line); }
+.horizon.later { background: var(--slate-d);  color: var(--slate);   border: 1px solid var(--slate-line); }
+
+/* ── MATURITY TRACK ── */
+.maturity-track {
+  display: flex; gap: 0; margin: 28px 0;
+  border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+}
+.maturity-node {
+  flex: 1; padding: 18px 16px; background: var(--bg2);
+  border-right: 1px solid var(--border);
+  transition: background 0.15s; cursor: default;
+  position: relative;
+}
+.maturity-node:last-child { border-right: none; }
+.maturity-node.current { background: linear-gradient(180deg, var(--green-g), var(--bg2)); }
+.maturity-node.current::before {
+  content: 'Current';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  font-family: var(--mono); font-size: 0.5rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--green); color: #fff;
+  padding: 2px 8px; border-radius: 0 0 3px 3px;
+}
+.mn-level {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px;
+}
+.maturity-node.current .mn-level { color: var(--green); }
+.mn-title {
+  font-family: var(--display); font-size: 0.95rem; font-weight: 600;
+  color: var(--ink); margin-bottom: 4px; line-height: 1.2;
+}
+.mn-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
+
+/* ── DECISION FRAMEWORK ── */
+.decision-row {
+  display: grid; grid-template-columns: 80px 1fr 120px;
+  gap: 0; border: 1px solid var(--border); border-radius: 4px;
+  overflow: hidden; margin-bottom: 8px; background: var(--bg2);
+  transition: border-color 0.12s;
+}
+.decision-row:hover { border-color: var(--green-line); }
+.dr-q {
+  background: var(--bg3); border-right: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-size: 1.8rem; font-weight: 600;
+  color: var(--green-b); padding: 16px;
+}
+.dr-content { padding: 14px 18px; }
+.dr-question { font-size: 0.9rem; font-weight: 600; color: var(--ink2); margin-bottom: 4px; }
+.dr-guidance { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+.dr-action {
+  background: var(--bg3); border-left: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; padding: 14px 12px;
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; text-align: center; line-height: 1.4;
+}
+.dr-action.act   { color: var(--green-b); }
+.dr-action.plan  { color: var(--amber); }
+.dr-action.govern{ color: var(--slate); }
+
+/* ── CALLOUT QUOTE ── */
+.exec-callout {
+  margin: 32px 0; padding: 28px 36px;
+  background: var(--ink); border-radius: 4px; position: relative; overflow: hidden;
+}
+.exec-callout::before {
+  content: '\201C';
+  position: absolute; top: -10px; left: 24px;
+  font-family: var(--display); font-size: 8rem; font-weight: 700;
+  color: rgba(78,154,95,0.15); line-height: 1; pointer-events: none;
+}
+.exec-callout p {
+  font-family: var(--display); font-size: 1.25rem; font-style: italic; font-weight: 400;
+  color: #E8E4DF; line-height: 1.65; position: relative; z-index: 1; margin-bottom: 14px;
+}
+.exec-callout cite {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--green-l); font-style: normal;
+}
+
+/* ── GOVERNANCE CHECKLIST ── */
+.gov-checklist { margin: 20px 0; }
+.gov-item {
+  display: grid; grid-template-columns: 44px 1fr auto;
+  gap: 0; border: 1px solid var(--border); border-radius: 3px;
+  margin-bottom: 6px; overflow: hidden; background: var(--bg2);
+  transition: border-color 0.12s;
+}
+.gov-item:hover { border-color: var(--green-line); }
+.gov-num {
+  background: var(--bg3); border-right: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600; color: var(--muted);
+}
+.gov-content { padding: 12px 16px; }
+.gov-title { font-size: 0.88rem; font-weight: 600; color: var(--ink2); margin-bottom: 3px; }
+.gov-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+.gov-status {
+  padding: 12px 14px; display: flex; align-items: center; justify-content: center;
+  background: var(--bg3); border-left: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; text-align: center; white-space: nowrap;
+}
+.gov-status.must  { color: var(--rose);  }
+.gov-status.should{ color: var(--amber); }
+.gov-status.can   { color: var(--slate); }
+
+/* ── RECOMMENDATION STRIP ── */
+.rec-strip { margin: 24px 0; display: flex; flex-direction: column; gap: 8px; }
+.rec-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 16px 20px; background: var(--bg2);
+  border: 1px solid var(--border); border-left: 3px solid var(--green);
+  border-radius: 0 4px 4px 0;
+  transition: border-left-color 0.15s, background 0.15s;
+}
+.rec-item:hover { background: var(--green-g); border-left-color: var(--green-b); }
+.rec-num {
+  font-family: var(--display); font-size: 1.8rem; font-weight: 700;
+  color: var(--green-b); line-height: 1; flex-shrink: 0; min-width: 28px;
+}
+.rec-text {}
+.rec-title { font-size: 0.9rem; font-weight: 600; color: var(--ink2); margin-bottom: 4px; }
+.rec-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+.rec-tag {
+  margin-left: auto; flex-shrink: 0; align-self: flex-start; margin-top: 2px;
+  font-family: var(--mono); font-size: 0.57rem; font-weight: 600;
+  padding: 3px 9px; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
+}
+.rec-tag.q1 { background: var(--green-d); color: var(--green-b); border: 1px solid var(--green-line); }
+.rec-tag.q2 { background: var(--amber-d); color: var(--amber);   border: 1px solid var(--amber-line); }
+.rec-tag.q3 { background: var(--slate-d); color: var(--slate);   border: 1px solid var(--slate-line); }
+
+/* ── FOOTER ── */
+footer {
+  margin-top: 80px;
+  padding: 28px 120px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-left {}
+.footer-brand {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 7px; margin-bottom: 3px;
+}
+.footer-brand::before { content: '&#9670;'; color: var(--green); font-size: 0.45rem; }
+.footer-doc { font-family: var(--mono); font-size: 0.57rem; color: var(--faint); }
+.footer-right { font-family: var(--mono); font-size: 0.57rem; color: var(--faint); text-align: right; }
+
+code {
+  font-family: var(--mono); font-size: 0.82em;
+  background: var(--bg3); color: var(--green-b);
+  padding: 1px 6px; border-radius: 2px; border: 1px solid var(--border);
+}
+
+@media (max-width: 1100px) {
+  #cover, footer { padding-left: 60px; padding-right: 60px; }
+  #exec-summary  { padding: 32px 60px; grid-template-columns: 1fr 2px 1fr 2px 1fr 2px 1fr; }
+  #content-wrapper { padding: 0 60px; }
+}
+@media (max-width: 800px) {
+  #cover, footer { padding: 40px 28px; }
+  #exec-summary  { padding: 28px; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .es-divider    { display: none; }
+  .es-stat       { padding: 0; text-align: left; }
+  #content-wrapper { padding: 0 28px; }
+  .panel-grid    { grid-template-columns: 1fr; }
+  .maturity-track{ flex-direction: column; }
+  .maturity-node { border-right: none; border-bottom: 1px solid var(--border); }
+  .decision-row  { grid-template-columns: 60px 1fr; }
+  .dr-action     { display: none; }
+  .rec-tag       { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- SITE NAV -->
+<nav id="sitenav">
+  <div class="sitenav-inner">
+    <a href="https://joshwritingsamples.com" class="sitenav-brand">Josh Writing Samples</a>
+    <div class="sitenav-links">
+      <a href="https://joshwritingsamples.com"                    class="sitenav-link">Home</a>
+      <a href="https://joshwritingsamples.com/about.html"         class="sitenav-link">About Me</a>
+      <a href="https://joshwritingsamples.com/samples/index.html" class="sitenav-link active">Samples</a>
+      <a href="https://joshwritingsamples.com/knowledge.html"     class="sitenav-link">Knowledge Management</a>
+      <a href="https://joshwritingsamples.com/contact.html"       class="sitenav-link">Contact</a>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">&#9776;</button>
+  </div>
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="https://joshwritingsamples.com"                    class="nav-mobile-link">Home</a>
+    <a href="https://joshwritingsamples.com/about.html"         class="nav-mobile-link">About Me</a>
+    <a href="https://joshwritingsamples.com/samples/index.html" class="nav-mobile-link active">Samples</a>
+    <a href="https://joshwritingsamples.com/knowledge.html"     class="nav-mobile-link">Knowledge Management</a>
+    <a href="https://joshwritingsamples.com/contact.html"       class="nav-mobile-link">Contact</a>
+  </div>
+  <div class="nav-breadcrumb">
+    <a href="https://joshwritingsamples.com"                    class="nav-bc-item">Home</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <a href="https://joshwritingsamples.com/samples/index.html" class="nav-bc-item">Samples</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item">Executive</span>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item current">AI Adoption Brief</span>
+  </div>
+</nav>
+
+<div id="page">
+
+  <!-- ══ COVER ══ -->
+  <section id="cover">
+    <div class="cover-label">Executive Brief &middot; Confidential</div>
+    <div class="cover-title">AI Adoption</div>
+    <div class="cover-title-sub">for the Enterprise</div>
+    <p class="cover-description">A leadership-facing synthesis of the opportunities, risks, governance requirements, and strategic value of enterprise AI adoption — distilled for executive decision-making without technical prerequisite.</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <span class="cover-meta-key">Prepared For</span>
+        <span class="cover-meta-val">Executive Leadership &amp; Directors</span>
+      </div>
+      <div class="cover-meta-divider"></div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-key">Audience</span>
+        <span class="cover-meta-val">Executives · Directors · Transformation Leaders</span>
+      </div>
+      <div class="cover-meta-divider"></div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-key">Classification</span>
+        <span class="cover-meta-val">Internal — Leadership Distribution</span>
+      </div>
+      <div class="cover-meta-divider"></div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-key">Version</span>
+        <span class="cover-meta-val">1.0 &middot; 2025</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ EXECUTIVE SUMMARY STATS ══ -->
+  <div id="exec-summary">
+    <div class="es-stat">
+      <div class="es-num">4<sup>×</sup></div>
+      <div class="es-label">Productivity lift reported by early enterprise AI adopters in knowledge-intensive roles</div>
+    </div>
+    <div class="es-divider"></div>
+    <div class="es-stat">
+      <div class="es-num">78<sup>%</sup></div>
+      <div class="es-label">Of organizations that piloted AI report governance as their primary adoption barrier</div>
+    </div>
+    <div class="es-divider"></div>
+    <div class="es-stat">
+      <div class="es-num">18</div>
+      <div class="es-label">Months — median time from AI pilot to scaled deployment without a structured framework</div>
+    </div>
+    <div class="es-divider"></div>
+    <div class="es-stat">
+      <div class="es-num">3<sup>×</sup></div>
+      <div class="es-label">Greater ROI achieved by organizations that governed AI before scaling it</div>
+    </div>
+  </div>
+
+  <!-- ══ CONTENT ══ -->
+  <div id="content-wrapper">
+
+    <!-- 01 THE STRATEGIC MOMENT -->
+    <section class="brief-section" id="moment">
+      <div class="section-label" data-n="01">The Strategic Moment</div>
+      <h2 class="section-title">This Is a <em>Platform Shift</em>, Not a Tool Decision</h2>
+      <p class="lead">The decision facing enterprise leadership today is not whether to adopt AI productivity tools. That decision is already being made — by individual contributors, by departments, and by competitors. The decision is whether to lead that adoption with strategy and governance, or to manage its consequences after the fact.</p>
+      <p class="body">Platform shifts — the introduction of the internet, cloud infrastructure, mobile — share a consistent pattern. Early movers who build institutional capability gain structural advantages that compress over the following years as adoption saturates. Organizations that treat the shift as a procurement decision rather than a capability-building investment typically close the gap at significantly higher cost and with a narrowed window for differentiation.</p>
+      <p class="body">AI is following this pattern at an accelerated pace. The window for first-mover advantage in enterprise AI is measured in quarters, not years. The strategic question is not whether the investment is justified — the evidence base is now substantial. The question is which capabilities to build, in what sequence, and with what governance guardrails.</p>
+
+      <div class="exec-callout">
+        <p>Organizations that build knowledge infrastructure before scaling AI adoption consistently outperform those that retrofit governance after deployment. The architecture of the knowledge system determines the ceiling of what AI can do with it.</p>
+        <cite>Enterprise AI Readiness Research &middot; 2025</cite>
+      </div>
+    </section>
+
+    <!-- 02 OPPORTUNITIES -->
+    <section class="brief-section" id="opportunities">
+      <div class="section-label" data-n="02">Opportunities</div>
+      <h2 class="section-title">Where AI Creates <em>Measurable Value</em></h2>
+      <p class="lead">Enterprise AI value concentrates in four capability categories. The highest-impact opportunities share a common characteristic: they operate on knowledge that is already structured, governed, and accessible — which means knowledge infrastructure quality directly determines the return on AI investment.</p>
+
+      <div class="clearfix">
+        <div class="pull-stat">
+          <div class="pull-stat-num">60<sup>%</sup></div>
+          <div class="pull-stat-label">Of knowledge worker time spent finding, synthesizing, and reformatting information — the primary AI opportunity surface</div>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel opportunity">
+            <div class="panel-head">
+              <div class="panel-icon">&#128640;</div>
+              <div class="panel-head-text">
+                <div class="panel-head-label">Opportunity</div>
+                <div class="panel-head-title">Knowledge Access &amp; Synthesis</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <ul>
+                <li>Instant retrieval from structured knowledge repositories replacing manual search</li>
+                <li>Synthesis across multiple source documents in seconds rather than hours</li>
+                <li>Role-appropriate response generation from the same knowledge corpus</li>
+                <li>New employee onboarding time reduced by structured knowledge availability</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel opportunity">
+            <div class="panel-head">
+              <div class="panel-icon">&#9998;</div>
+              <div class="panel-head-text">
+                <div class="panel-head-label">Opportunity</div>
+                <div class="panel-head-title">Content &amp; Communication</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <ul>
+                <li>First-draft generation for reports, summaries, and communications</li>
+                <li>Consistent tone and format enforcement across organizational outputs</li>
+                <li>Translation and localization at scale for global operations</li>
+                <li>Documentation maintenance automated from source system changes</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel opportunity">
+            <div class="panel-head">
+              <div class="panel-icon">&#128202;</div>
+              <div class="panel-head-text">
+                <div class="panel-head-label">Opportunity</div>
+                <div class="panel-head-title">Decision Support &amp; Analysis</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <ul>
+                <li>Pattern detection across operational data at speeds exceeding human analysis</li>
+                <li>Structured scenario modeling from structured policy and process objects</li>
+                <li>Anomaly identification in compliance and quality workflows</li>
+                <li>Demand forecasting and resource allocation recommendation</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel opportunity">
+            <div class="panel-head">
+              <div class="panel-icon">&#9881;</div>
+              <div class="panel-head-text">
+                <div class="panel-head-label">Opportunity</div>
+                <div class="panel-head-title">Process Automation</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <ul>
+                <li>Routing and triage decisions in support and operations contexts</li>
+                <li>Structured data extraction from unstructured inputs</li>
+                <li>Compliance monitoring against defined policy objects</li>
+                <li>Workflow handoff coordination with reduced human coordination overhead</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 RISKS -->
+    <section class="brief-section" id="risks">
+      <div class="section-label" data-n="03">Risks</div>
+      <h2 class="section-title">What Leaders <em>Must Not Underestimate</em></h2>
+      <p class="lead">The risks of enterprise AI adoption are real, well-documented, and manageable — but only when addressed proactively. The organizations that experience the most significant AI-related failures are those that deployed capability without governance, or that treated risk management as a post-deployment activity.</p>
+
+      <div class="panel-grid">
+        <div class="panel risk">
+          <div class="panel-head">
+            <div class="panel-icon">&#9888;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Risk Category</div>
+              <div class="panel-head-title">Knowledge Quality Risk</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>AI generates responses from whatever knowledge it is given — ungoverned, outdated, or inconsistent sources produce unreliable outputs at scale</li>
+              <li>Errors in AI responses are trusted at higher rates than equivalent errors in human responses due to presentation confidence</li>
+              <li>Knowledge gaps invisible in human workflows become visible — and consequential — when AI exposes them through incorrect synthesis</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel risk">
+          <div class="panel-head">
+            <div class="panel-icon">&#128274;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Risk Category</div>
+              <div class="panel-head-title">Data &amp; Privacy Risk</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>Employees using consumer AI tools with organizational data in the absence of sanctioned alternatives — a risk that grows with adoption friction</li>
+              <li>AI systems trained on or accessing sensitive data without appropriate access controls or data residency governance</li>
+              <li>Regulatory exposure in jurisdictions with AI-specific legislation where organizational practices are not yet compliant</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel risk">
+          <div class="panel-head">
+            <div class="panel-icon">&#128203;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Risk Category</div>
+              <div class="panel-head-title">Accountability Risk</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>AI-generated outputs used in customer-facing, legal, or compliance contexts without human review create attribution and liability exposure</li>
+              <li>Absence of audit trails for AI-assisted decisions limits the organization's ability to explain or defend those decisions</li>
+              <li>Over-reliance on AI for decisions that require human judgment erodes the institutional capability to make those judgments independently</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel risk">
+          <div class="panel-head">
+            <div class="panel-icon">&#128101;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Risk Category</div>
+              <div class="panel-head-title">Talent &amp; Change Risk</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>Adoption resistance from practitioners who perceive AI as a displacement threat rather than a capability extension — a framing that leadership communication directly shapes</li>
+              <li>Skill gaps in AI-assisted workflows that widen if addressed by tool deployment alone without structured enablement</li>
+              <li>Uneven adoption across functions creating internal capability inequities that compound over time</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 GOVERNANCE -->
+    <section class="brief-section" id="governance">
+      <div class="section-label" data-n="04">Governance Requirements</div>
+      <h2 class="section-title">The Infrastructure That Makes <em>AI Safe to Scale</em></h2>
+      <p class="lead">Governance is not the brake on AI adoption — it is the foundation that makes acceleration safe. The organizations that scale AI fastest are those that invested in governance first, because governed AI is trustworthy AI, and trustworthy AI is the only kind that expands its own mandate over time.</p>
+      <p class="body">The governance requirements below are organized by urgency. <em>Must establish</em> items are pre-conditions for any responsible deployment. <em>Should establish</em> items are critical for scaling beyond initial pilots. <em>Can establish</em> items mature the capability over time.</p>
+
+      <div class="gov-checklist">
+        <div class="gov-item">
+          <div class="gov-num">1</div>
+          <div class="gov-content">
+            <div class="gov-title">AI Use Policy</div>
+            <div class="gov-desc">A governing document defining permitted uses, prohibited uses, data handling requirements, and human review obligations for AI-assisted outputs across the organization.</div>
+          </div>
+          <div class="gov-status must">Must Establish</div>
+        </div>
+        <div class="gov-item">
+          <div class="gov-num">2</div>
+          <div class="gov-content">
+            <div class="gov-title">Sanctioned Tool Registry</div>
+            <div class="gov-desc">A maintained list of approved AI tools with documented data residency, privacy, and security characteristics — the mechanism that redirects shadow AI usage toward governed alternatives.</div>
+          </div>
+          <div class="gov-status must">Must Establish</div>
+        </div>
+        <div class="gov-item">
+          <div class="gov-num">3</div>
+          <div class="gov-content">
+            <div class="gov-title">Knowledge Quality Standard</div>
+            <div class="gov-desc">A defined standard for what constitutes AI-ready knowledge: typed, versioned, owned, reviewed, and relationally connected. The quality of AI output is bounded by the quality of its knowledge inputs.</div>
+          </div>
+          <div class="gov-status must">Must Establish</div>
+        </div>
+        <div class="gov-item">
+          <div class="gov-num">4</div>
+          <div class="gov-content">
+            <div class="gov-title">Human Review Requirements by Use Case</div>
+            <div class="gov-desc">A matrix defining which AI-assisted output types require mandatory human review before use — calibrated by domain risk, audience, and regulatory exposure rather than applied uniformly.</div>
+          </div>
+          <div class="gov-status should">Should Establish</div>
+        </div>
+        <div class="gov-item">
+          <div class="gov-num">5</div>
+          <div class="gov-content">
+            <div class="gov-title">AI Incident Response Procedure</div>
+            <div class="gov-desc">A defined procedure for identifying, containing, and learning from AI-related failures — covering erroneous outputs, data exposure events, and compliance deviations.</div>
+          </div>
+          <div class="gov-status should">Should Establish</div>
+        </div>
+        <div class="gov-item">
+          <div class="gov-num">6</div>
+          <div class="gov-content">
+            <div class="gov-title">AI Performance Measurement Framework</div>
+            <div class="gov-desc">Metrics that connect AI deployment to business outcomes — not tool adoption rates or prompt counts, but measurable changes in knowledge worker productivity, decision quality, and operational throughput.</div>
+          </div>
+          <div class="gov-status should">Should Establish</div>
+        </div>
+        <div class="gov-item">
+          <div class="gov-num">7</div>
+          <div class="gov-content">
+            <div class="gov-title">AI Ethics Review Process</div>
+            <div class="gov-desc">A structured review for AI use cases in sensitive domains — hiring, performance assessment, customer credit decisions — ensuring fairness, explainability, and regulatory alignment before deployment.</div>
+          </div>
+          <div class="gov-status can">Can Establish</div>
+        </div>
+        <div class="gov-item">
+          <div class="gov-num">8</div>
+          <div class="gov-content">
+            <div class="gov-title">Continuous AI Audit Capability</div>
+            <div class="gov-desc">Tooling and process to periodically audit AI system outputs, access patterns, and usage against the AI Use Policy — treating AI governance as an ongoing operational discipline rather than a one-time compliance exercise.</div>
+          </div>
+          <div class="gov-status can">Can Establish</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 STRATEGIC VALUE -->
+    <section class="brief-section" id="value">
+      <div class="section-label" data-n="05">Strategic Value</div>
+      <h2 class="section-title">The Compounding <em>Return on Infrastructure</em></h2>
+      <p class="lead">The strategic value of enterprise AI is not linear. Tool deployment produces tool-level returns. Capability-building — structured knowledge, governed AI, instrumented workflows — produces compounding returns, because each investment increases the value of every subsequent investment.</p>
+
+      <div class="panel-grid">
+        <div class="panel value">
+          <div class="panel-head">
+            <div class="panel-icon">&#8634;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Value Driver</div>
+              <div class="panel-head-title">Institutional Knowledge Retention</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>Structured knowledge systems capture and preserve expertise that previously walked out the door with departing employees</li>
+              <li>AI systems trained on well-governed knowledge make that institutional knowledge accessible to the entire organization, not just those who know who to ask</li>
+              <li>Onboarding speed and quality improvements compound as the knowledge corpus grows</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel value">
+          <div class="panel-head">
+            <div class="panel-icon">&#9889;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Value Driver</div>
+              <div class="panel-head-title">Decision Velocity</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>Leaders and practitioners who can surface relevant precedent, policy, and analysis in seconds make higher-quality decisions faster</li>
+              <li>Consistent access to the same authoritative knowledge base reduces variation in decision-making across teams and locations</li>
+              <li>AI-assisted scenario modeling surfaces implications of decisions that informal analysis would miss</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel value">
+          <div class="panel-head">
+            <div class="panel-icon">&#128200;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Value Driver</div>
+              <div class="panel-head-title">Operational Scale Without Headcount Scale</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>Knowledge-intensive functions — support, compliance, legal, HR — can absorb higher volumes with AI augmentation without proportional headcount growth</li>
+              <li>This is not workforce reduction — it is capacity expansion that enables practitioners to focus on judgment-intensive work rather than information-intensive work</li>
+              <li>The cost curve for knowledge-intensive operations shifts structurally, not temporarily</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel value">
+          <div class="panel-head">
+            <div class="panel-icon">&#127919;</div>
+            <div class="panel-head-text">
+              <div class="panel-head-label">Value Driver</div>
+              <div class="panel-head-title">Competitive Differentiation</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>Organizations with structured, AI-ready knowledge bases are able to deploy and iterate AI capabilities at a pace that document-centric competitors cannot match</li>
+              <li>Customer-facing AI that draws from a governed, current knowledge base produces meaningfully better outcomes than AI drawing from unstructured documentation</li>
+              <li>The capability gap between governed and ungoverned AI deployments widens over time as the governed corpus improves continuously</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 MATURITY PATH -->
+    <section class="brief-section" id="maturity">
+      <div class="section-label" data-n="06">Adoption Path</div>
+      <h2 class="section-title">A <em>Sequenced</em> Approach to Enterprise AI</h2>
+      <p class="lead">The organizations that struggle with AI adoption share a pattern: they deployed capability before building infrastructure. The recommended sequence inverts this — establishing the knowledge and governance foundations that determine AI quality, then scaling capability on top of them.</p>
+
+      <div class="maturity-track">
+        <div class="maturity-node">
+          <div class="mn-level">Phase 1</div>
+          <div class="mn-title">Foundation</div>
+          <div class="mn-desc">AI Use Policy. Sanctioned tool list. Knowledge quality audit. Governance roles assigned.</div>
+        </div>
+        <div class="maturity-node current">
+          <div class="mn-level">Phase 2</div>
+          <div class="mn-title">Structured Knowledge</div>
+          <div class="mn-desc">Knowledge typed, identified, and related. Domain ownership established. Version governance active.</div>
+        </div>
+        <div class="maturity-node">
+          <div class="mn-level">Phase 3</div>
+          <div class="mn-title">Governed AI Pilot</div>
+          <div class="mn-desc">AI retrieval on structured knowledge. Human review requirements defined. Metrics baseline established.</div>
+        </div>
+        <div class="maturity-node">
+          <div class="mn-level">Phase 4</div>
+          <div class="mn-title">Scaled Deployment</div>
+          <div class="mn-desc">AI capability extended across functions. Telemetry-driven improvement. Continuous audit operational.</div>
+        </div>
+        <div class="maturity-node">
+          <div class="mn-level">Phase 5</div>
+          <div class="mn-title">AI-Native Operations</div>
+          <div class="mn-desc">AI embedded in core workflows. Self-improving knowledge system. Strategic alignment measured.</div>
+        </div>
+      </div>
+
+      <p class="body">Most organizations sit at Phase 1 or early Phase 2. The priority investment for leaders at this stage is not in AI tools — it is in the knowledge infrastructure that determines what AI tools can do. Deploying sophisticated AI capability on an unstructured knowledge base is analogous to building a precision manufacturing line without calibrated inputs: the process is fast, the outputs are unreliable.</p>
+    </section>
+
+    <!-- 07 DECISION FRAMEWORK -->
+    <section class="brief-section" id="decisions">
+      <div class="section-label" data-n="07">Decision Framework</div>
+      <h2 class="section-title">Questions for <em>Leadership Alignment</em></h2>
+      <p class="lead">The following questions are the ones that leadership teams consistently report as the most valuable to align on before committing to an AI adoption roadmap. They are not technical questions — they are organizational questions that have technical implications.</p>
+
+      <div class="decision-row">
+        <div class="dr-q">1</div>
+        <div class="dr-content">
+          <div class="dr-question">Is our knowledge structured well enough for AI to use it reliably?</div>
+          <div class="dr-guidance">If the honest answer is no — if knowledge is scattered across document repositories without typing, governance, or version discipline — the first investment is in knowledge infrastructure, not AI tooling. AI is only as reliable as the knowledge it draws from.</div>
+        </div>
+        <div class="dr-action plan">Audit First, Then Build</div>
+      </div>
+      <div class="decision-row">
+        <div class="dr-q">2</div>
+        <div class="dr-content">
+          <div class="dr-question">Do our people have governed alternatives to the consumer AI tools they are already using?</div>
+          <div class="dr-guidance">Shadow AI — employees using personal accounts on consumer tools with organizational data — is already happening in most organizations. Governance that offers no sanctioned alternative does not reduce usage; it removes visibility into it.</div>
+        </div>
+        <div class="dr-action act">Act Immediately</div>
+      </div>
+      <div class="decision-row">
+        <div class="dr-q">3</div>
+        <div class="dr-content">
+          <div class="dr-question">Where does human judgment remain non-negotiable, and have we made that explicit?</div>
+          <div class="dr-guidance">The question is not whether AI can do something — it is whether AI should do it without human review. Defining the boundary explicitly, by use case and domain, is a governance decision that belongs at the leadership level, not the tool configuration level.</div>
+        </div>
+        <div class="dr-action govern">Define the Boundary</div>
+      </div>
+      <div class="decision-row">
+        <div class="dr-q">4</div>
+        <div class="dr-content">
+          <div class="dr-question">How are we measuring whether AI adoption is creating the value we expect?</div>
+          <div class="dr-guidance">Tool adoption rates measure deployment, not value. The relevant metrics are changes in knowledge worker output quality and throughput, decision-making speed, and operational capacity — connected back to strategic objectives through the alignment model.</div>
+        </div>
+        <div class="dr-action govern">Define Metrics First</div>
+      </div>
+      <div class="decision-row">
+        <div class="dr-q">5</div>
+        <div class="dr-content">
+          <div class="dr-question">Are we treating AI adoption as a transformation initiative or a procurement exercise?</div>
+          <div class="dr-guidance">The organizations that achieve structural AI advantage treat adoption as a capability-building program — with executive sponsorship, change management, enablement investment, and a multi-phase roadmap. Those that treat it as a procurement exercise typically achieve tool deployment without capability change.</div>
+        </div>
+        <div class="dr-action act">Elevate the Framing</div>
+      </div>
+    </section>
+
+    <!-- 08 RECOMMENDATIONS -->
+    <section class="brief-section" id="recommendations">
+      <div class="section-label" data-n="08">Recommendations</div>
+      <h2 class="section-title">Five Actions for <em>Leadership</em> This Quarter</h2>
+      <p class="lead">The following recommendations are scoped for executive action — decisions and investments that require leadership authority to initiate, and that unlock disproportionate value relative to their cost.</p>
+
+      <div class="rec-strip">
+        <div class="rec-item">
+          <div class="rec-num">1</div>
+          <div class="rec-text">
+            <div class="rec-title">Commission an AI readiness audit of your knowledge infrastructure</div>
+            <div class="rec-desc">Before evaluating AI tools, establish an honest baseline of knowledge quality: what exists, how it is typed and governed, where the gaps are, and how much of it is structured enough for AI to use reliably. This audit determines the sequence and scope of everything that follows.</div>
+          </div>
+          <div class="rec-tag q1">This Quarter</div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-num">2</div>
+          <div class="rec-text">
+            <div class="rec-title">Publish an AI Use Policy and sanctioned tool registry</div>
+            <div class="rec-desc">The AI Use Policy does not need to be comprehensive to be effective. A clear statement of permitted uses, prohibited uses, and data handling requirements — paired with a list of approved tools — immediately reduces shadow AI risk and signals organizational intent to employees.</div>
+          </div>
+          <div class="rec-tag q1">This Quarter</div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-num">3</div>
+          <div class="rec-text">
+            <div class="rec-title">Identify and fund one high-readiness AI pilot with a structured evaluation framework</div>
+            <div class="rec-desc">Select a use case where knowledge is already reasonably well-structured, the productivity opportunity is clear, and the risk profile is manageable. Define success metrics before the pilot begins. A single well-evaluated pilot generates more strategic insight than five unstructured ones.</div>
+          </div>
+          <div class="rec-tag q2">Next Quarter</div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-num">4</div>
+          <div class="rec-text">
+            <div class="rec-title">Assign executive ownership of AI governance — not IT ownership</div>
+            <div class="rec-desc">AI governance decisions — what AI can do, where human review is required, how organizational knowledge is managed — are business decisions with technology implications, not technology decisions with business implications. They require an executive owner with the authority to set and enforce policy across functions.</div>
+          </div>
+          <div class="rec-tag q1">This Quarter</div>
+        </div>
+        <div class="rec-item">
+          <div class="rec-num">5</div>
+          <div class="rec-text">
+            <div class="rec-title">Frame AI adoption for your people as capability extension, not workforce reduction</div>
+            <div class="rec-desc">The adoption resistance that derails AI programs most consistently is not technical — it is cultural. Leadership communication that frames AI as a tool that makes experienced people more effective, rather than a tool that makes experienced people redundant, is the single highest-return communication investment in an AI adoption program.</div>
+          </div>
+          <div class="rec-tag q2">Next Quarter</div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content-wrapper -->
+</div><!-- /page -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="footer-brand">Josh Writing Samples &middot; Executive Series</div>
+    <div class="footer-doc">Executive Brief: AI Adoption for the Enterprise &middot; v1.0 &middot; 2025 &middot; Leadership Distribution</div>
+  </div>
+  <div class="footer-right">Sample Document<br>joshwritingsamples.com</div>
+</footer>
+
+<script>
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  progressBar.style.width = Math.min(pct, 100) + '%';
+});
+
+const sections = document.querySelectorAll('.brief-section');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+  });
+}, { threshold: 0.05 });
+sections.forEach(s => revealObs.observe(s));
+</script>
+</body>
+</html>
