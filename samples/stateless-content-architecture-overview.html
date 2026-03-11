@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stateless Content Architecture Overview — Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:       #0A0D0A;
+  --bg2:      #0F1410;
+  --bg3:      #151C15;
+  --bg4:      #1C251C;
+  --bg5:      #222D22;
+  --border:   rgba(255,255,255,0.05);
+  --border2:  rgba(255,255,255,0.09);
+  --border3:  rgba(255,255,255,0.14);
+  --text:     #DDE8DC;
+  --dim:      #7E9A7C;
+  --faint:    #3E5240;
+  --green:    #4E9A5F;
+  --green-b:  #6BBF7C;
+  --green-d:  rgba(78,154,95,0.12);
+  --green-g:  rgba(78,154,95,0.06);
+  --green-glow: rgba(78,154,95,0.22);
+  --sage:     #8FB8A0;
+  --moss:     #3D6B4A;
+  --teal:     #4AADA0;
+  --teal-d:   rgba(74,173,160,0.12);
+  --gold:     #C4A84A;
+  --gold-d:   rgba(196,168,74,0.12);
+  --serif:    'Playfair Display', Georgia, serif;
+  --body:     'Source Serif 4', Georgia, serif;
+  --mono:     'JetBrains Mono', 'Fira Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(78,154,95,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,154,95,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SITE NAV ── */
+#sitenav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(10,13,10,0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border2);
+}
+.sitenav-inner {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 48px;
+  gap: 0;
+}
+.sitenav-brand {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-right: auto;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.sitenav-brand::before {
+  content: '&#9670;';
+  color: var(--green);
+  font-size: 0.6rem;
+  flex-shrink: 0;
+}
+.sitenav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.sitenav-link {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.sitenav-link:hover {
+  color: var(--text);
+  background: var(--bg3);
+  border-color: var(--border2);
+}
+.sitenav-link.active {
+  color: var(--green-b);
+  background: var(--green-g);
+  border-color: rgba(78,154,95,0.28);
+}
+.nav-breadcrumb {
+  height: 30px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.nav-bc-item {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-bc-item:hover { color: var(--dim); }
+.nav-bc-sep { color: var(--faint); font-size: 0.5rem; }
+.nav-bc-item.current { color: var(--green); }
+.nav-hamburger {
+  display: none;
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 5px 9px;
+  cursor: pointer;
+  color: var(--dim);
+  font-size: 1rem;
+  line-height: 1;
+}
+.nav-mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  padding: 8px 0;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-link {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  padding: 10px 28px;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+.nav-mobile-link:hover { color: var(--text); background: var(--bg3); }
+.nav-mobile-link.active { color: var(--green-b); border-left-color: var(--green); background: var(--green-g); }
+@media (max-width: 768px) {
+  .sitenav-links { display: none; }
+  .nav-hamburger { display: block; }
+  .sitenav-inner { padding: 0 20px; }
+  .nav-breadcrumb { padding: 0 20px; display: none; }
+}
+
+/* ── LAYOUT ── */
+#shell {
+  display: flex;
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 86px);
+}
+
+/* ── LEFT SIDEBAR ── */
+#sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  height: calc(100vh - 86px);
+  position: sticky;
+  top: 86px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg4) transparent;
+  padding: 28px 0;
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--bg4); }
+
+.sb-section-label {
+  padding: 0 20px 10px;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.sb-meta { padding: 0 20px 24px; }
+.sb-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.sb-meta-key {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.sb-meta-val { font-size: 0.78rem; color: var(--dim); }
+.sb-meta-val.accent { color: var(--green); font-family: var(--mono); font-size: 0.7rem; }
+.sb-divider { height: 1px; background: var(--border); margin: 0 0 20px; }
+.sb-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 20px;
+  text-decoration: none;
+  font-size: 0.76rem;
+  color: var(--dim);
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.sb-nav-link:hover { color: var(--text); border-left-color: rgba(78,154,95,0.4); background: var(--bg3); }
+.sb-nav-link.active { color: var(--green-b); border-left-color: var(--green); background: var(--green-g); }
+.sb-nav-num {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--faint);
+  flex-shrink: 0;
+  width: 16px;
+}
+
+/* ── MAIN ── */
+#main { flex: 1; min-width: 0; padding: 0 0 120px; }
+
+/* ── HERO ── */
+#hero {
+  padding: 72px 80px 60px;
+  border-bottom: 1px solid var(--border2);
+  position: relative;
+  overflow: hidden;
+}
+#hero::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(78,154,95,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+#hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  left: 200px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(74,173,160,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--green);
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.08;
+  color: var(--text);
+  max-width: 720px;
+  margin-bottom: 24px;
+}
+.hero-title em { font-style: italic; color: var(--green-b); }
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--dim);
+  max-width: 620px;
+  line-height: 1.75;
+  margin-bottom: 36px;
+}
+.hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border2);
+}
+.hero-tag.primary { background: var(--green-d); border-color: rgba(78,154,95,0.3); color: var(--green-b); }
+.hero-tag.secondary { background: var(--teal-d); border-color: rgba(74,173,160,0.25); color: var(--teal); }
+.hero-tag.tertiary { background: var(--gold-d); border-color: rgba(196,168,74,0.25); color: var(--gold); }
+
+/* ── CONTENT SECTIONS ── */
+.article-section {
+  padding: 60px 80px;
+  border-bottom: 1px solid var(--border);
+  max-width: 860px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.article-section.visible { opacity: 1; transform: translateY(0); }
+
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-eyebrow::before { content: attr(data-num); color: var(--faint); }
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 22px;
+}
+.section-title em { font-style: italic; color: var(--green-b); }
+
+.section-lead {
+  font-size: 1rem;
+  color: var(--dim);
+  line-height: 1.85;
+  margin-bottom: 24px;
+  max-width: 680px;
+}
+
+p.body-text {
+  font-size: 0.95rem;
+  color: var(--dim);
+  line-height: 1.85;
+  margin-bottom: 18px;
+  max-width: 680px;
+}
+
+/* ── SUBSECTION ── */
+.subsection { margin: 32px 0 16px; }
+.subsection-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.subsection-title::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+/* ── CALLOUT ── */
+.callout {
+  position: relative;
+  padding: 18px 20px 18px 50px;
+  margin: 24px 0;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  max-width: 680px;
+}
+.callout::before { position: absolute; left: 17px; top: 18px; font-size: 0.9rem; }
+.callout.green { background: var(--green-g); border-left: 3px solid var(--green); }
+.callout.green::before { content: '&#9670;'; color: var(--green); }
+.callout.teal { background: var(--teal-d); border-left: 3px solid var(--teal); }
+.callout.teal::before { content: '&#9672;'; color: var(--teal); }
+.callout.gold { background: var(--gold-d); border-left: 3px solid var(--gold); }
+.callout.gold::before { content: '&#9671;'; color: var(--gold); }
+.callout-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.callout.green .callout-label { color: var(--green-b); }
+.callout.teal .callout-label { color: var(--teal); }
+.callout.gold .callout-label { color: var(--gold); }
+.callout p { font-size: 0.9rem; color: var(--dim); line-height: 1.7; margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* ── BULLET LIST ── */
+.bullet-list { margin: 16px 0 20px; max-width: 680px; }
+.bullet-list-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+.bullet-list ul { list-style: none; padding: 0; }
+.bullet-list li {
+  font-size: 0.92rem;
+  color: var(--dim);
+  line-height: 1.75;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+.bullet-list li::before {
+  content: '&#8212;';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+
+/* ── BEFORE / AFTER CONTRAST BLOCK ── */
+.contrast-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 24px 0;
+  max-width: 680px;
+}
+.contrast-panel {
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.contrast-head {
+  padding: 9px 14px;
+  background: var(--bg4);
+  border-bottom: 1px solid var(--border2);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.contrast-head.before { color: var(--gold); }
+.contrast-head.after  { color: var(--green-b); }
+.contrast-body { padding: 14px; background: var(--bg3); }
+.contrast-body ul { list-style: none; padding: 0; }
+.contrast-body li {
+  font-size: 0.8rem;
+  color: var(--dim);
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 8px;
+  line-height: 1.55;
+}
+.contrast-panel.before-panel .contrast-body li::before {
+  content: '&#10005;';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 0.65rem;
+  top: 2px;
+}
+.contrast-panel.after-panel .contrast-body li::before {
+  content: '&#10003;';
+  position: absolute;
+  left: 0;
+  color: var(--green-b);
+  font-size: 0.65rem;
+  top: 2px;
+}
+
+/* ── ARCHITECTURE DIAGRAM ── */
+.arch-diagram {
+  margin: 28px 0;
+  max-width: 680px;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.arch-layer {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.arch-layer:last-child { border-bottom: none; }
+.arch-layer:hover { background: rgba(78,154,95,0.04); }
+.arch-layer.top { background: linear-gradient(90deg, var(--green-g), transparent); }
+.arch-layer-num {
+  width: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--faint);
+  border-right: 1px solid var(--border);
+  background: var(--bg3);
+}
+.arch-layer.top .arch-layer-num { color: var(--green-b); background: var(--green-g); }
+.arch-layer-name {
+  width: 170px;
+  flex-shrink: 0;
+  padding: 14px 16px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+.arch-layer-name strong { font-family: var(--serif); font-size: 0.82rem; font-weight: 700; color: var(--text); }
+.arch-layer.top .arch-layer-name strong { color: var(--green-b); }
+.arch-layer-desc {
+  flex: 1;
+  padding: 14px 18px;
+  font-size: 0.8rem;
+  color: var(--dim);
+  line-height: 1.55;
+  display: flex;
+  align-items: center;
+}
+
+/* ── PIPELINE STEPS ── */
+.pipeline { margin: 24px 0; max-width: 640px; position: relative; }
+.pipeline::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 28px;
+  bottom: 28px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--green), var(--teal));
+  opacity: 0.2;
+}
+.pipe-step { display: flex; gap: 18px; align-items: flex-start; padding-bottom: 20px; position: relative; }
+.pipe-step:last-child { padding-bottom: 0; }
+.pipe-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--green-b);
+  z-index: 1;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pipe-step:hover .pipe-dot { border-color: var(--green); background: var(--green-g); }
+.pipe-body { padding-top: 8px; }
+.pipe-body strong { display: block; font-size: 0.87rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.pipe-body p { font-size: 0.81rem; color: var(--dim); line-height: 1.6; margin: 0; max-width: 500px; }
+
+/* ── DATA TABLE ── */
+.data-table-wrap {
+  overflow-x: auto;
+  margin: 22px 0;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+}
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.data-table thead tr { background: var(--bg4); }
+.data-table thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border2);
+}
+.data-table tbody td {
+  padding: 10px 14px;
+  color: var(--dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.55;
+}
+.data-table tbody td:first-child { font-family: var(--mono); font-size: 0.75rem; color: var(--green-b); white-space: nowrap; }
+.data-table tbody tr:hover td { background: rgba(78,154,95,0.03); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ── PRINCIPLE CARDS ── */
+.principles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 22px 0;
+  max-width: 680px;
+}
+.principle-card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 16px 14px;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.principle-card:hover { border-color: rgba(78,154,95,0.3); transform: translateY(-2px); }
+.pc-num {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--green);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.pc-title {
+  font-family: var(--serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: 7px;
+}
+.pc-body {
+  font-size: 0.76rem;
+  color: var(--dim);
+  line-height: 1.55;
+}
+
+/* ── STAT BAND ── */
+.stat-band {
+  display: flex;
+  gap: 0;
+  margin: 28px 0;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 680px;
+}
+.stat-item {
+  flex: 1;
+  padding: 18px 20px;
+  border-right: 1px solid var(--border2);
+  text-align: center;
+  background: var(--bg3);
+  transition: background 0.15s;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: var(--bg4); }
+.stat-num { font-family: var(--serif); font-size: 1.8rem; font-weight: 700; color: var(--green-b); line-height: 1; margin-bottom: 6px; }
+.stat-label { font-family: var(--mono); font-size: 0.58rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  margin: 32px 0;
+  padding: 28px 32px;
+  border-left: 3px solid var(--green);
+  background: var(--bg3);
+  border-radius: 0 4px 4px 0;
+  max-width: 640px;
+}
+.pull-quote p { font-family: var(--serif); font-size: 1.15rem; font-style: italic; color: var(--text); line-height: 1.65; margin-bottom: 12px; }
+.pull-quote cite { font-family: var(--mono); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); font-style: normal; }
+
+/* ── CONCLUSION ── */
+#conclusion { background: linear-gradient(135deg, var(--bg2), var(--bg3)); border-top: 1px solid var(--border2); border-bottom: 1px solid var(--border2); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 32px 80px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+}
+.footer-brand { font-family: var(--mono); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); display: flex; align-items: center; gap: 8px; }
+.footer-brand::before { content: '&#9670;'; color: var(--green); font-size: 0.5rem; }
+.footer-meta { font-family: var(--mono); font-size: 0.58rem; color: var(--faint); letter-spacing: 0.08em; }
+
+/* ── SCROLL PROGRESS ── */
+#progress-bar {
+  position: fixed;
+  top: 86px;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+  z-index: 200;
+  width: 0%;
+  transition: width 0.1s;
+  box-shadow: 0 0 8px var(--green-glow);
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  background: var(--bg4);
+  color: var(--teal);
+  padding: 1px 6px;
+  border-radius: 2px;
+  border: 1px solid var(--border2);
+}
+
+@media (max-width: 960px) {
+  #sidebar { display: none; }
+  #hero, .article-section { padding-left: 28px; padding-right: 28px; }
+  .contrast-grid { grid-template-columns: 1fr; }
+  .principles-grid { grid-template-columns: 1fr 1fr; }
+  .stat-band { flex-wrap: wrap; }
+  footer { padding: 24px 28px; flex-direction: column; gap: 8px; text-align: center; }
+}
+@media (max-width: 560px) {
+  .principles-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- SITE NAV -->
+<nav id="sitenav">
+  <div class="sitenav-inner">
+    <a href="https://joshwritingsamples.com" class="sitenav-brand">Josh Writing Samples</a>
+    <div class="sitenav-links">
+      <a href="https://joshwritingsamples.com" class="sitenav-link">Home</a>
+      <a href="https://joshwritingsamples.com/about.html" class="sitenav-link">About Me</a>
+      <a href="https://joshwritingsamples.com/samples.html" class="sitenav-link active">Samples</a>
+      <a href="https://joshwritingsamples.com/knowledge.html" class="sitenav-link">Knowledge Management</a>
+      <a href="https://joshwritingsamples.com/contact.html" class="sitenav-link">Contact</a>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">&#9776;</button>
+  </div>
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="https://joshwritingsamples.com" class="nav-mobile-link">Home</a>
+    <a href="https://joshwritingsamples.com/about.html" class="nav-mobile-link">About Me</a>
+    <a href="https://joshwritingsamples.com/samples.html" class="nav-mobile-link active">Samples</a>
+    <a href="https://joshwritingsamples.com/knowledge.html" class="nav-mobile-link">Knowledge Management</a>
+    <a href="https://joshwritingsamples.com/contact.html" class="nav-mobile-link">Contact</a>
+  </div>
+  <div class="nav-breadcrumb">
+    <a href="https://joshwritingsamples.com" class="nav-bc-item">Home</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <a href="https://joshwritingsamples.com/samples.html" class="nav-bc-item">Samples</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item">Architecture</span>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item current">Stateless Content Architecture</span>
+  </div>
+</nav>
+
+<div id="shell">
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sb-section-label">Document Info</div>
+  <div class="sb-meta">
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Category</span>
+      <span class="sb-meta-val">Architecture</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Type</span>
+      <span class="sb-meta-val">Technical Overview</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Audience</span>
+      <span class="sb-meta-val">Architects &amp; Engineers</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Object ID</span>
+      <span class="sb-meta-val accent">PCS00001</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Version</span>
+      <span class="sb-meta-val">1.0 &middot; 2025</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-section-label">Sections</div>
+
+  <a class="sb-nav-link active" href="#overview"><span class="sb-nav-num">01</span>Overview</a>
+  <a class="sb-nav-link" href="#document-problem"><span class="sb-nav-num">02</span>The Document Problem</a>
+  <a class="sb-nav-link" href="#core-model"><span class="sb-nav-num">03</span>The Fragment Model</a>
+  <a class="sb-nav-link" href="#separation"><span class="sb-nav-num">04</span>Separation of Concerns</a>
+  <a class="sb-nav-link" href="#principles"><span class="sb-nav-num">05</span>Ten Principles</a>
+  <a class="sb-nav-link" href="#reuse"><span class="sb-nav-num">06</span>Reuse Without Duplication</a>
+  <a class="sb-nav-link" href="#assembly"><span class="sb-nav-num">07</span>The Assembly Model</a>
+  <a class="sb-nav-link" href="#identity"><span class="sb-nav-num">08</span>Identity &amp; Versioning</a>
+  <a class="sb-nav-link" href="#observability"><span class="sb-nav-num">09</span>Observability</a>
+  <a class="sb-nav-link" href="#conclusion"><span class="sb-nav-num">10</span>Conclusion</a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-eyebrow">Architecture &middot; Technical Overview</div>
+    <h1 class="hero-title"><em>Stateless Content</em> Architecture Overview</h1>
+    <p class="hero-sub">A technical introduction to the principles, structures, and design decisions that define the Stateless Knowledge Architecture — the model for building enterprise content systems that compose, scale, and improve continuously.</p>
+    <div class="hero-tags">
+      <span class="hero-tag primary">Architecture</span>
+      <span class="hero-tag primary">Stateless Design</span>
+      <span class="hero-tag secondary">Content Systems</span>
+      <span class="hero-tag secondary">Composability</span>
+      <span class="hero-tag tertiary">PCS00001</span>
+    </div>
+  </section>
+
+  <!-- 01 OVERVIEW -->
+  <section id="overview" class="article-section">
+    <div class="section-eyebrow" data-num="01">Overview</div>
+    <h2 class="section-title">What <em>Stateless</em> Means in a Content System</h2>
+    <p class="section-lead">In software engineering, a stateless system is one in which each operation is self-contained — it does not depend on memory of prior operations, and it produces the same result given the same inputs regardless of when it is called. Stateless Content Architecture applies this principle to knowledge: content fragments contain only their own knowledge, carry no embedded context about where or how they will be displayed, and can be assembled into any experience at any time without modification.</p>
+
+    <p class="body-text">The word "stateless" distinguishes this model from its opposite — the stateful content system — in which documents carry their context with them. A stateful document knows where it lives (its folder or URL), how it looks (its embedded formatting), and what surrounds it (its navigation structure). Changing any of these properties requires modifying the document itself. At small scale this is manageable. At enterprise scale it becomes the source of chronic duplication, inconsistency, and maintenance overhead.</p>
+
+    <p class="body-text">Stateless Content Architecture removes context from content. A knowledge fragment knows only what it knows — its type, its identity, its relationships to other fragments, and its governance metadata. How it is displayed, who sees it, in what sequence it appears, and alongside what other fragments is entirely determined at runtime by the presentation layer. The same fragment can simultaneously appear in a practitioner playbook, a new employee orientation, an AI retrieval context, and a domain reference hub — all without any modification to the fragment itself.</p>
+
+    <div class="callout green">
+      <div class="callout-label">The Core Distinction</div>
+      <p>Stateful content is authored for a specific location and audience. Stateless content is authored as a standalone unit of knowledge and deployed into any location and audience by the presentation layer. The difference is not cosmetic — it determines whether a content system scales or collapses under its own weight.</p>
+    </div>
+
+    <div class="stat-band">
+      <div class="stat-item">
+        <div class="stat-num">10</div>
+        <div class="stat-label">Architectural Principles</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Embedded Layouts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">&#8734;</div>
+        <div class="stat-label">Reuse Contexts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Authoritative Source</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 THE DOCUMENT PROBLEM -->
+  <section id="document-problem" class="article-section">
+    <div class="section-eyebrow" data-num="02">The Document Problem</div>
+    <h2 class="section-title">Why the Document Model <em>Breaks Down</em></h2>
+    <p class="section-lead">The document is the default unit of enterprise knowledge management, and it has been for decades. It is also, at enterprise scale, an architectural liability. The document model conflates three things that should be separated: the knowledge itself, the context in which that knowledge appears, and the structure that holds them together.</p>
+
+    <p class="body-text">When an organization stores a policy as a document, it is storing not just the policy language but an implicit claim about how that policy should be read — in what order, in what visual container, alongside what other information. When a process is documented as a Word file, the process steps are entangled with the file's formatting, its location in a folder hierarchy, and its relationship to adjacent documents through hyperlinks embedded in prose.</p>
+
+    <p class="body-text">This entanglement produces compounding problems at scale. The same knowledge must serve multiple audiences — it appears in multiple documents. Each copy drifts independently as updates are made inconsistently. Search becomes the only navigation mechanism, and search is unreliable when content is unstructured. A policy change requires tracking down every document that mentions the policy and manually updating each one.</p>
+
+    <div class="contrast-grid">
+      <div class="contrast-panel before-panel">
+        <div class="contrast-head before">Document-Centric Model</div>
+        <div class="contrast-body">
+          <ul>
+            <li>Content and layout are tightly coupled</li>
+            <li>The same knowledge duplicated across files</li>
+            <li>Updates made in one place, missed in others</li>
+            <li>Navigation by folder hierarchy or search only</li>
+            <li>No formal distinction between content types</li>
+            <li>No version lineage at the content level</li>
+            <li>AI retrieval produces mixed-quality chunks</li>
+          </ul>
+        </div>
+      </div>
+      <div class="contrast-panel after-panel">
+        <div class="contrast-head after">Stateless Fragment Model</div>
+        <div class="contrast-body">
+          <ul>
+            <li>Content and layout are strictly separated</li>
+            <li>One canonical fragment, infinite reuse contexts</li>
+            <li>Update once, reflected everywhere instantly</li>
+            <li>Navigation by typed relationship graph</li>
+            <li>Formal taxonomy of knowledge object types</li>
+            <li>Full version history per fragment</li>
+            <li>AI retrieval produces typed, bounded fragments</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout teal">
+      <div class="callout-label">The Root Cause</div>
+      <p>Document proliferation and content drift are symptoms. The root cause is the absence of a formal model for what enterprise knowledge <em>is</em> — how it should be typed, identified, stored, related, and governed independently of any particular presentation context. The Stateless Content Architecture provides that model.</p>
+    </div>
+  </section>
+
+  <!-- 03 THE FRAGMENT MODEL -->
+  <section id="core-model" class="article-section">
+    <div class="section-eyebrow" data-num="03">The Fragment Model</div>
+    <h2 class="section-title">Knowledge as <em>Typed Atomic Fragments</em></h2>
+    <p class="section-lead">The foundational architectural decision of Stateless Content Architecture is to replace the document as the unit of authoring and storage with the knowledge fragment — a typed, uniquely identified, independently governed unit of organizational knowledge.</p>
+
+    <p class="body-text">A knowledge fragment is the smallest unit of knowledge that is independently meaningful. It is not a paragraph extracted from a larger document, nor a slide broken out of a deck. It is a purposefully authored object that addresses exactly one coherent knowledge unit — a governing principle, an operational workflow, an executable procedure step, or a defined term — and is written to be comprehensible without requiring the reader to simultaneously hold the content of other fragments in working memory.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">What Makes a Good Fragment</h3>
+      <p class="body-text">Three properties define a well-formed fragment. First, <strong>conceptual boundedness</strong> — the fragment addresses one coherent topic and does not bleed into adjacent topics. If a fragment must address two distinct ideas to be comprehensible, it should be decomposed into two fragments. Second, <strong>cognitive completeness</strong> — the fragment is independently meaningful without requiring adjacent context. A reader encountering it in isolation should be able to derive full value from it. Third, <strong>context independence</strong> — the fragment does not embed assumptions about where it will appear, who will read it first, or what came before it in a sequence. Context is supplied at runtime by the presentation layer.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Formal Type Taxonomy</h3>
+      <p class="body-text">Each fragment belongs to a defined type from a formal taxonomy. Type is not a label — it is an architectural classification that governs how the fragment is authored, what governance process it passes through, how frequently it is reviewed, what relationships it can declare, and how the presentation layer treats it. The four primary object types are:</p>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>ID Pattern</th>
+            <th>What It Expresses</th>
+            <th>Governance Cadence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>POL</td>
+            <td><code>POL#####</code></td>
+            <td>A governing commitment, constraint, or principle. Normative — states what must, should, or must not occur.</td>
+            <td>Quarterly or event-driven (regulatory change)</td>
+          </tr>
+          <tr>
+            <td>PCS</td>
+            <td><code>PCS#####</code></td>
+            <td>A structured end-to-end operational workflow. Describes how work moves through the organization in compliance with governing policy.</td>
+            <td>Semi-annual or on process change</td>
+          </tr>
+          <tr>
+            <td>PCD</td>
+            <td><code>PCD#####</code></td>
+            <td>Step-by-step execution instructions for a bounded task. Operational — tells a practitioner exactly what to do.</td>
+            <td>Triggered by system or tool changes</td>
+          </tr>
+          <tr>
+            <td>PBK</td>
+            <td><code>PBK#####</code></td>
+            <td>A curated assembly of policies, processes, and procedures scoped to a role, domain, or operational scenario.</td>
+            <td>On constituent fragment change</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04 SEPARATION OF CONCERNS -->
+  <section id="separation" class="article-section">
+    <div class="section-eyebrow" data-num="04">Separation of Concerns</div>
+    <h2 class="section-title">Content Layer vs. <em>Presentation Layer</em></h2>
+    <p class="section-lead">The most consequential architectural decision in a stateless content system is the strict, enforced separation between the layer that stores knowledge and the layer that displays it. These two layers must have no knowledge of each other's concerns.</p>
+
+    <p class="body-text">The content layer — the Base Content Layer in SKA's six-layer stack — stores fragments as plain Markdown with YAML frontmatter. Fragments contain no HTML, no layout instructions, no navigation links embedded in prose, and no audience-specific framing. A fragment that begins "To rotate your API credentials, perform the following steps…" does not know whether it is being displayed to an engineer in an operational runbook, to a new hire in an onboarding module, or to an AI system as part of a context package. That framing is entirely the responsibility of the layer above.</p>
+
+    <p class="body-text">The presentation layer — templates, display logic, and the UX surface — queries the content layer for relevant fragments and assembles them into experiences. A template for an engineer's operational runbook and a template for a new hire's orientation guide may include overlapping fragment sets. The fragments themselves are identical; the templates arrange, sequence, annotate, and style them differently.</p>
+
+    <div class="arch-diagram">
+      <div class="arch-layer top">
+        <div class="arch-layer-num">&#8593;</div>
+        <div class="arch-layer-name"><strong>Presentation Layer</strong></div>
+        <div class="arch-layer-desc">Templates, UX surfaces, AI interfaces. Queries fragments; assembles experiences; applies layout, sequence, and audience context. Contains no knowledge itself.</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-num">&#8597;</div>
+        <div class="arch-layer-name"><strong>Assembly Interface</strong></div>
+        <div class="arch-layer-desc">The clean boundary between layers. Templates declare what fragments they need (by type, domain, audience, level). The content layer returns them. No layout information crosses upward; no context information crosses downward.</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-num">&#8595;</div>
+        <div class="arch-layer-name"><strong>Content Layer</strong></div>
+        <div class="arch-layer-desc">Typed knowledge fragments in version-controlled storage. Contains only knowledge. No layout, no navigation prose, no audience-specific framing. The authoritative source of truth.</div>
+      </div>
+    </div>
+
+    <div class="callout gold">
+      <div class="callout-label">The Enforcement Principle</div>
+      <p>The separation between content and presentation must be enforced architecturally, not by convention. If authors can embed layout instructions in fragments — formatting shortcuts, navigation hints, audience caveats — the separation will erode over time. Schema validation on the authoring workflow prevents context from entering the content layer at the moment of authoring.</p>
+    </div>
+  </section>
+
+  <!-- 05 TEN PRINCIPLES -->
+  <section id="principles" class="article-section">
+    <div class="section-eyebrow" data-num="05">Ten Principles</div>
+    <h2 class="section-title">The Architectural <em>Commitments</em></h2>
+    <p class="section-lead">Stateless Content Architecture is defined by ten architectural commitments that constrain every design decision in the system. These are not guidelines — they are invariants. A system that violates any of them is not a stateless content architecture, regardless of what other features it possesses.</p>
+
+    <div class="principles-grid">
+      <div class="principle-card">
+        <div class="pc-num">P1</div>
+        <div class="pc-title">Content and Presentation Are Separated</div>
+        <div class="pc-body">Fragments contain only knowledge. Layout, navigation, and context are entirely the responsibility of the presentation layer.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P2</div>
+        <div class="pc-title">Knowledge Stored as Fragments, Not Pages</div>
+        <div class="pc-body">Pages are not authored — they are assembled at runtime by templates selecting from the fragment corpus.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P3</div>
+        <div class="pc-title">Every Object Has a Stable Identity</div>
+        <div class="pc-body">Identifiers are intrinsic, not location-derived. A fragment can be moved or refiled without invalidating any reference to it.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P4</div>
+        <div class="pc-title">Objects Are Typed Within a Formal Taxonomy</div>
+        <div class="pc-body">Every fragment belongs to a defined type that governs authoring standards, governance cadence, delivery logic, and reuse patterns.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P5</div>
+        <div class="pc-title">Objects Participate in a Relationship Graph</div>
+        <div class="pc-body">Fragments are connected by explicit, typed relationships that are first-class architectural entities enabling graph traversal.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P6</div>
+        <div class="pc-title">Always Rendered From Current Source</div>
+        <div class="pc-body">Every assembled experience reflects the current state of the repository. There is no stale copy problem because there are no copies.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P7</div>
+        <div class="pc-title">The System Is Observable</div>
+        <div class="pc-body">Every knowledge delivery event is instrumented at the fragment level. Systems that cannot measure their usage cannot improve systematically.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P8</div>
+        <div class="pc-title">The Architecture Is Composable</div>
+        <div class="pc-body">Every layer composes with every other. New experience types can be built from existing fragments without restructuring either.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P9</div>
+        <div class="pc-title">Knowledge Aligns to Strategy</div>
+        <div class="pc-body">Knowledge objects carry traceable references to organizational objectives, making knowledge investment defensible and gaps identifiable as strategic risks.</div>
+      </div>
+      <div class="principle-card">
+        <div class="pc-num">P10</div>
+        <div class="pc-title">The System Improves Continuously</div>
+        <div class="pc-body">Instrumentation, gap analysis, review cycles, and authoring workflows form a closed loop. The system is a living capability, not a static artifact.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 REUSE WITHOUT DUPLICATION -->
+  <section id="reuse" class="article-section">
+    <div class="section-eyebrow" data-num="06">Reuse Without Duplication</div>
+    <h2 class="section-title">One Fragment, <em>Every Context</em></h2>
+    <p class="section-lead">The phrase "reuse without replication" captures the central value proposition of the stateless fragment model. The same knowledge object can appear in an arbitrary number of delivery contexts — playbooks, tutorials, dashboards, AI responses — without being copied, forked, or reformatted.</p>
+
+    <p class="body-text">Consider a procedure for rotating API credentials — call it <code>PCD00142</code>. In a document-centric system, this procedure exists wherever it needs to be: copied into the security operations runbook, duplicated in the new engineer onboarding handbook, pasted into the infrastructure provisioning guide, and reproduced in the security training curriculum. Four copies. Each diverges over time as maintenance is applied inconsistently. By the time a security incident requires a practitioner to follow the correct procedure, there is no reliable way to know which copy is authoritative.</p>
+
+    <p class="body-text">In a stateless architecture, <code>PCD00142</code> is authored once and lives in one place in the content layer. The security operations runbook template, the onboarding template, the provisioning guide template, and the training module template all reference <code>PCD00142</code> by its stable identifier. When the procedure changes — a new tool, a new security requirement — it is updated in one place. Every template that references it reflects the update immediately, without any manual propagation.</p>
+
+    <div class="callout green">
+      <div class="callout-label">The Consistency Guarantee</div>
+      <p>In a stateless content system, consistency is structural rather than procedural. It does not depend on content teams remembering to update every copy. It is guaranteed by the architecture: there is only one copy to update, and the update is reflected everywhere at the moment it is made.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Duplication Without Replication Principle</h3>
+      <p class="body-text">This principle extends to content ingestion. When multiple source documents contain the same knowledge — eighteen engineers independently documenting the same workflow, for instance — the processing pipeline consolidates candidate fragments rather than promoting duplicates. Semantic comparison against the existing corpus identifies overlap. Where it exists, the new source is linked as a lineage reference to the existing fragment. Many sources; one canonical object; zero redundancy in the repository.</p>
+    </div>
+  </section>
+
+  <!-- 07 THE ASSEMBLY MODEL -->
+  <section id="assembly" class="article-section">
+    <div class="section-eyebrow" data-num="07">The Assembly Model</div>
+    <h2 class="section-title">Experiences Are <em>Assembled, Not Authored</em></h2>
+    <p class="section-lead">In a stateless content system, the experience a reader encounters is not authored directly — it is assembled at runtime from the fragment corpus by a display template. This distinction is the operational heart of the architecture.</p>
+
+    <p class="body-text">A display template is a structured layout that declares what it needs — which types of fragments, from which domain, at which competency level, for which audience — and retrieves them from the content layer. The template contains no prose and no knowledge. Its function is entirely structural: specifying what to retrieve, how to sequence it, how to arrange it visually, and what contextual annotations to add at the presentation layer.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-dot">1</div>
+        <div class="pipe-body">
+          <strong>Context identification</strong>
+          <p>The delivery layer identifies the request context — topic, user role, competency level, and channel — from URL parameters, session attributes, or explicit query parameters.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">2</div>
+        <div class="pipe-body">
+          <strong>Template selection</strong>
+          <p>A template appropriate to the context is selected — operational runbook, learning module, reference hub, AI context package, or Dojo scenario — based on the combination of request type and user context.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">3</div>
+        <div class="pipe-body">
+          <strong>Graph traversal query</strong>
+          <p>The template executes a typed graph traversal against the metadata layer, discovering the set of knowledge fragments relevant to the identified topic — including related objects reachable through declared relationships.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">4</div>
+        <div class="pipe-body">
+          <strong>Fragment retrieval</strong>
+          <p>Fragment content is retrieved from the Base Content Layer for all objects identified in the traversal. Only fragments with <code>active</code> lifecycle status are retrieved; deprecated and archived fragments are filtered at this stage.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">5</div>
+        <div class="pipe-body">
+          <strong>Experience assembly</strong>
+          <p>The template arranges fragments into the experience structure — applying sequence, visual hierarchy, navigation, and contextual annotations — and delivers the assembled experience to the user or AI consumer.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">6</div>
+        <div class="pipe-body">
+          <strong>Telemetry recording</strong>
+          <p>The instrumentation layer records the full delivery event: which template, which fragments, which audience context, which channel. This is the data that drives continuous improvement of both content and assembly logic.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout teal">
+      <div class="callout-label">Assemblies Are Ephemeral; Fragments Are Persistent</div>
+      <p>An organization can completely redesign its delivery templates, replace its UX layer, adopt a new AI framework, or restructure its taxonomy without losing any accumulated knowledge. The fragments persist. New assemblies are constructed from the same fragments under new template configurations. Investment in the content layer compounds over time regardless of changes to the presentation layer.</p>
+    </div>
+  </section>
+
+  <!-- 08 IDENTITY AND VERSIONING -->
+  <section id="identity" class="article-section">
+    <div class="section-eyebrow" data-num="08">Identity &amp; Versioning</div>
+    <h2 class="section-title">Stable Identity as a <em>System Property</em></h2>
+    <p class="section-lead">In a stateless content system where any fragment can be referenced by any number of templates, relationships, and AI retrieval contexts, the stability of fragment identity is not a metadata concern — it is a core system property. An unstable identifier breaks every reference to the fragment simultaneously.</p>
+
+    <p class="body-text">SKA's identity model assigns each fragment a unique, stable, location-independent identifier at the moment it is promoted to Stage 2 status. The identifier is of the form <code>TYPE#####</code> — for example, <code>PCD00142</code> or <code>POL00018</code>. It is not derived from the fragment's file path, its folder location, its URL, or any other position-dependent property. A fragment can be moved, refiled, migrated to a new repository, or renamed without any change to its identifier, and all references to it — in other fragments' relationship declarations, in template queries, in telemetry records — remain valid.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Version Lineage</h3>
+      <p class="body-text">Each fragment carries a version sequence in its metadata envelope. Every modification to a fragment's content advances its version. Current version is always what templates and AI systems retrieve. Prior versions are archived and accessible for audit, rollback, and historical comparison. When a fragment is deprecated — superseded by a newer object — its lifecycle status is updated to <code>deprecated</code> and it is automatically excluded from all active retrieval. The identifier is never reused, even after archival, preserving the integrity of historical telemetry records that reference it.</p>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Attribute</th>
+            <th>Description</th>
+            <th>Impact on System</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fragment ID</td>
+            <td>Stable <code>TYPE#####</code> string assigned at Stage 2 promotion. Never reused.</td>
+            <td>All references, relationships, and telemetry records remain valid across moves and migrations.</td>
+          </tr>
+          <tr>
+            <td>Lifecycle Status</td>
+            <td>One of: <code>draft</code>, <code>under review</code>, <code>active</code>, <code>deprecated</code>, <code>archived</code>.</td>
+            <td>Only <code>active</code> fragments enter template assembly and AI context packages. Governance is architectural, not manual.</td>
+          </tr>
+          <tr>
+            <td>Version Sequence</td>
+            <td>Sequential version record tracking each modification to the fragment's content.</td>
+            <td>Current version always delivered. Prior versions available for audit and rollback.</td>
+          </tr>
+          <tr>
+            <td>Lineage References</td>
+            <td>Ordered list of Stage 1 source documents that contributed to the fragment's content.</td>
+            <td>Preserves institutional attribution. If a contributor leaves, their knowledge remains encoded with credit intact.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 09 OBSERVABILITY -->
+  <section id="observability" class="article-section">
+    <div class="section-eyebrow" data-num="09">Observability</div>
+    <h2 class="section-title">The <em>Instrumented</em> Knowledge System</h2>
+    <p class="section-lead">Principle 7 of the Stateless Content Architecture — the system is observable — is not a reporting requirement. It is an architectural layer without which the content system cannot improve systematically. A knowledge system that cannot measure its own usage is one that makes investment decisions on intuition rather than evidence.</p>
+
+    <p class="body-text">SKA's telemetry model records every knowledge delivery event at the fragment level. Not "a user visited this page" — but "these eight specific fragments were assembled into this template for a user in this role at this competency level, and the user engaged with fragments 1 through 6 before exiting at fragment 7." This granularity is what separates a knowledge intelligence system from a conventional web analytics implementation.</p>
+
+    <div class="bullet-list">
+      <div class="bullet-list-label">What Fragment-Level Telemetry Enables</div>
+      <ul>
+        <li><strong>High-value fragment identification</strong> — fragments with high usage frequency, broad role distribution, and strong engagement signals are the most valuable knowledge assets in the repository. They warrant prioritized review cycles and governance attention.</li>
+        <li><strong>Knowledge gap detection</strong> — sustained search queries that do not resolve to engaged fragments indicate knowledge the organization is seeking but the repository does not adequately supply. These are gaps, not retrieval failures.</li>
+        <li><strong>Abandonment signal analysis</strong> — consistent exit at the same fragment position in a standard assembly indicates a quality signal at that specific object, not a general disengagement from the topic.</li>
+        <li><strong>Unused fragment review</strong> — fragments with zero usage over a sustained period are candidates for audit: possibly superseded by an adjacent object, possibly unreachable due to a relationship graph gap, possibly genuinely obsolete.</li>
+        <li><strong>Demand spike detection</strong> — a rising trend in usage for a fragment cluster may precede or coincide with an operational event, enabling proactive knowledge response before gaps cause failures in the field.</li>
+      </ul>
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">Observability Closes the Loop</div>
+      <p>Telemetry transforms the knowledge system from a static repository into a continuously improving capability. Without it, a content team can only guess which content matters, which is stale, and which is missing. With it, those questions are answered by the system itself — from the actual behavior of the people who use it.</p>
+    </div>
+  </section>
+
+  <!-- 10 CONCLUSION -->
+  <section id="conclusion" class="article-section">
+    <div class="section-eyebrow" data-num="10">Conclusion</div>
+    <h2 class="section-title">Architecture as <em>Organizational Capability</em></h2>
+
+    <p class="section-lead">Stateless Content Architecture is not primarily a technical pattern. It is an organizational capability — the infrastructure on which an enterprise's institutional knowledge becomes reliable, navigable, consistently maintained, and continuously improving.</p>
+
+    <p class="body-text">The ten principles described in this overview are not abstract ideals. Each one addresses a specific, recurring failure mode in enterprise knowledge management — the duplication problem, the staleness problem, the context-coupling problem, the unmeasurability problem — and provides an architectural remedy rather than a process remedy. Process remedies require ongoing human discipline to maintain. Architectural remedies are structural: the system makes the right behavior the default, and the wrong behavior difficult.</p>
+
+    <p class="body-text">The investment case for the stateless model is asymmetric. The upfront cost is real: restructuring legacy documentation, establishing a formal taxonomy, building a relationship graph, and implementing fragment-level telemetry takes deliberate effort. But the ongoing returns compound. Every fragment added to the corpus is immediately available to every existing template and every future template. Every governance action taken on one fragment propagates automatically to every context that references it. The maintenance cost per unit of knowledge decreases as the corpus grows, rather than increasing as it does in a document-centric system.</p>
+
+    <div class="pull-quote">
+      <p>A page is authored for one context. A fragment is authored for all contexts. The distinction determines whether an enterprise knowledge system scales with the organization or collapses beneath it.</p>
+      <cite>Stateless Content Architecture &middot; Core Design Principle</cite>
+    </div>
+
+    <p class="body-text">For architects evaluating this model, the most important question is not whether the principles are sound — they are derived from decades of systems architecture thinking applied to content. The question is where on the maturity progression your organization currently sits, and what the next concrete investment step looks like from there. The Stateless Content Architecture is designed to be adopted incrementally: each level of the KAMM maturity model delivers standalone value while building the foundation for the next.</p>
+  </section>
+
+</main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Josh Writing Samples &middot; Architecture Series</div>
+  <div class="footer-meta">Stateless Content Architecture Overview &middot; PCS00001 &middot; v1.0 &middot; 2025</div>
+</footer>
+
+<script>
+// ── MOBILE MENU ──
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── SCROLL PROGRESS ──
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = pct + '%';
+});
+
+// ── SECTION REVEAL ──
+const sections = document.querySelectorAll('.article-section');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+  });
+}, { threshold: 0.06 });
+sections.forEach(s => revealObs.observe(s));
+
+// ── ACTIVE SIDEBAR LINK ──
+const navLinks = document.querySelectorAll('.sb-nav-link');
+const sectionEls = document.querySelectorAll('section[id]');
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sectionEls.forEach(s => navObs.observe(s));
+</script>
+</body>
+</html>
