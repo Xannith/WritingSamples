@@ -24,8 +24,12 @@
 }
 html{scroll-behavior:smooth;}
 body{
-  background:var(--bg);color:var(--text);font-family:var(--body);
-  font-size:16px;line-height:1.8;display:flex;min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.8;
+  min-height:100vh;
   -webkit-font-smoothing:antialiased;
 }
 body::before{
@@ -66,7 +70,13 @@ body::before{
 .sb-nav a.active{color:var(--amber);border-left-color:var(--amber);background:var(--amber-glow);}
 
 /* MAIN */
-#main{margin-left:var(--sidebar-w);flex:1;min-width:0;position:relative;z-index:1;}
+#main{
+  margin-left: var(--sidebar-w);
+  width: calc(100vw - var(--sidebar-w));
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
 
 /* HERO */
 #hero{position:relative;padding:90px 72px 80px;overflow:hidden;border-bottom:1px solid var(--border);}
@@ -272,6 +282,18 @@ tbody tr:last-child td{border-bottom:none;}
   .principle-grid,.agents,.toc-grid{grid-template-columns:1fr;}
   #footer{padding-left:24px;padding-right:24px;flex-direction:column;gap:8px;}
   .m-name{width:120px;}
+}
+  #hero{
+  position:relative;
+  padding:90px 72px 80px;
+  overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+
+#hero > *{
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
 </head>
