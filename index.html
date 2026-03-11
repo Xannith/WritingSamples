@@ -101,16 +101,34 @@
         }
 
         .hero-image {
-            min-height: 420px;
-            border: 2px dashed #9fca9f;
-            border-radius: 12px;
-            background: #edf6ed;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        
+        .speaker-photo {
+            max-width: 420px;
+            width: 100%;
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            border: 2px solid #9fca9f;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.18);
             text-align: center;
-            padding: 20px;
-            color: #4f6a4f;
+        }
+
+        .speaker-photo img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .speaker-photo figcaption {
+            font-size: 0.9rem;
+            margin-top: 8px;
+            color: #3a5c3a;
+            font-style: italic;
         }
 
         .section {
@@ -234,9 +252,18 @@
         </div>
     </div>
 
-    <div class="hero-image">
-    <img src="img/JBechtel_lecture_tedtalk1.PNG" alt="Joshua Bechtel presenting and sharing knowledge" />
-</div>
+   <div class="hero-image">
+
+    <figure class="speaker-photo">
+        <img src="img/JBechtel_lecture_tedtalk1.PNG"
+             alt="Joshua Bechtel presenting knowledge architecture concepts">
+
+        <figcaption>
+            Sharing knowledge architecture concepts
+        </figcaption>
+    </figure>
+       
+    </div>
 </section>
 
 <section class="section">
@@ -295,5 +322,6 @@
 
 </body>
 </html>
+
 
 
