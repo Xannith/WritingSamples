@@ -7,6 +7,10 @@
 <link rel="stylesheet" href="../style.css">
 
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -14,30 +18,32 @@
         color: #1f2d24;
     }
 
-    /* TOP HEADER TO MATCH KNOWLEDGE PAGE LOOK */
+    /* TOP HEADER */
     .site-top-header {
         background: #1f5a3f;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         width: 100%;
     }
 
     .topbar {
-        max-width: 1180px;
+        max-width: 1220px;
         margin: 0 auto;
-        padding: 26px 32px;
+        padding: 18px 28px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 24px;
+        flex-wrap: nowrap;
     }
 
     .site-title {
-        color: #f3f0e8;
+        flex-shrink: 0;
+        white-space: nowrap;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: 2rem;
+        font-size: 1.45rem;
         font-weight: 700;
         line-height: 1.1;
-        white-space: nowrap;
+        color: #f3f0e8;
     }
 
     .site-title a {
@@ -46,12 +52,14 @@
     }
 
     .site-title a:hover {
-        text-decoration: none;
         opacity: 0.92;
     }
 
     .site-top-header nav {
-        margin: 0;
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        min-width: 0;
     }
 
     .site-top-header nav ul {
@@ -60,8 +68,9 @@
         padding: 0;
         display: flex;
         align-items: center;
-        gap: 34px;
-        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 18px;
+        flex-wrap: nowrap;
     }
 
     .site-top-header nav li {
@@ -73,7 +82,7 @@
         color: #f3f0e8;
         text-decoration: none;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 700;
         white-space: nowrap;
     }
@@ -82,27 +91,36 @@
         text-decoration: underline;
     }
 
+    /* PAGE HERO */
     .site-header {
         background: linear-gradient(135deg, #24543f, #3d7a5d);
         color: white;
-        padding: 36px 24px;
+        padding: 34px 24px;
         border-bottom: 4px solid #8fc8a5;
+    }
+
+    .site-header-inner {
+        max-width: 1220px;
+        margin: 0 auto;
     }
 
     .site-header h1 {
         margin: 0 0 10px 0;
-        font-size: 2.2rem;
+        font-size: 2.1rem;
+        line-height: 1.15;
     }
 
     .site-header p {
         margin: 0;
         font-size: 1.05rem;
         max-width: 850px;
-        line-height: 1.6;
+        line-height: 1.65;
     }
 
+    /* MAIN LAYOUT */
     .layout {
         display: flex;
+        align-items: flex-start;
         min-height: calc(100vh - 180px);
     }
 
@@ -111,18 +129,18 @@
         background: #e7f4eb;
         border-right: 1px solid #c7dfcf;
         padding: 24px 20px;
-        box-sizing: border-box;
     }
 
     .sidebar h2 {
         margin-top: 0;
+        margin-bottom: 14px;
         font-size: 1.25rem;
         color: #214c38;
     }
 
     .sidebar-intro {
         font-size: 0.95rem;
-        line-height: 1.5;
+        line-height: 1.55;
         color: #355444;
         margin-bottom: 20px;
     }
@@ -179,7 +197,6 @@
     .content {
         flex: 1;
         padding: 32px 34px 48px;
-        box-sizing: border-box;
     }
 
     .sample-group {
@@ -188,15 +205,16 @@
 
     .sample-group h3 {
         color: #1f4d3a;
-        font-size: 1.45rem;
-        margin-bottom: 8px;
+        font-size: 1.75rem;
+        margin: 0 0 8px 0;
     }
 
     .group-description {
         margin-top: 0;
         margin-bottom: 18px;
         color: #496555;
-        line-height: 1.5;
+        line-height: 1.6;
+        font-size: 1rem;
     }
 
     .sample-grid {
@@ -236,11 +254,12 @@
         margin: 0 0 10px 0;
         color: #1d4332;
         font-size: 1.1rem;
+        line-height: 1.35;
     }
 
     .sample-card p {
         margin: 0 0 12px 0;
-        line-height: 1.55;
+        line-height: 1.6;
         color: #40594a;
         font-size: 0.96rem;
     }
@@ -249,6 +268,7 @@
         font-size: 0.88rem;
         color: #587263;
         margin-bottom: 14px;
+        line-height: 1.5;
     }
 
     .sample-card a {
@@ -267,15 +287,41 @@
         background: #25563f;
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 1080px) {
         .topbar {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 22px 20px;
+            padding: 18px 20px;
+            gap: 18px;
+        }
+
+        .site-title {
+            font-size: 1.25rem;
         }
 
         .site-top-header nav ul {
-            gap: 18px;
+            gap: 14px;
+        }
+
+        .site-top-header nav a {
+            font-size: 0.84rem;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .topbar {
+            flex-direction: column;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .site-top-header nav {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .site-top-header nav ul {
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 12px 16px;
         }
 
         .layout {
@@ -291,29 +337,31 @@
         .content {
             padding: 24px 18px 36px;
         }
-    }
-
-    @media (max-width: 640px) {
-        .site-title {
-            font-size: 1.65rem;
-        }
-
-        .site-top-header nav ul {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .site-top-header nav a {
-            font-size: 1rem;
-        }
 
         .site-header {
             padding: 28px 20px;
         }
 
         .site-header h1 {
-            font-size: 1.8rem;
+            font-size: 1.85rem;
+        }
+
+        .site-header p {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .site-title {
+            font-size: 1.15rem;
+        }
+
+        .site-top-header nav a {
+            font-size: 0.9rem;
+        }
+
+        .sample-group h3 {
+            font-size: 1.5rem;
         }
     }
 </style>
@@ -339,11 +387,14 @@
 </header>
 
 <header class="site-header">
-    <h1>Writing Samples</h1>
-    <p>
-        A curated collection of technical, strategic, instructional, and creative communication samples.
-        These samples are organized to demonstrate depth of skill, audience sensitivity, and structured thinking.
-    </p>
+    <div class="site-header-inner">
+        <h1>Writing Samples</h1>
+        <p>
+            A curated collection of technical, strategic, instructional, and creative communication
+            samples. These samples are organized to demonstrate depth of skill, audience sensitivity,
+            and structured thinking.
+        </p>
+    </div>
 </header>
 
 <div class="layout">
@@ -410,7 +461,11 @@
                 <article class="sample-card">
                     <span class="sample-tag">Strategy</span>
                     <h4>AI Knowledge Library Framework</h4>
-                    <p>How content repositories are structured for AI use, covering metadata design, retrieval readiness, permissions architecture, and the governance layer that keeps knowledge trustworthy at scale.</p>
+                    <p>
+                        How content repositories are structured for AI use, covering metadata design,
+                        retrieval readiness, permissions architecture, and the governance layer that keeps
+                        knowledge trustworthy at scale.
+                    </p>
                     <div class="sample-meta">Audience: Enterprise leaders, AI teams, KM stakeholders</div>
                     <a href="ai-knowledge-library-framework.html">Read Sample</a>
                 </article>
@@ -418,7 +473,11 @@
                 <article class="sample-card">
                     <span class="sample-tag">Knowledge Architecture</span>
                     <h4>Stateless Content Architecture Overview</h4>
-                    <p>The case for modular, context-independent content fragments, what they are, why they outperform page-based authoring, and how dynamic assembly works across multiple user experiences without duplication.</p>
+                    <p>
+                        The case for modular, context-independent content fragments, what they are,
+                        why they outperform page-based authoring, and how dynamic assembly works across
+                        multiple user experiences without duplication.
+                    </p>
                     <div class="sample-meta">Audience: Content strategists, technical writers, system designers</div>
                     <a href="stateless-content-architecture-overview.html">Read Sample</a>
                 </article>
@@ -426,7 +485,11 @@
                 <article class="sample-card">
                     <span class="sample-tag">Governance</span>
                     <h4>Information Governance Model</h4>
-                    <p>Governance treated as an architectural property, not a process overhead, with roles, decision rights, lifecycle rules, and control measures that make enterprise knowledge systems reliable rather than merely organized.</p>
+                    <p>
+                        Governance treated as an architectural property, not a process overhead, with roles,
+                        decision rights, lifecycle rules, and control measures that make enterprise knowledge
+                        systems reliable rather than merely organized.
+                    </p>
                     <div class="sample-meta">Audience: Operations leaders, compliance teams, content owners</div>
                     <a href="information-governance-model.html">Read Sample</a>
                 </article>
@@ -437,14 +500,18 @@
         <section class="sample-group" id="operations">
             <h3>Operations</h3>
             <p class="group-description">
-                These samples demonstrate how operational knowledge is structured for execution, with clear sequence, defined roles, and zero ambiguity under pressure.
+                These samples demonstrate how operational knowledge is structured for execution, with clear sequence,
+                defined roles, and zero ambiguity under pressure.
             </p>
             <div class="sample-grid">
 
                 <article class="sample-card">
                     <span class="sample-tag">Technical</span>
                     <h4>Incident Management Playbook</h4>
-                    <p>Incident definitions, severity levels, escalation logic, and role assignments, structured so a responder under pressure can orient quickly and act without hunting for context.</p>
+                    <p>
+                        Incident definitions, severity levels, escalation logic, and role assignments,
+                        structured so a responder under pressure can orient quickly and act without hunting for context.
+                    </p>
                     <div class="sample-meta">Audience: Engineers, operations teams, incident responders</div>
                     <a href="incident-management-playbook.html">Read Sample</a>
                 </article>
@@ -452,7 +519,10 @@
                 <article class="sample-card">
                     <span class="sample-tag">Process</span>
                     <h4>Issue Intake Workflow Guide</h4>
-                    <p>End-to-end mapping of how issues move from submission through triage, categorization, and routing, designed so every handoff point is explicit and no issue falls through without an owner.</p>
+                    <p>
+                        End-to-end mapping of how issues move from submission through triage, categorization,
+                        and routing, designed so every handoff point is explicit and no issue falls through without an owner.
+                    </p>
                     <div class="sample-meta">Audience: PMs, support teams, cross-functional partners</div>
                     <a href="issue-intake-workflow-guide.html">Read Sample</a>
                 </article>
@@ -460,7 +530,10 @@
                 <article class="sample-card">
                     <span class="sample-tag">SOP</span>
                     <h4>Role-Based Standard Operating Procedure</h4>
-                    <p>Each role's scope, authorized actions, and escalation path made explicit and non-overlapping, because the wrong procedure at the wrong tier costs more time than not having one at all.</p>
+                    <p>
+                        Each role's scope, authorized actions, and escalation path made explicit and non-overlapping,
+                        because the wrong procedure at the wrong tier costs more time than not having one at all.
+                    </p>
                     <div class="sample-meta">Audience: Team members, administrators, process owners</div>
                     <a href="role-based-sop.html">Read Sample</a>
                 </article>
@@ -478,7 +551,10 @@
                 <article class="sample-card">
                     <span class="sample-tag">Executive</span>
                     <h4>Executive Brief for AI Adoption</h4>
-                    <p>Opportunities, risks, governance needs, and strategic value distilled into the concise business language that leadership needs to make a decision, not a reading assignment.</p>
+                    <p>
+                        Opportunities, risks, governance needs, and strategic value distilled into the concise business
+                        language that leadership needs to make a decision, not a reading assignment.
+                    </p>
                     <div class="sample-meta">Audience: Executives, directors, transformation leaders</div>
                     <a href="executive-brief-for-ai-adoption.html">Read Sample</a>
                 </article>
@@ -486,7 +562,10 @@
                 <article class="sample-card">
                     <span class="sample-tag">Training</span>
                     <h4>New User Training Guide</h4>
-                    <p>Onboarding structured the way new users actually need it, one concept at a time, with context for every decision and enough detail that "I'll figure it out" is never the fallback.</p>
+                    <p>
+                        Onboarding structured the way new users actually need it, one concept at a time,
+                        with context for every decision and enough detail that "I'll figure it out" is never the fallback.
+                    </p>
                     <div class="sample-meta">Audience: New hires, general employees, first-time users</div>
                     <a href="new-user-training-guide.html">Read Sample</a>
                 </article>
@@ -494,7 +573,10 @@
                 <article class="sample-card">
                     <span class="sample-tag">Explainer</span>
                     <h4>What AI-Ready Data Means</h4>
-                    <p>A layered explanation of a genuinely complex idea, written so a technical architect and a non-technical stakeholder can both read the same document and leave with what they actually need.</p>
+                    <p>
+                        A layered explanation of a genuinely complex idea, written so a technical architect and a
+                        non-technical stakeholder can both read the same document and leave with what they actually need.
+                    </p>
                     <div class="sample-meta">Audience: Mixed stakeholder groups</div>
                     <a href="what-ai-ready-data-means.html">Read Sample</a>
                 </article>
@@ -512,7 +594,10 @@
                 <article class="sample-card">
                     <span class="sample-tag">Editorial</span>
                     <h4>Community Newsletter Framework</h4>
-                    <p>Editorial planning and structure for a recurring publication, including audience engagement, submission design, and a repeatable framework that does not require reinventing the issue every month.</p>
+                    <p>
+                        Editorial planning and structure for a recurring publication, including audience engagement,
+                        submission design, and a repeatable framework that does not require reinventing the issue every month.
+                    </p>
                     <div class="sample-meta">Audience: Community members, contributors, volunteer editors</div>
                     <a href="newsletter-framework.html">Read Sample</a>
                 </article>
@@ -520,7 +605,10 @@
                 <article class="sample-card">
                     <span class="sample-tag">Public Communication</span>
                     <h4>Public-Facing Communication Sample</h4>
-                    <p>Writing for a broad general audience, warm, clear, and structurally sound without the formality of enterprise documentation or the looseness of casual copy.</p>
+                    <p>
+                        Writing for a broad general audience, warm, clear, and structurally sound without the formality
+                        of enterprise documentation or the looseness of casual copy.
+                    </p>
                     <div class="sample-meta">Audience: General public, members, broad readership</div>
                     <a href="public-facing-communication.html">Read Sample</a>
                 </article>
@@ -528,7 +616,11 @@
                 <article class="sample-card">
                     <span class="sample-tag">Code</span>
                     <h4>Knowledge Architecture in Plain Language</h4>
-                    <p>A fully coded web page that explains a technical subject to a non-technical audience, demonstrating front-end structure, layout thinking, and the ability to present ideas inside a working web experience.</p>
+                    <p>
+                        A fully coded web page that explains a technical subject to a non-technical audience,
+                        demonstrating front-end structure, layout thinking, and the ability to present ideas inside
+                        a working web experience.
+                    </p>
                     <div class="sample-meta">Audience: Hiring managers, technical reviewers, portfolio visitors</div>
                     <a href="coded-html-sample-page.html">Read Sample</a>
                 </article>
@@ -539,14 +631,18 @@
         <section class="sample-group" id="prototype">
             <h3>Prototype</h3>
             <p class="group-description">
-                A working prototype demonstrating a conceptual knowledge architecture system. This example shows how structured information can be organized, navigated, and surfaced through an interactive interface rather than static documentation.
+                A working prototype demonstrating a conceptual knowledge architecture system. This example shows how structured
+                information can be organized, navigated, and surfaced through an interactive interface rather than static documentation.
             </p>
             <div class="sample-grid">
 
                 <article class="sample-card">
                     <span class="sample-tag">Interactive</span>
                     <h4>SKA Knowledge Architecture Prototype</h4>
-                    <p>An interactive prototype of the Stateless Knowledge Architecture, a navigable system that organizes complex documentation structures and conceptual relationships in a way that no static document can demonstrate.</p>
+                    <p>
+                        An interactive prototype of the Stateless Knowledge Architecture, a navigable system that organizes
+                        complex documentation structures and conceptual relationships in a way that no static document can demonstrate.
+                    </p>
                     <div class="sample-meta">Audience: System designers, knowledge architects, technical leaders</div>
                     <a href="../ska_prototype/">Launch Prototype</a>
                 </article>
