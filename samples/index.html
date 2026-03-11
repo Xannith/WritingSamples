@@ -10,33 +10,69 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
+    background: #f7faf7;
 }
 
+/* HEADER */
+
+.site-header {
+    background: #cfe8cf;
+    text-align: center;
+    padding: 38px 20px 22px;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 3rem;
+    color: black;
+}
+
+.tagline {
+    margin: 10px 0 0;
+    font-size: 1.15rem;
+    color: #111;
+}
+
+/* NAVIGATION */
+
 nav {
-    background: #333;
-    padding: 15px;
+    background: #9fca9f;
+    padding: 16px 24px;
+    text-align: center;
 }
 
 nav a {
     color: white;
-    margin-right: 20px;
     text-decoration: none;
+    margin: 0 18px;
     font-weight: bold;
 }
 
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* PAGE LAYOUT */
+
 .layout {
     display: flex;
-    min-height: 90vh;
+    min-height: 85vh;
+    max-width: 1200px;
+    margin: auto;
 }
+
+/* SIDEBAR */
 
 .sidebar {
     width: 260px;
-    background: #f4f4f4;
+    background: #edf6ed;
     padding: 25px;
+    border-right: 1px solid #d8e7d8;
 }
 
 .sidebar h3 {
     margin-top: 0;
+    color: #2d4a2d;
 }
 
 .sidebar ul {
@@ -50,22 +86,38 @@ nav a {
 
 .sidebar a {
     text-decoration: none;
-    color: #333;
+    color: #2d4a2d;
 }
 
 .sidebar a:hover {
     text-decoration: underline;
 }
 
+/* MAIN CONTENT */
+
 .content {
     flex: 1;
     padding: 40px;
+}
+
+.content h1 {
+    color: #1f3b1f;
+}
+
+.content p {
+    max-width: 700px;
+    line-height: 1.6;
 }
 
 </style>
 </head>
 
 <body>
+
+<header class="site-header">
+    <h1>Josh Writing Samples</h1>
+    <p class="tagline">AI Knowledge Strategy and Information Architecture</p>
+</header>
 
 <nav>
     <a href="../index.html">Home</a>
