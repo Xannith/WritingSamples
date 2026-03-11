@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Newsletter Framework | Josh Writing Samples</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: #1f2a1f;
+      background-color: #f6fbf6;
+    }
+
+    header {
+      background-color: #1f4d3a;
+      color: white;
+      padding: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      flex-wrap: wrap;
+    }
+
+    .site-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 24px 50px;
+    }
+
+    .sample-header {
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 28px;
+    }
+
+    .sample-header h1 {
+      margin-top: 0;
+      color: #1f4d3a;
+      font-size: 2.1rem;
+    }
+
+    .sample-label {
+      display: inline-block;
+      background: #dcefe1;
+      color: #1f4d3a;
+      font-size: 0.9rem;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    section {
+      background: white;
+      padding: 28px 32px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      color: #295941;
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 0.98rem;
+    }
+
+    th, td {
+      border: 1px solid #cfe0d3;
+      padding: 14px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #e8f4ea;
+      color: #1f4d3a;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    .footer-note {
+      font-size: 0.95rem;
+      color: #4a5a4d;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #4a5a4d;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      nav ul {
+        gap: 12px;
+      }
+
+      .sample-header,
+      section {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="topbar">
+      <div class="site-title">Josh Writing Samples</div>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About Me</a></li>
+          <li><a href="../knowledge-management.html">Knowledge Management</a></li>
+          <li><a href="../samples/index.html">Samples</a></li>
+          <li><a href="../contact.html">Contact Me</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="sample-header">
+      <div class="sample-label">Creative Systems Sample</div>
+      <h1>Community Newsletter Framework</h1>
+      <p>
+        A community newsletter is more than a collection of announcements. At its best,
+        it becomes a repeatable communication system that informs members, documents shared
+        activity, encourages participation, and preserves institutional memory.
+      </p>
+      <p>
+        This framework outlines a structured approach to building and sustaining a newsletter
+        process that can be operated consistently over time, even as contributors, editors,
+        or tools change.
+      </p>
+    </div>
+
+    <section>
+      <h2>Overview</h2>
+      <p>
+        Many newsletters fail because they are built around urgency instead of structure.
+        Content arrives in inconsistent formats, editors spend too much time correcting avoidable
+        issues, and publication becomes dependent on one person carrying too much of the load.
+      </p>
+      <p>
+        A better approach is to treat the newsletter as a communication system with defined inputs,
+        repeatable workflows, and clear expectations. When done well, the newsletter not only shares
+        information but also strengthens trust, visibility, and continuity across the organization or community.
+      </p>
+    </section>
+
+    <section>
+      <h2>Core Objectives</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Objective</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Inform</td>
+            <td>Provide timely updates on projects, events, opportunities, and decisions so members know what is happening.</td>
+          </tr>
+          <tr>
+            <td>Document</td>
+            <td>Create a durable historical record of actions, milestones, and recurring patterns that can be referenced later.</td>
+          </tr>
+          <tr>
+            <td>Connect</td>
+            <td>Highlight people, groups, and shared efforts so the newsletter serves as a bridge across different parts of the community.</td>
+          </tr>
+          <tr>
+            <td>Invite Participation</td>
+            <td>Encourage contributions from a wider range of voices, making the publication more representative and collaborative.</td>
+          </tr>
+          <tr>
+            <td>Maintain Transparency</td>
+            <td>Keep visible the work, ideas, and concerns that shape the broader environment so people can engage more fully.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Publication Structure</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Function</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Editorial Note</td>
+            <td>Frames the issue, sets tone, and provides a human point of entry for readers.</td>
+          </tr>
+          <tr>
+            <td>Community Updates</td>
+            <td>Shares current developments, announcements, and practical information readers need to know.</td>
+          </tr>
+          <tr>
+            <td>Group Highlights</td>
+            <td>Gives visibility to committees, teams, or informal groups and the work they are doing.</td>
+          </tr>
+          <tr>
+            <td>Events</td>
+            <td>Promotes upcoming activities and encourages timely involvement.</td>
+          </tr>
+          <tr>
+            <td>Creative Contributions</td>
+            <td>Expands the newsletter beyond administration by making room for art, poetry, photography, and culture.</td>
+          </tr>
+          <tr>
+            <td>Community Voice</td>
+            <td>Creates space for reflection, opinion, and perspective, helping the publication feel alive and participatory.</td>
+          </tr>
+          <tr>
+            <td>Call for Submissions</td>
+            <td>Builds continuity by inviting the next round of content and keeping the publication loop active.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Submission Requirements</h2>
+      <p>
+        Submission standards reduce editorial cleanup and create a more predictable intake process.
+        Each submission should include the following:
+      </p>
+      <ul>
+        <li><strong>Title</strong> to clearly identify the piece</li>
+        <li><strong>Author name</strong> or byline</li>
+        <li><strong>Explicit publication statement</strong>, such as “For Publication”</li>
+        <li><strong>Body content</strong> in readable, editable format</li>
+        <li><strong>Optional image or artwork</strong> when relevant</li>
+      </ul>
+      <p>
+        These requirements help editors move more quickly, reduce unnecessary back-and-forth,
+        and make it easier to prepare content for publication without guesswork.
+      </p>
+    </section>
+
+    <section>
+      <h2>Editorial Workflow</h2>
+      <p>
+        A newsletter becomes sustainable when its workflow is explicit. Each phase below exists
+        for a reason, and together they create a process that is easier to repeat, improve, and
+        eventually hand off to others.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>What Happens</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Call for Submissions</td>
+            <td>
+              A clear request for content is distributed ahead of the deadline through email,
+              community channels, or other established communication paths.
+            </td>
+            <td>
+              This sets expectations early, gives contributors time to prepare, and prevents
+              the publication from depending only on last-minute outreach.
+            </td>
+          </tr>
+          <tr>
+            <td>2. Submission Deadline</td>
+            <td>
+              Contributors submit material by a fixed day and time, such as Monday at 7:00 PM.
+            </td>
+            <td>
+              A defined deadline protects production time. Without it, editing and layout become
+              unstable, and publication dates start to slip.
+            </td>
+          </tr>
+          <tr>
+            <td>3. Editorial Review</td>
+            <td>
+              Content is reviewed for clarity, grammar, tone, formatting, and alignment with publication needs.
+            </td>
+            <td>
+              This improves readability, ensures consistency, and helps the newsletter feel coherent
+              even when pieces come from many different contributors.
+            </td>
+          </tr>
+          <tr>
+            <td>4. Layout and Design</td>
+            <td>
+              Approved content is arranged into the issue, paired with images or artwork, and formatted
+              into a visually readable structure.
+            </td>
+            <td>
+              Good design helps readers navigate the issue, reinforces professionalism, and makes the
+              publication easier and more enjoyable to consume.
+            </td>
+          </tr>
+          <tr>
+            <td>5. Publication</td>
+            <td>
+              The completed issue is distributed to readers and, ideally, saved in an archive for later reference.
+            </td>
+            <td>
+              Distribution fulfills the communication goal of the newsletter, while archiving preserves
+              institutional memory and makes past issues searchable and reusable.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Sustainability Considerations</h2>
+      <p>
+        A healthy newsletter system should not depend entirely on one editor’s memory, energy, or availability.
+        For long-term stability, the framework should include documented procedures, reusable templates,
+        shared access to tools, and enough structure that others can step in when needed.
+      </p>
+      <p>
+        Sustainability is not only about reducing effort. It is also about preserving continuity. When
+        editorial systems are documented, the publication remains resilient through leadership changes,
+        volunteer turnover, and shifting priorities.
+      </p>
+    </section>
+
+    <section>
+      <h2>Measures of Success</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Measure</th>
+            <th>What It Indicates</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Number of submissions</td>
+            <td>Whether contributors see the publication as accessible and worth participating in.</td>
+          </tr>
+          <tr>
+            <td>Range of contributors</td>
+            <td>Whether the newsletter reflects many voices or only a narrow set of regular participants.</td>
+          </tr>
+          <tr>
+            <td>Group representation</td>
+            <td>Whether teams, neighborhoods, committees, or projects are visible in the publication.</td>
+          </tr>
+          <tr>
+            <td>Reader feedback</td>
+            <td>How well the newsletter is connecting with its intended audience.</td>
+          </tr>
+          <tr>
+            <td>Archive quality</td>
+            <td>Whether issues remain valuable over time as reference material and community record.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Conclusion</h2>
+      <p>
+        A newsletter should not be treated as a one-off communication task. It works best when it is
+        designed as a repeatable content system with clear structure, documented expectations, and
+        practical editorial controls.
+      </p>
+      <p class="footer-note">
+        This sample demonstrates structured communication design, editorial workflow thinking,
+        audience awareness, and system-level content planning.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2026 Josh Writing Samples
+  </footer>
+
+</body>
+</html>
