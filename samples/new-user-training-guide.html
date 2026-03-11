@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New User Training Guide — Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:         #F7F8F6;
+  --bg2:        #FFFFFF;
+  --bg3:        #F0F2EF;
+  --bg4:        #E7EBE6;
+  --bg5:        #DCE2DA;
+  --border:     #D4DAD2;
+  --border2:    #C2CAC0;
+  --text:       #1A2119;
+  --text2:      #2E3D2C;
+  --dim:        #4A5E48;
+  --muted:      #7A8E78;
+  --faint:      #A8B8A6;
+  --green:      #3A8049;
+  --green-b:    #2D6B3C;
+  --green-l:    #4E9A5F;
+  --green-d:    rgba(58,128,73,0.10);
+  --green-g:    rgba(58,128,73,0.06);
+  --green-line: rgba(58,128,73,0.25);
+  --warn:       #B5740A;
+  --warn-d:     rgba(181,116,10,0.10);
+  --caution:    #1A6B8A;
+  --caution-d:  rgba(26,107,138,0.10);
+  --critical:   #9B2626;
+  --critical-d: rgba(155,38,38,0.10);
+  --purple:     #6B4EA0;
+  --purple-d:   rgba(107,78,160,0.10);
+  --purple-line:rgba(107,78,160,0.25);
+  --sans:   'IBM Plex Sans',  sans-serif;
+  --mono:   'IBM Plex Mono',  monospace;
+  --serif:  'IBM Plex Serif', Georgia, serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── SITE NAV ── */
+#sitenav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(10,13,10,0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+}
+.sitenav-inner {
+  display: flex; align-items: center;
+  height: 56px; padding: 0 48px;
+}
+.sitenav-brand {
+  font-family: var(--serif); font-size: 0.95rem; font-weight: 700;
+  color: #DDE8DC; text-decoration: none;
+  display: flex; align-items: center; gap: 9px;
+  margin-right: auto; letter-spacing: 0.01em; white-space: nowrap;
+}
+.sitenav-brand::before { content: '◆'; color: #4E9A5F; font-size: 0.6rem; }
+.sitenav-links { display: flex; align-items: center; gap: 2px; }
+.sitenav-link {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #7E9A7C; text-decoration: none;
+  padding: 6px 14px; border-radius: 3px; border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap;
+}
+.sitenav-link:hover { color: #DDE8DC; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.09); }
+.sitenav-link.active { color: #6BBF7C; background: rgba(78,154,95,0.15); border-color: rgba(78,154,95,0.3); }
+.nav-breadcrumb {
+  height: 30px; padding: 0 48px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.nav-bc-item {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; transition: color 0.15s;
+}
+.nav-bc-item:hover { color: var(--dim); }
+.nav-bc-sep { color: var(--faint); font-size: 0.5rem; }
+.nav-bc-item.current { color: var(--green); }
+.nav-hamburger {
+  display: none; background: none; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 3px; padding: 5px 9px; cursor: pointer; color: #7E9A7C; font-size: 1rem;
+}
+.nav-mobile-menu {
+  display: none; flex-direction: column;
+  background: #0F1410; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 8px 0;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-link {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #7E9A7C;
+  text-decoration: none; padding: 10px 28px; border-left: 2px solid transparent; transition: all 0.15s;
+}
+.nav-mobile-link:hover { color: #DDE8DC; background: rgba(255,255,255,0.05); }
+.nav-mobile-link.active { color: #6BBF7C; border-left-color: #4E9A5F; background: rgba(78,154,95,0.1); }
+@media (max-width: 768px) {
+  .sitenav-links { display: none; }
+  .nav-hamburger { display: block; }
+  .sitenav-inner { padding: 0 20px; }
+  .nav-breadcrumb { display: none; }
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+  position: fixed; top: 86px; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--green-l), #4AADA0);
+  z-index: 300; width: 0%; transition: width 0.1s;
+  box-shadow: 0 0 6px rgba(78,154,95,0.4);
+}
+
+/* ── LAYOUT SHELL ── */
+#shell { display: flex; min-height: calc(100vh - 86px); }
+
+/* ── LEFT SIDEBAR ── */
+#sidebar {
+  width: 260px; flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  height: calc(100vh - 86px); position: sticky; top: 86px;
+  overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+  padding: 24px 0;
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border2); }
+.sb-label {
+  padding: 0 20px 8px;
+  font-family: var(--mono); font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint);
+}
+.sb-meta { padding: 0 20px 20px; }
+.sb-meta-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 5px 0; border-bottom: 1px solid var(--bg3);
+}
+.sb-meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); }
+.sb-meta-val { font-size: 0.75rem; font-weight: 500; color: var(--text2); text-align: right; }
+.sb-meta-val.code { font-family: var(--mono); color: var(--green); font-size: 0.7rem; }
+.sb-divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
+.sb-nav-link {
+  display: flex; align-items: center; gap: 0;
+  padding: 6px 20px; text-decoration: none; font-size: 0.75rem;
+  font-weight: 400; color: var(--dim);
+  border-left: 3px solid transparent; transition: all 0.12s;
+}
+.sb-nav-link:hover { color: var(--green-b); background: var(--green-g); border-left-color: var(--green-line); }
+.sb-nav-link.active { color: var(--green-b); background: var(--green-d); border-left-color: var(--green); font-weight: 600; }
+.sb-nav-num {
+  font-family: var(--mono); font-size: 0.58rem; color: var(--faint);
+  width: 22px; flex-shrink: 0; font-weight: 400;
+}
+.sb-nav-link.active .sb-nav-num { color: var(--green); }
+
+/* Milestone tracker in sidebar */
+.sb-milestones { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 6px; }
+.sb-milestone {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 0.72rem; color: var(--muted); cursor: default;
+}
+.sb-milestone-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--border2); background: var(--bg3);
+  transition: all 0.2s;
+}
+.sb-milestone.done .sb-milestone-dot { background: var(--green); border-color: var(--green); }
+.sb-milestone.done { color: var(--green-b); font-weight: 500; }
+.sb-milestone.active .sb-milestone-dot { background: var(--bg2); border-color: var(--green); box-shadow: 0 0 0 3px var(--green-d); }
+.sb-milestone.active { color: var(--text2); font-weight: 600; }
+
+/* ── MAIN ── */
+#main { flex: 1; min-width: 0; padding-bottom: 100px; }
+
+/* ── DOC HEADER BAND ── */
+#doc-header {
+  background: var(--bg2);
+  border-bottom: 3px solid var(--green);
+  padding: 32px 60px 28px;
+  position: relative; overflow: hidden;
+}
+#doc-header::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 300px; height: 100%;
+  background: linear-gradient(135deg, transparent 60%, var(--green-g));
+  pointer-events: none;
+}
+.doc-category {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--green);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+}
+.doc-category::before { content: ''; display: inline-block; width: 20px; height: 2px; background: var(--green); }
+.doc-title {
+  font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700; line-height: 1.15; color: var(--text);
+  margin-bottom: 12px; max-width: 700px;
+}
+.doc-title em { font-style: italic; color: var(--green-b); }
+.doc-subtitle {
+  font-size: 0.95rem; color: var(--dim); max-width: 620px; line-height: 1.65; margin-bottom: 20px;
+}
+.doc-meta-strip {
+  display: flex; gap: 0;
+  border: 1px solid var(--border); border-radius: 3px;
+  overflow: hidden; max-width: 560px; background: var(--bg3);
+}
+.doc-meta-cell { flex: 1; padding: 8px 14px; border-right: 1px solid var(--border); }
+.doc-meta-cell:last-child { border-right: none; }
+.dmc-key { font-family: var(--mono); font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
+.dmc-val { font-size: 0.78rem; font-weight: 600; color: var(--text2); }
+.dmc-val.green { color: var(--green); font-family: var(--mono); }
+
+/* ── TRAINING PROGRESS BAND ── */
+.training-progress-band {
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+  padding: 14px 60px; display: flex; align-items: center; gap: 0;
+  overflow-x: auto;
+}
+.tpb-step {
+  display: flex; align-items: center; flex-shrink: 0;
+}
+.tpb-node {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 0 6px;
+}
+.tpb-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--border2); background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600; color: var(--muted);
+  transition: all 0.2s;
+}
+.tpb-label {
+  font-family: var(--mono); font-size: 0.52rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint);
+  white-space: nowrap; text-align: center; max-width: 64px;
+}
+.tpb-line { flex: 1; height: 2px; background: var(--border); min-width: 24px; margin: 0 2px; }
+.tpb-step.done   .tpb-circle { background: var(--green); border-color: var(--green); color: #fff; }
+.tpb-step.done   .tpb-label  { color: var(--green-b); }
+.tpb-step.active .tpb-circle { background: var(--bg2); border-color: var(--green); box-shadow: 0 0 0 4px var(--green-d); color: var(--green); }
+.tpb-step.active .tpb-label  { color: var(--text2); font-weight: 600; }
+
+/* ── CONTENT SECTIONS ── */
+.tg-section {
+  padding: 40px 60px;
+  border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.tg-section.visible { opacity: 1; transform: translateY(0); }
+
+.section-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 24px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 600;
+  color: var(--bg2); background: var(--green);
+  width: 28px; height: 28px; border-radius: 2px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 3px;
+}
+.section-eyebrow {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+}
+.section-title {
+  font-family: var(--serif); font-size: 1.35rem; font-weight: 700;
+  color: var(--text); line-height: 1.2;
+}
+.section-title em { font-style: italic; color: var(--green-b); }
+
+p.body-text {
+  font-size: 0.92rem; color: var(--dim); line-height: 1.8;
+  margin-bottom: 16px; max-width: 700px;
+}
+
+/* ── LEARNING OBJECTIVES BOX ── */
+.learning-objectives {
+  max-width: 700px; margin: 0 0 24px;
+  border: 1px solid var(--green-line);
+  border-radius: 3px; overflow: hidden;
+  background: var(--green-g);
+}
+.lo-header {
+  padding: 8px 16px;
+  background: var(--green-d);
+  border-bottom: 1px solid var(--green-line);
+  display: flex; align-items: center; gap: 8px;
+}
+.lo-header-text {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--green-b);
+}
+.lo-header-icon { color: var(--green); font-size: 0.8rem; }
+.lo-list { padding: 12px 16px; }
+.lo-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.84rem; color: var(--text2); line-height: 1.55;
+  padding: 4px 0; border-bottom: 1px solid rgba(58,128,73,0.1);
+}
+.lo-list li:last-child { border-bottom: none; }
+.lo-list li::before {
+  content: '→'; font-family: var(--mono); font-size: 0.7rem;
+  color: var(--green); flex-shrink: 0; margin-top: 2px; font-weight: 600;
+}
+
+/* ── DURATION / AUDIENCE TAGS ── */
+.doc-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.doc-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 2px; border: 1px solid var(--border2);
+  background: var(--bg3); color: var(--dim);
+}
+.doc-tag.green { background: var(--green-d); color: var(--green-b); border-color: var(--green-line); }
+.doc-tag.blue  { background: var(--caution-d); color: var(--caution); border-color: rgba(26,107,138,0.25); }
+.doc-tag.purple{ background: var(--purple-d); color: var(--purple); border-color: var(--purple-line); }
+
+/* ── CONCEPT CARD ── */
+.concept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; max-width: 700px; margin: 16px 0; }
+.concept-card {
+  border: 1px solid var(--border); border-radius: 3px;
+  background: var(--bg2); padding: 14px 14px 12px; overflow: hidden;
+  position: relative; transition: border-color 0.12s, box-shadow 0.12s;
+}
+.concept-card:hover { border-color: var(--green-line); box-shadow: 0 2px 8px rgba(58,128,73,0.07); }
+.concept-card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 100%; height: 3px; background: var(--green);
+}
+.cc-term {
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 600;
+  color: var(--green-b); margin-bottom: 5px; letter-spacing: 0.03em;
+}
+.cc-def { font-size: 0.78rem; color: var(--dim); line-height: 1.55; }
+
+/* ── PROCEDURE STEPS (training variant) ── */
+.procedure-block { max-width: 700px; margin: 20px 0; }
+.procedure-block-title {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+.procedure-block-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.step-list { display: flex; flex-direction: column; gap: 3px; }
+.step {
+  display: grid; grid-template-columns: 36px 1fr;
+  border: 1px solid var(--border); border-radius: 3px;
+  background: var(--bg2); overflow: hidden;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.step:hover { border-color: var(--green-line); box-shadow: 0 1px 6px rgba(58,128,73,0.08); }
+.step-num {
+  background: var(--bg3); border-right: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 14px;
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600; color: var(--muted);
+}
+.step-content { padding: 12px 16px; }
+.step-action { font-size: 0.88rem; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+.step-detail { font-size: 0.8rem; color: var(--dim); line-height: 1.6; margin-bottom: 6px; }
+.step-detail:last-child { margin-bottom: 0; }
+.step-code {
+  font-family: var(--mono); font-size: 0.76rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--green-b); padding: 6px 10px; border-radius: 2px;
+  display: block; margin: 6px 0; white-space: pre-wrap; word-break: break-all;
+}
+.step-note {
+  display: flex; gap: 7px; align-items: flex-start;
+  background: var(--caution-d); border: 1px solid rgba(26,107,138,0.2);
+  border-radius: 2px; padding: 6px 10px; margin-top: 8px;
+  font-size: 0.78rem; color: var(--caution); line-height: 1.5;
+}
+.step-note::before { content: 'ℹ'; font-size: 0.75rem; flex-shrink: 0; margin-top: 1px; }
+.step-warn {
+  display: flex; gap: 7px; align-items: flex-start;
+  background: var(--warn-d); border: 1px solid rgba(181,116,10,0.2);
+  border-radius: 2px; padding: 6px 10px; margin-top: 8px;
+  font-size: 0.78rem; color: var(--warn); line-height: 1.5;
+}
+.step-warn::before { content: '⚠'; font-size: 0.75rem; flex-shrink: 0; margin-top: 1px; }
+.step-tip {
+  display: flex; gap: 7px; align-items: flex-start;
+  background: var(--green-g); border: 1px solid var(--green-line);
+  border-radius: 2px; padding: 6px 10px; margin-top: 8px;
+  font-size: 0.78rem; color: var(--green-b); line-height: 1.5;
+}
+.step-tip::before { content: '✓'; font-size: 0.7rem; flex-shrink: 0; margin-top: 1px; font-weight: 700; }
+
+/* ── UI ANNOTATION BLOCK (screen walk-through) ── */
+.ui-block {
+  max-width: 700px; margin: 20px 0;
+  border: 1px solid var(--border); border-radius: 3px; overflow: hidden;
+  background: var(--bg2);
+}
+.ui-block-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; background: var(--bg4); border-bottom: 1px solid var(--border);
+}
+.ui-block-dots { display: flex; gap: 5px; }
+.ui-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border2); }
+.ui-block-label {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+.ui-annotation-list { padding: 12px 0; }
+.ui-annotation {
+  display: grid; grid-template-columns: 24px 1fr;
+  gap: 0; padding: 8px 14px; border-bottom: 1px solid var(--bg3);
+  transition: background 0.1s;
+}
+.ui-annotation:hover { background: var(--green-g); }
+.ui-annotation:last-child { border-bottom: none; }
+.ui-ann-num {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 700;
+  color: var(--green); padding-top: 2px;
+}
+.ui-ann-content {}
+.ui-ann-element {
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
+  color: var(--text2); margin-bottom: 3px;
+}
+.ui-ann-desc { font-size: 0.78rem; color: var(--dim); line-height: 1.55; }
+.ui-ann-path {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-family: var(--mono); font-size: 0.65rem;
+  background: var(--bg3); color: var(--muted);
+  border: 1px solid var(--border); border-radius: 2px;
+  padding: 1px 6px; margin-top: 4px;
+}
+.ui-ann-path span { color: var(--faint); }
+
+/* ── WHAT YOU SEE / WHAT IT MEANS (2-col explainer) ── */
+.see-means {
+  max-width: 700px; margin: 16px 0;
+  border: 1px solid var(--border); border-radius: 3px; overflow: hidden;
+}
+.see-means-header {
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--text);
+}
+.see-means-header div {
+  padding: 7px 14px;
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg3);
+}
+.see-means-header div:first-child { border-right: 1px solid rgba(255,255,255,0.1); }
+.see-means-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+.see-means-row:last-child { border-bottom: none; }
+.see-means-row div {
+  padding: 9px 14px; font-size: 0.8rem; color: var(--dim); line-height: 1.5;
+  vertical-align: top;
+}
+.see-means-row div:first-child {
+  font-family: var(--mono); font-size: 0.75rem; font-weight: 500;
+  color: var(--text2); border-right: 1px solid var(--border);
+  background: var(--bg3);
+}
+.see-means-row:nth-child(even) div:last-child { background: var(--bg3); }
+
+/* ── CALLOUT BOXES ── */
+.callout {
+  position: relative; padding: 14px 16px 14px 46px;
+  margin: 18px 0; border-radius: 3px; max-width: 700px;
+  border: 1px solid var(--border);
+}
+.callout::before { position: absolute; left: 14px; top: 14px; font-size: 0.85rem; }
+.callout.note    { background: var(--caution-d); border-left: 3px solid var(--caution); }
+.callout.note::before    { content: 'ℹ'; color: var(--caution); }
+.callout.warning { background: var(--warn-d);    border-left: 3px solid var(--warn); }
+.callout.warning::before { content: '⚠'; color: var(--warn); }
+.callout.stop    { background: var(--critical-d); border-left: 3px solid var(--critical); }
+.callout.stop::before    { content: '✕'; font-family: var(--mono); font-size: 0.8rem; color: var(--critical); top: 15px; }
+.callout.tip     { background: var(--green-g);   border-left: 3px solid var(--green); }
+.callout.tip::before     { content: '✓'; color: var(--green); font-weight: 700; }
+.callout.newuser { background: var(--purple-d);  border-left: 3px solid var(--purple); }
+.callout.newuser::before { content: '★'; color: var(--purple); font-size: 0.8rem; top: 15px; }
+.callout-label {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 5px;
+}
+.callout.note    .callout-label { color: var(--caution); }
+.callout.warning .callout-label { color: var(--warn); }
+.callout.stop    .callout-label { color: var(--critical); }
+.callout.tip     .callout-label { color: var(--green-b); }
+.callout.newuser .callout-label { color: var(--purple); }
+.callout p { font-size: 0.84rem; line-height: 1.65; color: var(--text2); margin-bottom: 4px; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* ── KNOWLEDGE CHECK ── */
+.knowledge-check {
+  max-width: 700px; margin: 24px 0;
+  border: 1px solid var(--purple-line); border-radius: 3px; overflow: hidden;
+}
+.kc-header {
+  padding: 9px 16px; background: var(--purple-d); border-bottom: 1px solid var(--purple-line);
+  display: flex; align-items: center; gap: 8px;
+}
+.kc-header-label {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--purple);
+}
+.kc-body { padding: 16px; background: var(--bg2); }
+.kc-question {
+  font-size: 0.88rem; font-weight: 600; color: var(--text);
+  margin-bottom: 12px; line-height: 1.5;
+}
+.kc-options { display: flex; flex-direction: column; gap: 6px; }
+.kc-option {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 3px;
+  background: var(--bg3); cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  font-size: 0.82rem; color: var(--text2); line-height: 1.5;
+}
+.kc-option:hover { border-color: var(--purple-line); background: var(--purple-d); }
+.kc-option.correct { border-color: var(--green-line); background: var(--green-g); color: var(--green-b); }
+.kc-option.incorrect { border-color: rgba(155,38,38,0.3); background: var(--critical-d); color: var(--critical); }
+.kc-letter {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 600;
+  color: var(--muted); flex-shrink: 0; margin-top: 1px; min-width: 14px;
+}
+.kc-option.correct .kc-letter { color: var(--green); }
+.kc-option.incorrect .kc-letter { color: var(--critical); }
+.kc-reveal { display: none; margin-top: 10px; }
+.kc-reveal.shown { display: block; }
+.kc-reveal-text {
+  padding: 8px 12px; border-radius: 2px;
+  border: 1px solid var(--green-line); background: var(--green-g);
+  font-size: 0.8rem; color: var(--green-b); line-height: 1.55;
+}
+.kc-btn {
+  margin-top: 10px; padding: 6px 14px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 2px; cursor: pointer;
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim);
+  transition: all 0.12s;
+}
+.kc-btn:hover { background: var(--purple-d); border-color: var(--purple-line); color: var(--purple); }
+
+/* ── DECISION / REFERENCE TABLES ── */
+.decision-table-wrap { overflow-x: auto; margin: 18px 0; max-width: 700px; border: 1px solid var(--border); border-radius: 3px; }
+.decision-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.decision-table thead tr { background: var(--text); }
+.decision-table thead th {
+  padding: 9px 14px; text-align: left;
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg3); white-space: nowrap;
+}
+.decision-table tbody td {
+  padding: 9px 14px; color: var(--dim);
+  border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5;
+}
+.decision-table tbody td:first-child { font-weight: 600; color: var(--text2); }
+.decision-table tbody tr:nth-child(even) td { background: var(--bg3); }
+.decision-table tbody tr:hover td { background: var(--green-g); }
+.decision-table tbody tr:last-child td { border-bottom: none; }
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
+  padding: 2px 7px; border-radius: 2px; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap;
+}
+.tag.green  { background: var(--green-d); color: var(--green-b); border: 1px solid var(--green-line); }
+.tag.blue   { background: var(--caution-d); color: var(--caution); border: 1px solid rgba(26,107,138,0.25); }
+.tag.amber  { background: var(--warn-d); color: var(--warn); border: 1px solid rgba(181,116,10,0.25); }
+.tag.red    { background: var(--critical-d); color: var(--critical); border: 1px solid rgba(155,38,38,0.25); }
+.tag.purple { background: var(--purple-d); color: var(--purple); border: 1px solid var(--purple-line); }
+
+/* ── SUBSECTION ── */
+.subsection { margin: 28px 0 12px; }
+.subsection-title {
+  font-size: 0.95rem; font-weight: 700; color: var(--text);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+}
+.subsection-title::before {
+  content: ''; display: inline-block;
+  width: 3px; height: 16px; background: var(--green); border-radius: 1px; flex-shrink: 0;
+}
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  margin: 24px 0; padding: 20px 24px;
+  border: 1px solid var(--border); border-left: 3px solid var(--green);
+  border-radius: 0 3px 3px 0; max-width: 640px; background: var(--bg2);
+}
+.pull-quote p { font-family: var(--serif); font-size: 1.05rem; font-style: italic; color: var(--text2); line-height: 1.6; margin-bottom: 8px; }
+.pull-quote cite { font-family: var(--mono); font-size: 0.58rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); font-style: normal; }
+
+/* ── COMMON MISTAKES TABLE ── */
+.mistakes-list { max-width: 700px; margin: 16px 0; }
+.mistake-item {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border); border-bottom: none;
+  overflow: hidden;
+}
+.mistake-item:first-child { border-radius: 3px 3px 0 0; }
+.mistake-item:last-child  { border-radius: 0 0 3px 3px; border-bottom: 1px solid var(--border); }
+.mi-wrong {
+  padding: 10px 14px; background: var(--critical-d); border-right: 1px solid var(--border);
+}
+.mi-right { padding: 10px 14px; background: var(--green-g); }
+.mi-label {
+  font-family: var(--mono); font-size: 0.52rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px;
+}
+.mi-wrong .mi-label { color: var(--critical); }
+.mi-right .mi-label { color: var(--green-b); }
+.mi-text { font-size: 0.8rem; line-height: 1.5; color: var(--text2); }
+
+/* ── CHECKLIST ── */
+.checklist-group {
+  border: 1px solid var(--border); border-radius: 3px;
+  margin-bottom: 10px; overflow: hidden; background: var(--bg2); max-width: 700px;
+}
+.checklist-group-header {
+  padding: 7px 14px; background: var(--bg3); border-bottom: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+}
+.checklist ul { list-style: none; padding: 0; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 7px 14px; border-bottom: 1px solid var(--bg3);
+  font-size: 0.83rem; color: var(--text2); line-height: 1.5;
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before {
+  content: ''; flex-shrink: 0; margin-top: 4px;
+  width: 14px; height: 14px; border: 1.5px solid var(--border2); border-radius: 2px; background: var(--bg2);
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 24px 60px; background: var(--bg2); border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-brand {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  display: flex; align-items: center; gap: 7px;
+}
+.footer-brand::before { content: '◆'; color: var(--green); font-size: 0.45rem; }
+.footer-doc { font-family: var(--mono); font-size: 0.58rem; color: var(--faint); margin-top: 3px; }
+.footer-right { font-family: var(--mono); font-size: 0.58rem; color: var(--faint); text-align: right; }
+
+code {
+  font-family: var(--mono); font-size: 0.82em;
+  background: var(--bg3); color: var(--green-b);
+  padding: 1px 5px; border-radius: 2px; border: 1px solid var(--border);
+}
+
+@media (max-width: 960px) {
+  #sidebar { display: none; }
+  #doc-header, .tg-section { padding-left: 24px; padding-right: 24px; }
+  .training-progress-band { padding-left: 24px; padding-right: 24px; }
+  footer { padding: 20px 24px; flex-direction: column; gap: 6px; }
+  .concept-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- SITE NAV -->
+<nav id="sitenav">
+  <div class="sitenav-inner">
+    <a href="https://joshwritingsamples.com" class="sitenav-brand">Josh Writing Samples</a>
+    <div class="sitenav-links">
+      <a href="https://joshwritingsamples.com"                    class="sitenav-link">Home</a>
+      <a href="https://joshwritingsamples.com/about.html"         class="sitenav-link">About Me</a>
+      <a href="https://joshwritingsamples.com/samples/index.html" class="sitenav-link active">Samples</a>
+      <a href="https://joshwritingsamples.com/knowledge.html"     class="sitenav-link">Knowledge Management</a>
+      <a href="https://joshwritingsamples.com/contact.html"       class="sitenav-link">Contact</a>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">&#9776;</button>
+  </div>
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="https://joshwritingsamples.com"                    class="nav-mobile-link">Home</a>
+    <a href="https://joshwritingsamples.com/about.html"         class="nav-mobile-link">About Me</a>
+    <a href="https://joshwritingsamples.com/samples/index.html" class="nav-mobile-link active">Samples</a>
+    <a href="https://joshwritingsamples.com/knowledge.html"     class="nav-mobile-link">Knowledge Management</a>
+    <a href="https://joshwritingsamples.com/contact.html"       class="nav-mobile-link">Contact</a>
+  </div>
+  <div class="nav-breadcrumb">
+    <a href="https://joshwritingsamples.com"                    class="nav-bc-item">Home</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <a href="https://joshwritingsamples.com/samples/index.html" class="nav-bc-item">Samples</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item">Operations</span>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item current">New User Training Guide</span>
+  </div>
+</nav>
+
+<div id="shell">
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sb-label">Document Info</div>
+  <div class="sb-meta">
+    <div class="sb-meta-row"><span class="sb-meta-key">Category</span><span class="sb-meta-val">Training</span></div>
+    <div class="sb-meta-row"><span class="sb-meta-key">Type</span><span class="sb-meta-val">Onboarding Guide</span></div>
+    <div class="sb-meta-row"><span class="sb-meta-key">Object ID</span><span class="sb-meta-val code">PCD00015</span></div>
+    <div class="sb-meta-row"><span class="sb-meta-key">Duration</span><span class="sb-meta-val">~3–4 hours</span></div>
+    <div class="sb-meta-row"><span class="sb-meta-key">Version</span><span class="sb-meta-val">1.3</span></div>
+    <div class="sb-meta-row"><span class="sb-meta-key">Status</span><span class="sb-meta-val code">Active</span></div>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-label">Training Milestones</div>
+  <div class="sb-milestones" id="milestones">
+    <div class="sb-milestone done"   data-sec="orientation">  <div class="sb-milestone-dot"></div> Orientation</div>
+    <div class="sb-milestone active" data-sec="core-concepts"><div class="sb-milestone-dot"></div> Core Concepts</div>
+    <div class="sb-milestone"        data-sec="system-access"><div class="sb-milestone-dot"></div> System Access</div>
+    <div class="sb-milestone"        data-sec="first-ticket"> <div class="sb-milestone-dot"></div> First Ticket</div>
+    <div class="sb-milestone"        data-sec="daily-workflow"><div class="sb-milestone-dot"></div> Daily Workflow</div>
+    <div class="sb-milestone"        data-sec="communication"><div class="sb-milestone-dot"></div> Communication</div>
+    <div class="sb-milestone"        data-sec="quality">      <div class="sb-milestone-dot"></div> Quality Standards</div>
+    <div class="sb-milestone"        data-sec="completion">   <div class="sb-milestone-dot"></div> Completion</div>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-label">Sections</div>
+  <a class="sb-nav-link active" href="#orientation">   <span class="sb-nav-num">01</span>Orientation</a>
+  <a class="sb-nav-link" href="#core-concepts">        <span class="sb-nav-num">02</span>Core Concepts</a>
+  <a class="sb-nav-link" href="#system-access">        <span class="sb-nav-num">03</span>System Access</a>
+  <a class="sb-nav-link" href="#first-ticket">         <span class="sb-nav-num">04</span>Your First Ticket</a>
+  <a class="sb-nav-link" href="#daily-workflow">       <span class="sb-nav-num">05</span>Daily Workflow</a>
+  <a class="sb-nav-link" href="#communication">        <span class="sb-nav-num">06</span>Communication Standards</a>
+  <a class="sb-nav-link" href="#quality">              <span class="sb-nav-num">07</span>Quality Standards</a>
+  <a class="sb-nav-link" href="#completion">           <span class="sb-nav-num">08</span>Completion &amp; Next Steps</a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- DOC HEADER -->
+  <header id="doc-header">
+    <div class="doc-category">Operations &middot; Training</div>
+    <h1 class="doc-title"><em>New User</em> Training Guide</h1>
+    <p class="doc-subtitle">A complete onboarding program for new operations team members. This guide walks you through every system, workflow, and standard you will use in your first weeks — one step at a time, with context for each decision you will be asked to make.</p>
+    <div class="doc-tags">
+      <span class="doc-tag green">&#9650; New Hire</span>
+      <span class="doc-tag blue">&#9651; First-Time User</span>
+      <span class="doc-tag purple">&#9670; Estimated: 3–4 Hours</span>
+    </div>
+    <div class="doc-meta-strip">
+      <div class="doc-meta-cell"><div class="dmc-key">Document ID</div><div class="dmc-val green">PCD00015</div></div>
+      <div class="doc-meta-cell"><div class="dmc-key">Version</div><div class="dmc-val">1.3 · 2025-Q1</div></div>
+      <div class="doc-meta-cell"><div class="dmc-key">Audience</div><div class="dmc-val">New Hires</div></div>
+      <div class="doc-meta-cell"><div class="dmc-key">Status</div><div class="dmc-val green">Active</div></div>
+    </div>
+  </header>
+
+  <!-- TRAINING PROGRESS BAND -->
+  <div class="training-progress-band">
+    <div class="tpb-step done">
+      <div class="tpb-node"><div class="tpb-circle">1</div><div class="tpb-label">Orientation</div></div>
+    </div>
+    <div class="tpb-line"></div>
+    <div class="tpb-step active">
+      <div class="tpb-node"><div class="tpb-circle">2</div><div class="tpb-label">Concepts</div></div>
+    </div>
+    <div class="tpb-line"></div>
+    <div class="tpb-step">
+      <div class="tpb-node"><div class="tpb-circle">3</div><div class="tpb-label">Access</div></div>
+    </div>
+    <div class="tpb-line"></div>
+    <div class="tpb-step">
+      <div class="tpb-node"><div class="tpb-circle">4</div><div class="tpb-label">First Ticket</div></div>
+    </div>
+    <div class="tpb-line"></div>
+    <div class="tpb-step">
+      <div class="tpb-node"><div class="tpb-circle">5</div><div class="tpb-label">Daily Flow</div></div>
+    </div>
+    <div class="tpb-line"></div>
+    <div class="tpb-step">
+      <div class="tpb-node"><div class="tpb-circle">6</div><div class="tpb-label">Comms</div></div>
+    </div>
+    <div class="tpb-line"></div>
+    <div class="tpb-step">
+      <div class="tpb-node"><div class="tpb-circle">7</div><div class="tpb-label">Quality</div></div>
+    </div>
+    <div class="tpb-line"></div>
+    <div class="tpb-step">
+      <div class="tpb-node"><div class="tpb-circle">8</div><div class="tpb-label">Complete</div></div>
+    </div>
+  </div>
+
+  <!-- 01 ORIENTATION -->
+  <section id="orientation" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div>
+        <div class="section-eyebrow">Getting Started</div>
+        <h2 class="section-title">Orientation — <em>What This Guide Will Do for You</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">Welcome to the operations team. This training guide is your primary onboarding resource. It is not a list of policies to memorize or a summary of things you should already know — it is a complete, step-by-step walkthrough of every system, workflow, and standard you will encounter in your first weeks on the job.</p>
+
+    <p class="body-text">Read this guide in order the first time through. Each section builds on the one before it. After completing the full guide, you may use it as a reference document, navigating directly to any section you need. The sidebar tracks your progress through the training milestones.</p>
+
+    <div class="learning-objectives">
+      <div class="lo-header">
+        <span class="lo-header-icon">&#9670;</span>
+        <span class="lo-header-text">By the end of this guide, you will be able to</span>
+      </div>
+      <ul class="lo-list">
+        <li>Log in to and navigate all required systems independently</li>
+        <li>Receive, classify, and acknowledge an incoming ticket without assistance</li>
+        <li>Apply the correct Standard Fix for routine issues from the Tier 1 resolution playbook</li>
+        <li>Recognize the escalation criteria and escalate a ticket correctly to Tier 2</li>
+        <li>Execute the shift handoff procedure as both outgoing and incoming agent</li>
+        <li>Write a customer communication that meets the team's tone and content standards</li>
+        <li>Understand what documentation is required and why it matters</li>
+      </ul>
+    </div>
+
+    <div class="callout newuser">
+      <div class="callout-label">A Note for New Hires</div>
+      <p>You will not be expected to have this guide memorized before you begin taking tickets. You are expected to <strong>use it</strong> while you work. Experienced team members use documentation constantly — consulting the guide while working is not a sign that you are unprepared; it is a sign that you are working correctly.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">How This Guide Is Structured</h3>
+    </div>
+    <div class="decision-table-wrap">
+      <table class="decision-table">
+        <thead>
+          <tr><th>Section</th><th>What You Will Learn</th><th>Est. Time</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>01 — Orientation</td><td>Guide structure, learning objectives, how to use this document</td><td>10 min</td></tr>
+          <tr><td>02 — Core Concepts</td><td>The language, mental models, and operating principles of the team</td><td>25 min</td></tr>
+          <tr><td>03 — System Access</td><td>Logging in, navigating, and understanding every tool you will use</td><td>35 min</td></tr>
+          <tr><td>04 — Your First Ticket</td><td>Full walkthrough of receiving, classifying, resolving, and closing one ticket</td><td>40 min</td></tr>
+          <tr><td>05 — Daily Workflow</td><td>Shift start, queue management, prioritization, and shift end</td><td>30 min</td></tr>
+          <tr><td>06 — Communication Standards</td><td>How to write to customers and teammates — tone, templates, and exceptions</td><td>30 min</td></tr>
+          <tr><td>07 — Quality Standards</td><td>What good work looks like, how it is measured, and how to self-assess</td><td>25 min</td></tr>
+          <tr><td>08 — Completion</td><td>Certification requirements, who to contact with questions, next steps</td><td>10 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 02 CORE CONCEPTS -->
+  <section id="core-concepts" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div>
+        <div class="section-eyebrow">Foundation</div>
+        <h2 class="section-title">Core Concepts — <em>The Language of the Team</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">Before you can work effectively in the system, you need to understand the mental models and vocabulary the team uses. This is not a glossary — it is an explanation of how the team thinks about its work. Learning this vocabulary quickly will allow you to understand team communications, ask better questions, and make better decisions in ambiguous situations.</p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="cc-term">Ticket</div>
+        <div class="cc-def">A single unit of customer-reported work. Every interaction starts as a ticket. Tickets have a lifecycle: open → in progress → resolved → closed. A ticket that is open is not done.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">Queue</div>
+        <div class="cc-def">The set of all unresolved tickets currently assigned to your tier. You are responsible for every ticket in your queue. Tickets do not disappear — they must be actively resolved, escalated, or reassigned.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">Triage</div>
+        <div class="cc-def">The act of reading a new ticket and assigning it a category and priority before beginning work. Triage happens before resolution — never simultaneously.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">SLA</div>
+        <div class="cc-def">Service Level Agreement. The committed response and resolution time for a given priority level. An SLA breach means the team missed its commitment to the customer. Avoiding breaches is a primary operational goal.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">Priority</div>
+        <div class="cc-def">A classification from P1 (Critical) to P4 (Low) that governs the SLA clock, response urgency, and team-lead notification requirements. Priority is assigned during triage.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">Escalation</div>
+        <div class="cc-def">The formal transfer of a ticket to the next tier when it exceeds your scope of authority or resolution capability. Escalation is a routing decision, not a failure signal.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">Standard Fix</div>
+        <div class="cc-def">A documented, tested resolution step in the Tier 1 playbook. Standard Fixes must be applied in documented order. Improvising your own resolution steps is a procedure deviation.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">Resolution Code</div>
+        <div class="cc-def">A structured code applied when closing a ticket that records what type of fix resolved the issue. Resolution codes feed pattern detection and SOP improvement — they are not optional fields.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-term">Handoff Record</div>
+        <div class="cc-def">The written document you complete at shift end listing the status, last action, and next action for every open ticket. It is the incoming agent's primary context source — not your verbal briefing.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Priority System in Detail</h3>
+    </div>
+    <p class="body-text">Priority is the single most important classification you will apply to a ticket. It controls how fast you must respond, whether your team lead is notified, and how far the SLA clock runs before a breach. Mis-classifying priority — in either direction — has real consequences for customers and the team.</p>
+
+    <div class="decision-table-wrap">
+      <table class="decision-table">
+        <thead>
+          <tr><th>Priority</th><th>Label</th><th>Response SLA</th><th>Resolution SLA</th><th>Lead Notify?</th><th>Typical Trigger</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag red">P1</span></td>
+            <td>Critical</td>
+            <td>15 minutes</td>
+            <td>2 hours</td>
+            <td><span class="tag red">Required</span></td>
+            <td>Complete service outage; data loss; security concern; all users affected</td>
+          </tr>
+          <tr>
+            <td><span class="tag amber">P2</span></td>
+            <td>High</td>
+            <td>1 hour</td>
+            <td>8 hours</td>
+            <td><span class="tag amber">If risk of breach</span></td>
+            <td>Core feature broken for one account; workaround unavailable; significant revenue impact</td>
+          </tr>
+          <tr>
+            <td><span class="tag green">P3</span></td>
+            <td>Standard</td>
+            <td>4 hours</td>
+            <td>2 business days</td>
+            <td>No</td>
+            <td>Feature degradation with available workaround; UI issue; non-critical integration failure</td>
+          </tr>
+          <tr>
+            <td><span class="tag blue">P4</span></td>
+            <td>Low</td>
+            <td>1 business day</td>
+            <td>5 business days</td>
+            <td>No</td>
+            <td>Cosmetic issue; documentation request; how-to question; enhancement suggestion</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-label">Priority Cannot Be Downgraded Without Authorization</div>
+      <p>If a customer submits a ticket marked P1 and you believe it should be P3, you may not simply reclassify it downward. You must document your reasoning and obtain Team Lead approval before downgrading any ticket that arrived as P1 or P2. Unauthorized downgrading to avoid SLA pressure is a quality failure.</p>
+    </div>
+
+    <div class="knowledge-check" id="kc1">
+      <div class="kc-header"><span class="kc-header-label">&#9670; Knowledge Check — Priority Classification</span></div>
+      <div class="kc-body">
+        <div class="kc-question">A customer reports that the reporting dashboard is showing incorrect date filters. Their data is intact, and a workaround exists: they can export raw data and apply filters manually. What priority should you assign?</div>
+        <div class="kc-options" id="kc1-opts">
+          <div class="kc-option" onclick="checkAnswer('kc1', 'A')"><span class="kc-letter">A</span>P1 — Critical, because the reporting feature is broken</div>
+          <div class="kc-option" onclick="checkAnswer('kc1', 'B')"><span class="kc-letter">B</span>P2 — High, because a core feature is not working correctly</div>
+          <div class="kc-option" onclick="checkAnswer('kc1', 'C')"><span class="kc-letter">C</span>P3 — Standard, because the feature is degraded but a workaround exists</div>
+          <div class="kc-option" onclick="checkAnswer('kc1', 'D')"><span class="kc-letter">D</span>P4 — Low, because it is only a display issue</div>
+        </div>
+        <div class="kc-reveal" id="kc1-reveal">
+          <div class="kc-reveal-text">✓ Correct: <strong>P3 — Standard.</strong> The feature is degraded (reporting filters are incorrect), but a workaround is available and data integrity is intact. P2 applies only when a core feature is broken <em>and</em> no workaround exists. P4 would be appropriate for a purely cosmetic issue with no functional impact. P1 requires a complete service outage or data loss scenario.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 SYSTEM ACCESS -->
+  <section id="system-access" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div>
+        <div class="section-eyebrow">Tools &amp; Access</div>
+        <h2 class="section-title">System Access — <em>Every Tool You Will Use</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">You will work across three primary systems during your daily operations. This section walks you through logging into each one, navigating to the areas you will use most, and understanding what each system is responsible for. Complete all access setup steps in order — some systems depend on credentials established in earlier steps.</p>
+
+    <div class="callout note">
+      <div class="callout-label">Before You Begin</div>
+      <p>Your IT provisioning request must be marked <strong>Complete</strong> in the onboarding portal before any system access will work. If you receive access denied errors during these steps, contact IT via the onboarding portal before continuing. Do not attempt workarounds.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">System 1 — The Operations Dashboard (Primary)</h3>
+    </div>
+
+    <div class="procedure-block">
+      <div class="procedure-block-title">Initial Login and Setup</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-action">Navigate to the Operations Dashboard login page</div>
+            <div class="step-detail">Open a supported browser (Chrome 110+ or Firefox 108+ only — the dashboard does not function correctly in Safari or Edge). Navigate to the internal URL provided in your welcome email.</div>
+            <div class="step-code">Supported browsers: Chrome 110+, Firefox 108+
+Unsupported: Safari, Edge, Internet Explorer (any version)</div>
+            <div class="step-warn">Do not bookmark the direct queue URL from your browser bar. Always navigate via the dashboard home page — direct queue URLs do not include session authentication and will fail after your session expires.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-action">Log in using your company SSO credentials</div>
+            <div class="step-detail">Click the <strong>Sign in with Company Account</strong> button. Do not use the legacy username/password fields — those are reserved for service accounts. You will be redirected to the company identity provider. Use your standard network credentials (same as your email login).</div>
+            <div class="step-note">If prompted for multi-factor authentication on first login, use your company authenticator app. The SMS option is disabled for operations accounts for security reasons.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-action">Confirm your profile, role assignment, and queue visibility</div>
+            <div class="step-detail">After login, click your name in the top-right corner and select <strong>My Profile</strong>. Verify that your Role field shows <strong>Tier 1 Support Agent</strong> and your Queue Assignment shows the correct team queue name. If either is incorrect, contact your team lead — do not begin working until your role assignment is confirmed.</div>
+            <div class="step-tip">Your queue assignment determines which tickets appear in your view. Working from the wrong queue — even briefly — creates assignment conflicts that require manual cleanup by the Team Lead.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-action">Set your notification preferences</div>
+            <div class="step-detail">Navigate to <strong>Settings → Notifications</strong>. Enable browser notifications for: new ticket assigned, SLA warning (15 minutes remaining), and direct message. Disable email notifications for all ticket activity — email notification lag is too slow for SLA management and creates duplicate alert noise.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Dashboard Layout — What You Are Looking At</h3>
+    </div>
+
+    <div class="ui-block">
+      <div class="ui-block-header">
+        <div class="ui-block-dots">
+          <div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div>
+        </div>
+        <span class="ui-block-label">Operations Dashboard — Main Screen Annotation</span>
+      </div>
+      <div class="ui-annotation-list">
+        <div class="ui-annotation">
+          <div class="ui-ann-num">①</div>
+          <div class="ui-ann-content">
+            <div class="ui-ann-element">Queue Panel (left sidebar)</div>
+            <div class="ui-ann-desc">Lists all tickets currently assigned to you, sorted by SLA urgency by default. Tickets with a red indicator are approaching or in SLA breach. Tickets with a yellow indicator have less than 30 minutes on their SLA clock. Never sort this panel by anything other than SLA urgency during an active shift.</div>
+            <div class="ui-ann-path">Left sidebar <span>›</span> My Queue</div>
+          </div>
+        </div>
+        <div class="ui-annotation">
+          <div class="ui-ann-num">②</div>
+          <div class="ui-ann-content">
+            <div class="ui-ann-element">Ticket Detail Panel (center)</div>
+            <div class="ui-ann-desc">Displays the full content of the selected ticket: customer description, attachments, the complete note history from all agents who have worked the ticket, and all metadata fields. The note history is append-only — you cannot edit prior notes, only add new ones. Treat every note you add as a permanent record.</div>
+            <div class="ui-ann-path">Center panel <span>›</span> opens on ticket click</div>
+          </div>
+        </div>
+        <div class="ui-annotation">
+          <div class="ui-ann-num">③</div>
+          <div class="ui-ann-content">
+            <div class="ui-ann-element">Action Bar (top of ticket detail)</div>
+            <div class="ui-ann-desc">Contains the primary actions for a ticket: Add Note, Send Response, Change Status, Escalate, and Close. The Escalate button is only active if the ticket is assigned to you. The Close button requires a resolution code to be selected first — clicking Close without a code will produce an error, not a silent failure.</div>
+            <div class="ui-ann-path">Ticket detail <span>›</span> top bar</div>
+          </div>
+        </div>
+        <div class="ui-annotation">
+          <div class="ui-ann-num">④</div>
+          <div class="ui-ann-content">
+            <div class="ui-ann-element">SLA Clock (top-right of each ticket row)</div>
+            <div class="ui-ann-desc">Displays the time remaining until SLA breach for both the initial response SLA and the resolution SLA, shown as two separate countdown timers. The timers run continuously — they do not pause when you are reading the ticket or composing a response. Response SLA stops when you send the first customer-visible reply; resolution SLA stops only when the ticket is closed.</div>
+            <div class="ui-ann-path">Queue panel <span>›</span> ticket row <span>›</span> top-right</div>
+          </div>
+        </div>
+        <div class="ui-annotation">
+          <div class="ui-ann-num">⑤</div>
+          <div class="ui-ann-content">
+            <div class="ui-ann-element">Knowledge Base Quick-Search (top bar, search icon)</div>
+            <div class="ui-ann-desc">Searches the Tier 1 Resolution Playbook and reference documents without leaving the dashboard. Use this constantly. Searching for the issue category code (e.g., <code>AUTH-003</code>) will return the exact Standard Fix steps. Do not try to recall Standard Fix steps from memory — always verify against the playbook.</div>
+            <div class="ui-ann-path">Top navigation bar <span>›</span> search icon</div>
+          </div>
+        </div>
+        <div class="ui-annotation">
+          <div class="ui-ann-num">⑥</div>
+          <div class="ui-ann-content">
+            <div class="ui-ann-element">Team Presence Indicator (bottom of left sidebar)</div>
+            <div class="ui-ann-desc">Shows which teammates and tier leads are currently online. Green dot = active. Yellow dot = away (may have stepped away from desk). Grey dot = offline. Before escalating a ticket, confirm your Tier 2 lead shows a green or yellow dot — if they are offline, contact your Team Lead for the escalation path.</div>
+            <div class="ui-ann-path">Left sidebar <span>›</span> bottom</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">System 2 — The Knowledge Base</h3>
+    </div>
+    <p class="body-text">The Knowledge Base is a separate system from the Operations Dashboard, accessible at the internal URL in your welcome email. It contains the full Tier 1 Resolution Playbook, all reference documents, approved customer communication templates, and the Exception Register. You will use it constantly via the dashboard Quick-Search, but you must also know how to navigate it directly.</p>
+
+    <div class="see-means">
+      <div class="see-means-header">
+        <div>What You See in the Knowledge Base</div>
+        <div>What It Means / How to Use It</div>
+      </div>
+      <div class="see-means-row">
+        <div>POL — Policy documents</div>
+        <div>Governing rules for the team. These define what you are and are not authorized to do. When a procedure says "per policy," this is where the policy lives. Read-only for Tier 1 agents.</div>
+      </div>
+      <div class="see-means-row">
+        <div>PCS — Process documents</div>
+        <div>End-to-end descriptions of multi-step workflows (e.g., the full escalation process). These give you the "why" behind individual procedures. Useful for understanding context, not as step-by-step instructions.</div>
+      </div>
+      <div class="see-means-row">
+        <div>PCD — Procedure documents</div>
+        <div>Step-by-step instructions for specific tasks. This document is a PCD. The Resolution Playbook is a collection of PCDs. When you need to know exactly what steps to take, you are looking for a PCD.</div>
+      </div>
+      <div class="see-means-row">
+        <div>REF — Reference documents</div>
+        <div>Lookup tables, classification matrices, code lists, and other reference material. The Issue Classification Matrix (REF-OPS-002) is the most important reference document for Tier 1 agents.</div>
+      </div>
+      <div class="see-means-row">
+        <div>Version number and status badge</div>
+        <div>Always verify the document shows <strong>Status: Active</strong> before using it. Deprecated documents appear in search results but are marked with a red Deprecated banner. A document that is not Active is not current policy — do not use it.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">System 3 — The Internal Communication Platform</h3>
+    </div>
+    <p class="body-text">Team communication happens on the internal messaging platform. You will use it to receive shift briefings from your team lead, coordinate peer escalations, and stay informed of any active incidents or queue-wide alerts. It is not a substitute for ticket documentation — anything operationally relevant must also be in the ticket record.</p>
+
+    <div class="decision-table-wrap">
+      <table class="decision-table">
+        <thead>
+          <tr><th>Channel</th><th>Purpose</th><th>Expected Response Time</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>#ops-tier1-[shift]</td><td>Your primary shift channel. Shift briefings, queue alerts, and peer coordination posted here by your Team Lead.</td><td>Monitor continuously during shift</td></tr>
+          <tr><td>#ops-incidents</td><td>Active incident communications. If a P1 incident is declared, all updates post here. Read-only for Tier 1 during incidents.</td><td>Monitor continuously during shift</td></tr>
+          <tr><td>#ops-all-hands</td><td>Cross-team announcements, policy changes, and shift-affecting information from Operations Management.</td><td>Check at shift start and mid-shift</td></tr>
+          <tr><td>Direct message to Team Lead</td><td>Questions, exceptions, and situations requiring lead awareness that are not yet ticket-level. Always reference the ticket number if applicable.</td><td>Leads target &lt; 10 minutes during shift hours</td></tr>
+          <tr><td>Direct message to Tier 2 agent</td><td>Verbal context handoff during escalation. Not a substitute for completing the written escalation in the ticket system.</td><td>Used for active escalations only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04 FIRST TICKET -->
+  <section id="first-ticket" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div>
+        <div class="section-eyebrow">Hands-On Practice</div>
+        <h2 class="section-title">Your First Ticket — <em>A Complete Walkthrough</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">This section walks you through every step of handling one complete ticket — from the moment it arrives in your queue to the moment you close it. You will work a practice ticket in the training environment before handling live tickets. Your Team Lead will confirm when to switch from the training environment to the live queue.</p>
+
+    <div class="callout note">
+      <div class="callout-label">Training Environment vs. Live Queue</div>
+      <p>The training environment URL is different from the live queue URL. They look nearly identical. Your training environment banner reads <strong>"TRAINING — Not Live"</strong> in amber across the top of the screen. If you do not see this banner, you are in the live queue. Confirm with your Team Lead before proceeding.</p>
+    </div>
+
+    <div class="procedure-block">
+      <div class="procedure-block-title">Phase 1 — Receiving and Triaging the Ticket</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-action">Open the ticket from the top of your queue and record the receipt time</div>
+            <div class="step-detail">Click the ticket at the top of your queue (highest SLA urgency). The ticket opens in the center panel. The SLA response clock is already running from when the customer submitted the ticket — not from when you open it. Note the time remaining in the SLA field and orient your pace accordingly.</div>
+            <div class="step-warn">Do not open a ticket and immediately minimize or switch tabs before reading it. The system logs the ticket as "viewed" the moment you open it. If the ticket later breaches SLA, the log will show you viewed it without acting — this is a quality record.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-action">Read the entire ticket before doing anything else</div>
+            <div class="step-detail">Read the complete customer description, all attachments, and any prior notes. Resist the impulse to start working after reading the first sentence. Misclassifications almost always happen because an agent classified the ticket before reading it in full. Your classification decision should happen <em>after</em> you have all the information the customer provided.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-action">Assign the category code using the Issue Classification Matrix</div>
+            <div class="step-detail">Open the Knowledge Base Quick-Search and search for <strong>REF-OPS-002</strong> (Issue Classification Matrix). Match the customer's described symptom to the correct category. If the symptom matches multiple categories, classify under the primary symptom — the one the customer leads with. Enter the category code in the Category field of the ticket.</div>
+            <div class="step-tip">When in doubt between two categories, choose the one with the higher support impact. A misclassification toward higher impact is easier for Tier 2 to correct downward than a misclassification in the other direction that delays response.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-action">Assign the priority level and check for immediate escalation triggers</div>
+            <div class="step-detail">Using the Priority System from Section 02, assign the priority that matches the business impact described. Then immediately check: does any Tier 1 → Tier 2 escalation trigger from Section 03 of the Role-Based SOP (PCD00010) apply? If yes, escalate now rather than attempting resolution. Set the priority field in the ticket before escalating.</div>
+            <div class="step-note">You must set the priority field before escalating. Tier 2 agents cannot accept an escalation without a priority assignment — it is a required field for the escalation form.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="step-action">Send the acknowledgment response using the correct template</div>
+            <div class="step-detail">Click <strong>Send Response</strong> in the Action Bar. Open the Template Library (button to the left of the response text field). Select the acknowledgment template for the assigned priority level. Templates are labeled: <strong>ACK-P1, ACK-P2, ACK-P3, ACK-P4</strong>. The template will auto-populate. Before sending, fill in the two placeholder fields: [ISSUE SUMMARY] and [CUSTOMER NAME]. Do not modify any other template text.</div>
+            <div class="step-code">Template: ACK-P[X]
+Required fields to fill:
+  [CUSTOMER NAME]   — use first name only, from account profile
+  [ISSUE SUMMARY]   — one plain-language sentence describing the issue</div>
+            <div class="step-critical">Do not modify the template's SLA language (e.g., "We aim to respond within X hours"). This language is legally reviewed. If you believe the SLA time stated in the template is wrong for the priority you assigned, re-check your priority assignment rather than editing the template text.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="procedure-block">
+      <div class="procedure-block-title">Phase 2 — Attempting Resolution</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <div class="step-action">Search the playbook for the Standard Fix corresponding to the category code</div>
+            <div class="step-detail">In the Knowledge Base Quick-Search, type the category code you assigned (e.g., <code>AUTH</code>, <code>PERF</code>, <code>INTG</code>). The search will return the applicable playbook section. Read the full Standard Fix list for the category before applying any fix — you need to understand the full sequence before starting.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div class="step-content">
+            <div class="step-action">Add an internal note documenting what you are about to do before doing it</div>
+            <div class="step-detail">Before applying any Standard Fix, add an internal note to the ticket stating which fix you are applying and why. Example: <em>"Applying SF-AUTH-03 (Force Re-authentication) — issue matches symptom pattern: user cannot log in, account not locked, password confirmed correct."</em> This note protects you if the fix produces unexpected results and documents your reasoning for the record.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">8</div>
+          <div class="step-content">
+            <div class="step-action">Apply the Standard Fix steps exactly as documented — no skipping, no reordering</div>
+            <div class="step-detail">Follow each sub-step of the Standard Fix precisely. If a step says "wait 2 minutes before proceeding," wait the full 2 minutes. The sequence and timing in Standard Fixes reflect dependencies discovered through previous incidents. Treating them as approximate guidelines rather than precise instructions is one of the most common causes of failed resolutions.</div>
+            <div class="step-warn">If you encounter a step in the Standard Fix that does not match what you see in the system — for example, a button or option that does not exist where the fix says it will be — stop. Do not improvise. Add an internal note describing the discrepancy and escalate to Tier 2. The fix may be outdated; attempting to reconstruct it from memory is a deviation.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">9</div>
+          <div class="step-content">
+            <div class="step-action">Verify the resolution independently using the verification method in the playbook</div>
+            <div class="step-detail">Every Standard Fix includes a verification method — a specific step you can take to confirm the issue is resolved, independent of the customer's report. Perform the verification step. A customer saying "it seems to be working" is not verification. You need to be able to confirm the fix worked before you communicate resolution.</div>
+            <div class="step-tip">If the verification step requires you to reproduce the issue in a test account, the playbook section will say so and provide the test account ID. Do not use a live customer account to verify fixes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="procedure-block">
+      <div class="procedure-block-title">Phase 3 — Closing the Ticket</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">10</div>
+          <div class="step-content">
+            <div class="step-action">Send the resolution communication to the customer</div>
+            <div class="step-detail">Using the Resolution template for the category (<strong>RES-[CATEGORY]</strong> in the Template Library), communicate to the customer what was done and what they should now be able to do. Avoid technical jargon — describe the outcome, not the fix mechanism. Fill in all placeholder fields. The resolution communication should be sent before you close the ticket, not after.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">11</div>
+          <div class="step-content">
+            <div class="step-action">Select the resolution code and close the ticket</div>
+            <div class="step-detail">In the Action Bar, click <strong>Close</strong>. The system will prompt you to select a resolution code. Navigate the resolution code tree to the correct code for the fix applied. The tree structure mirrors the Standard Fix categories: <em>Category → Fix Type → Specific Code</em>. After selecting the code, confirm the close. The ticket status changes to Closed and leaves your active queue.</div>
+            <div class="step-code">Resolution code path format:
+[CATEGORY] → [FIX TYPE] → [SPECIFIC CODE]
+Example: AUTH → Force Reset → SF-AUTH-03</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-label">After Your First Practice Ticket</div>
+      <p>Complete the practice ticket in the training environment, then request a review from your Team Lead before switching to the live queue. Your lead will review the ticket record you created and give you specific feedback on your documentation, timing, and classification. This review is required before live queue access is granted.</p>
+    </div>
+
+    <div class="knowledge-check" id="kc2">
+      <div class="kc-header"><span class="kc-header-label">&#9670; Knowledge Check — Ticket Closure</span></div>
+      <div class="kc-body">
+        <div class="kc-question">You have applied Standard Fix SF-PERF-02 and the customer responds: "Looks better, thanks!" You have not yet performed the independent verification step documented in the playbook. What should you do?</div>
+        <div class="kc-options" id="kc2-opts">
+          <div class="kc-option" onclick="checkAnswer('kc2', 'A')"><span class="kc-letter">A</span>Close the ticket — the customer confirmed resolution, which is sufficient</div>
+          <div class="kc-option" onclick="checkAnswer('kc2', 'B')"><span class="kc-letter">B</span>Perform the independent verification step, then close if confirmed</div>
+          <div class="kc-option" onclick="checkAnswer('kc2', 'C')"><span class="kc-letter">C</span>Mark the ticket as "Pending Customer Confirmation" and wait 24 hours</div>
+          <div class="kc-option" onclick="checkAnswer('kc2', 'D')"><span class="kc-letter">D</span>Escalate to Tier 2 to perform the verification on your behalf</div>
+        </div>
+        <div class="kc-reveal" id="kc2-reveal">
+          <div class="kc-reveal-text">✓ Correct: <strong>B — Perform the independent verification step, then close.</strong> Customer confirmation is not a substitute for the documented verification method. The verification step exists because customers sometimes report resolution before the fix has fully propagated, or mistake a different issue for the reported one. Perform the verification step regardless of the customer's response, and close only once the fix is independently confirmed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 DAILY WORKFLOW -->
+  <section id="daily-workflow" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div>
+        <div class="section-eyebrow">Operations Rhythm</div>
+        <h2 class="section-title">Daily Workflow — <em>Shift Start to Shift End</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">Operations work has a rhythm. The same set of actions happens every shift start, every shift end, and at regular intervals throughout the day. This section makes that rhythm explicit so that you can build it into your habits rather than reconstructing it from memory under the pressure of an active queue.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Shift Start (First 10 Minutes)</h3>
+    </div>
+    <div class="procedure-block">
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-action">Read the Shift Handoff Record before touching the queue</div>
+            <div class="step-detail">Navigate to <strong>Ops Dashboard → Shift Tools → Handoff Record</strong> and open the record from the outgoing agent. Read every item. If any ticket status is unclear, message the outgoing agent immediately — they may still be reachable for the first few minutes after shift end. You own the queue from the moment you acknowledge the Handoff Record.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-action">Acknowledge the Handoff Record in the system</div>
+            <div class="step-detail">Click <strong>Acknowledge</strong> on the Handoff Record. This timestamps your queue assumption and is the official start of your shift ownership. Do not acknowledge before you have read the record — the timestamp is a commitment, not a formality.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-action">Sort the queue by SLA urgency and immediately work any ticket at or near breach</div>
+            <div class="step-detail">After acknowledging, sort the queue by SLA time remaining (ascending). Any ticket showing red is in or approaching breach. Address these before accepting any new tickets from the unassigned queue. Notify your Team Lead of any inherited ticket that is already in breach.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-action">Check the #ops-tier1-[shift] channel for any briefing notes</div>
+            <div class="step-detail">Your Team Lead posts pre-shift notes for known issues, elevated monitoring requirements, or queue-wide alerts. These brief notes carry operational weight — an elevated monitoring notice means you need to flag any ticket in that category immediately rather than working through it solo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">During the Shift — Queue Management Principles</h3>
+    </div>
+    <p class="body-text">Beyond the step-by-step procedures, there are a set of operational principles that govern how you manage your queue throughout the shift. These are not steps — they are standing rules that apply continuously.</p>
+
+    <div class="decision-table-wrap">
+      <table class="decision-table">
+        <thead>
+          <tr><th>Principle</th><th>What It Means in Practice</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SLA urgency governs queue order</td>
+            <td>Always work the ticket closest to SLA breach first, regardless of when it arrived, who submitted it, or how complex it appears. Do not work in arrival order unless all SLA times are identical.</td>
+          </tr>
+          <tr>
+            <td>One active ticket at a time</td>
+            <td>Complete or formally pause (with a status update note) one ticket before opening the next. Context-switching between multiple open tickets is the leading cause of missed steps and incorrect resolutions.</td>
+          </tr>
+          <tr>
+            <td>Document while you work, not after</td>
+            <td>Add internal notes to the ticket as you complete each step — not as a batch at the end. Notes written after the fact are reconstructed from memory and miss details. Notes written in real time are accurate.</td>
+          </tr>
+          <tr>
+            <td>Never hold a ticket you cannot resolve</td>
+            <td>If you have been working a ticket for 20 minutes without a clear path to resolution, escalate. Holding an unresolvable ticket is not persistence — it is a SLA risk that harms the customer.</td>
+          </tr>
+          <tr>
+            <td>Patterns require immediate flagging</td>
+            <td>If you receive three tickets with identical symptoms within one hour, stop treating them as individual issues. Flag the pattern in the #ops-tier1 channel and notify your Team Lead before working the third ticket. This is an incident indicator.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Shift End (Final 20 Minutes)</h3>
+    </div>
+    <p class="body-text">Shift end is the highest-risk moment for operations continuity. More tickets are lost, miscommunicated, or allowed to breach during shift transitions than at any other time. The following steps are required — not optional — for all agents, every shift.</p>
+
+    <div class="checklist-group">
+      <div class="checklist-group-header">Shift-End Checklist — Tier 1 Agent</div>
+      <div class="checklist">
+        <ul>
+          <li>Stop accepting new tickets from the unassigned queue 20 minutes before shift end</li>
+          <li>Update the status and internal notes on every open ticket to reflect current state</li>
+          <li>For each open ticket, identify and document the next required action and who owns it</li>
+          <li>Complete the Shift Handoff Record entry for every open ticket in the system</li>
+          <li>Verbally brief the incoming agent on any ticket that has context not fully captured in writing</li>
+          <li>Confirm the incoming agent has acknowledged the Handoff Record before logging out</li>
+          <li>Log any patterns, anomalies, or concerns in the shift notes field of the Handoff Record</li>
+          <li>Post shift-end status to the #ops-tier1-[shift] channel: queue count, any open P1/P2 items</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 COMMUNICATION STANDARDS -->
+  <section id="communication" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div>
+        <div class="section-eyebrow">Writing Standards</div>
+        <h2 class="section-title">Communication Standards — <em>How We Write to Customers</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">Every communication you send to a customer is the team's voice — not just yours. The standards in this section define how that voice should sound, what it should contain, and what it should never include. These standards exist because customer communications are permanent records, are subject to legal and compliance review, and directly affect the customer's experience of the resolution — even when the technical fix was perfect.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Tone Principles</h3>
+    </div>
+    <div class="decision-table-wrap">
+      <table class="decision-table">
+        <thead>
+          <tr><th>Principle</th><th>In Practice</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Clear over clever</td>
+            <td>Use plain language. Short sentences. One idea per sentence. A customer in the middle of a problem is not in the right state to parse complex syntax.</td>
+            <td><span class="tag green">Do</span> "Your access has been restored." &nbsp;<span class="tag red">Don't</span> "The authentication state has been rectified."</td>
+          </tr>
+          <tr>
+            <td>Precise without jargon</td>
+            <td>Be specific about what happened and what was done. Vague reassurances ("everything should be fine now") are not communications — they are noise. But precision does not require technical language.</td>
+            <td><span class="tag green">Do</span> "We reset your session token. You can now log in using your existing password." &nbsp;<span class="tag red">Don't</span> "We invalidated the stale JWT."</td>
+          </tr>
+          <tr>
+            <td>Ownership without over-apology</td>
+            <td>Acknowledge the impact the customer experienced. Do not serially apologize — one acknowledgment is appropriate, repeated apologies erode confidence. Focus quickly on resolution.</td>
+            <td><span class="tag green">Do</span> "I understand this disrupted your workflow this morning. Here is what we did to fix it." &nbsp;<span class="tag red">Don't</span> "I'm so sorry, I'm really sorry this happened, we apologize..."</td>
+          </tr>
+          <tr>
+            <td>Commitments are exact</td>
+            <td>If you commit to a follow-up, name a specific time. "Soon" and "shortly" are not commitments — they are false reassurances that customers correctly read as non-answers.</td>
+            <td><span class="tag green">Do</span> "I will follow up by 3:00 PM ET today." &nbsp;<span class="tag red">Don't</span> "We'll get back to you soon."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Common Mistakes and Corrections</h3>
+    </div>
+    <div class="mistakes-list">
+      <div class="mistake-item">
+        <div class="mi-wrong">
+          <div class="mi-label">✕ Incorrect</div>
+          <div class="mi-text">"Per my previous email, you were advised to clear your cache, which you haven't done."</div>
+        </div>
+        <div class="mi-right">
+          <div class="mi-label">✓ Correct</div>
+          <div class="mi-text">"The next step is to clear your browser cache. Here are the steps to do this in Chrome and Firefox: [steps]."</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mi-wrong">
+          <div class="mi-label">✕ Incorrect</div>
+          <div class="mi-text">"Unfortunately I am unable to assist with this as it is outside the scope of my team."</div>
+        </div>
+        <div class="mi-right">
+          <div class="mi-label">✓ Correct</div>
+          <div class="mi-text">"I have transferred your request to our [team name] team, who handles [topic]. They will reach out within [SLA time]."</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mi-wrong">
+          <div class="mi-label">✕ Incorrect</div>
+          <div class="mi-text">"This is a known bug that our engineering team is aware of and hopefully will fix soon."</div>
+        </div>
+        <div class="mi-right">
+          <div class="mi-label">✓ Correct</div>
+          <div class="mi-text">"Our engineering team is investigating this issue. I will send you an update when I have a confirmed timeline."</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mi-wrong">
+          <div class="mi-label">✕ Incorrect</div>
+          <div class="mi-text">"I need you to provide me with your username, password, and the last four digits of the credit card on file."</div>
+        </div>
+        <div class="mi-right">
+          <div class="mi-label">✓ Correct</div>
+          <div class="mi-text">"To verify your account, please confirm your registered email address and the date of your most recent login."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout stop">
+      <div class="callout-label">Never Request These Via Customer Communication</div>
+      <p>You must never ask a customer for their password, full payment card number, full Social Security or national ID number, or any security question answer — in any channel, under any circumstance, including when the customer volunteers the information. If a customer sends any of these in a ticket, do not acknowledge the specific data in your reply. Add an internal note flagging the communication and notify your Team Lead immediately.</p>
+    </div>
+  </section>
+
+  <!-- 07 QUALITY STANDARDS -->
+  <section id="quality" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div>
+        <div class="section-eyebrow">Standards &amp; Measurement</div>
+        <h2 class="section-title">Quality Standards — <em>What Good Work Looks Like</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">Quality in operations is not a soft standard — it is a measurable set of properties that each piece of work either has or does not have. This section describes those properties, how they are measured, and how to self-assess your own work before it is reviewed.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Five Quality Dimensions</h3>
+    </div>
+    <div class="decision-table-wrap">
+      <table class="decision-table">
+        <thead>
+          <tr><th>Dimension</th><th>What It Measures</th><th>How It Is Assessed</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Accuracy</td>
+            <td>Was the issue correctly classified? Was the right Standard Fix applied? Was the resolution verified?</td>
+            <td>QA review of ticket record; recurrence rate (same issue returning within 5 business days)</td>
+          </tr>
+          <tr>
+            <td>Timeliness</td>
+            <td>Was the response SLA met? Was the resolution SLA met? Was the Handoff Record completed on time?</td>
+            <td>SLA compliance report (automated); Handoff Record timestamp audit</td>
+          </tr>
+          <tr>
+            <td>Documentation</td>
+            <td>Are the internal notes complete, sequential, and accurate? Is the resolution code correct? Are all required fields populated?</td>
+            <td>QA spot-check; required-field audit (automated)</td>
+          </tr>
+          <tr>
+            <td>Communication</td>
+            <td>Do customer-facing messages meet tone, precision, and template compliance standards?</td>
+            <td>QA review of customer communications; CSAT survey results</td>
+          </tr>
+          <tr>
+            <td>Procedure Compliance</td>
+            <td>Were all steps followed in documented order? Were exceptions logged when deviations occurred?</td>
+            <td>Ticket audit trail; Exception Register review</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Self-Assessment Before Closing Any Ticket</h3>
+    </div>
+    <p class="body-text">Before closing a ticket, run through this self-assessment. These are the same questions QA will ask when reviewing the ticket. Catching a gap before closing is a self-correction; having it caught in review is a quality note. Both are recoverable, but the former reflects a higher level of operational discipline.</p>
+
+    <div class="checklist-group">
+      <div class="checklist-group-header">Pre-Close Self-Assessment — All Tickets</div>
+      <div class="checklist">
+        <ul>
+          <li>Is the category code correctly assigned and does it match the customer's described symptom?</li>
+          <li>Is the priority level correctly assigned based on the business impact criteria?</li>
+          <li>Did I send the acknowledgment response within the SLA window for the assigned priority?</li>
+          <li>Did I apply Standard Fixes in the documented order, without skipping or reordering?</li>
+          <li>Did I add an internal note before applying each fix documenting what I was about to do?</li>
+          <li>Did I perform the independent verification step — not relying on customer confirmation alone?</li>
+          <li>Does my customer communication use plain language, avoid jargon, and follow the tone standards?</li>
+          <li>Is the resolution code correct and does it accurately reflect which fix resolved the issue?</li>
+          <li>Are all required fields in the ticket populated (category, priority, resolution code, all note fields)?</li>
+          <li>If I deviated from the documented procedure at any point, did I log it in the Exception Register?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pull-quote">
+      <p>Speed and thoroughness are not opposites in operations work. A ticket documented completely and closed correctly the first time takes far less total time than one that is closed quickly, recurs, and must be worked again from the beginning.</p>
+      <cite>Operations Quality Framework &middot; Core Principle</cite>
+    </div>
+  </section>
+
+  <!-- 08 COMPLETION -->
+  <section id="completion" class="tg-section">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div>
+        <div class="section-eyebrow">Training Completion</div>
+        <h2 class="section-title">You Have Reached the End — <em>What Comes Next</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text">Completing this guide is the foundation of your onboarding, not the entirety of it. The next steps transition you from reading about the work to doing it — under observation initially, then independently. Each stage has a clear completion criterion.</p>
+
+    <div class="decision-table-wrap">
+      <table class="decision-table">
+        <thead>
+          <tr><th>Stage</th><th>Activity</th><th>Completion Criterion</th><th>Owner</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag blue">Stage 1</span></td>
+            <td>Training guide review (this document)</td>
+            <td>All sections read; knowledge checks attempted</td>
+            <td>Self-directed</td>
+          </tr>
+          <tr>
+            <td><span class="tag blue">Stage 2</span></td>
+            <td>Practice ticket in training environment</td>
+            <td>Ticket completed and reviewed by Team Lead; feedback addressed</td>
+            <td>Team Lead reviews</td>
+          </tr>
+          <tr>
+            <td><span class="tag amber">Stage 3</span></td>
+            <td>Shadowed live tickets (first 5 tickets)</td>
+            <td>Team Lead reviews first 5 live tickets and confirms quality</td>
+            <td>Team Lead approves</td>
+          </tr>
+          <tr>
+            <td><span class="tag amber">Stage 4</span></td>
+            <td>Independent operations with daily check-in</td>
+            <td>One full week without quality notes requiring correction</td>
+            <td>Team Lead monitors</td>
+          </tr>
+          <tr>
+            <td><span class="tag green">Stage 5</span></td>
+            <td>Full independent certification</td>
+            <td>Team Lead submits certification form; access to full procedure library unlocked</td>
+            <td>Team Lead certifies</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-label">Questions Are Expected — Here Is Who to Ask</div>
+      <p><strong>During your shift:</strong> Direct message your Team Lead in the communication platform. Reference the ticket number if applicable. <br><strong>About procedures:</strong> Search the Knowledge Base first; if the answer is not there, message your Team Lead and flag the gap in the Knowledge Base search results. <br><strong>About your training progress:</strong> Your Team Lead schedules a check-in at the end of your first, second, and fourth weeks. Bring specific questions, not just general updates.</p>
+    </div>
+
+    <div class="callout newuser">
+      <div class="callout-label">Final Note for New Team Members</div>
+      <p>The detail in this guide exists because the work requires it — not because it is expected to be overwhelming. Every experienced member of this team learned the same procedures, used the same guide while working, and asked the same questions. The learning curve is real and the team is familiar with it. Ask questions early. Consult the guide constantly. Document your work thoroughly. The rest follows.</p>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Josh Writing Samples &middot; Operations Series</div>
+    <div class="footer-doc">PCD00015 &middot; New User Training Guide &middot; v1.3 &middot; 2025-Q1</div>
+  </div>
+  <div class="footer-right">Operations &middot; Training<br>joshwritingsamples.com</div>
+</footer>
+
+<script>
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+/* Progress bar */
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  progressBar.style.width = Math.min(pct, 100) + '%';
+});
+
+/* Section reveal */
+const sections = document.querySelectorAll('.tg-section');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }});
+}, { threshold: 0.04 });
+sections.forEach(s => revealObs.observe(s));
+
+/* Sidebar active link + milestone tracking */
+const navLinks  = document.querySelectorAll('.sb-nav-link');
+const sectionEls= document.querySelectorAll('section[id]');
+const milestones= document.querySelectorAll('.sb-milestone');
+const sectionOrder = ['orientation','core-concepts','system-access','first-ticket','daily-workflow','communication','quality','completion'];
+
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+      /* Update milestones */
+      const idx = sectionOrder.indexOf(id);
+      milestones.forEach((m, i) => {
+        m.classList.remove('done','active');
+        if (i < idx) m.classList.add('done');
+        else if (i === idx) m.classList.add('active');
+      });
+    }
+  });
+}, { rootMargin: '-25% 0px -65% 0px' });
+sectionEls.forEach(s => navObs.observe(s));
+
+/* Knowledge checks */
+const answers = { kc1: 'C', kc2: 'B' };
+function checkAnswer(id, chosen) {
+  const opts = document.querySelectorAll(`#${id}-opts .kc-option`);
+  opts.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    opt.classList.remove('correct','incorrect');
+    if (letter === answers[id]) opt.classList.add('correct');
+    else if (letter === chosen && chosen !== answers[id]) opt.classList.add('incorrect');
+    opt.onclick = null;
+  });
+  document.getElementById(`${id}-reveal`).classList.add('shown');
+}
+</script>
+</body>
+</html>

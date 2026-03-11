@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Issue Intake Workflow Guide | Josh Writing Samples</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: #1d2a36;
+      background: #f3f8fd;
+    }
+
+    header {
+      background-color: #1f4d3a;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      flex-wrap: wrap;
+    }
+
+    .site-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 36px auto;
+      padding: 0 24px 50px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1f5f99, #4b84c4);
+      color: white;
+      border-radius: 16px;
+      padding: 34px 34px 30px;
+      box-shadow: 0 10px 26px rgba(30, 76, 120, 0.18);
+      margin-bottom: 26px;
+    }
+
+    .sample-label {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+      font-size: 0.84rem;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h1 {
+      margin: 0 0 12px 0;
+      font-size: 2.2rem;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 860px;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: #ebf4ff;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid #d7e5f2;
+      border-radius: 14px;
+      padding: 26px 28px;
+      box-shadow: 0 5px 16px rgba(22, 57, 92, 0.06);
+      margin-bottom: 22px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      color: #245b8e;
+      font-size: 1.38rem;
+    }
+
+    .panel h3 {
+      color: #2f6ea8;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      font-size: 1.04rem;
+    }
+
+    .panel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .summary-box {
+      background: #edf5fd;
+      border-left: 6px solid #4b84c4;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-top: 16px;
+    }
+
+    .summary-box strong {
+      color: #1f5f99;
+    }
+
+    .step-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .step-card {
+      background: #f8fbff;
+      border: 1px solid #dbe8f4;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .step-number {
+      display: inline-block;
+      background: #dcecff;
+      color: #245b8e;
+      font-weight: bold;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.84rem;
+      margin-bottom: 10px;
+    }
+
+    .step-card h3 {
+      margin: 0 0 8px 0;
+      color: #245b8e;
+      font-size: 1rem;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: #43586d;
+      font-size: 0.96rem;
+    }
+
+    .sidebar-card {
+      background: white;
+      border: 1px solid #d7e5f2;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 5px 16px rgba(22, 57, 92, 0.06);
+      margin-bottom: 22px;
+    }
+
+    .sidebar-card h2 {
+      margin-top: 0;
+      color: #245b8e;
+      font-size: 1.14rem;
+    }
+
+    .fact-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #445a6d;
+    }
+
+    .fact-list li {
+      margin-bottom: 10px;
+    }
+
+    .metric {
+      background: #eef5fc;
+      border: 1px solid #d7e5f2;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #62809d;
+      margin: 0 0 6px 0;
+      font-weight: bold;
+    }
+
+    .metric-value {
+      margin: 0;
+      font-size: 1.08rem;
+      color: #245b8e;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.96rem;
+    }
+
+    th, td {
+      border: 1px solid #d7e5f2;
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #edf5fd;
+      color: #245b8e;
+    }
+
+    .decision-box {
+      background: linear-gradient(135deg, #edf5fd, #f8fbff);
+      border: 1px solid #d1e2f0;
+      border-radius: 14px;
+      padding: 22px 24px;
+    }
+
+    .decision-box h2 {
+      margin-top: 0;
+      color: #1f5f99;
+    }
+
+    .decision-box ul {
+      margin: 12px 0 0 20px;
+      padding: 0;
+    }
+
+    .decision-box li {
+      margin-bottom: 10px;
+      color: #344b60;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #647b8f;
+      font-size: 0.94rem;
+      padding-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      nav ul {
+        gap: 12px;
+      }
+
+      .hero,
+      .panel,
+      .sidebar-card {
+        padding: 22px;
+      }
+
+      main {
+        padding: 0 16px 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="topbar">
+      <div class="site-title">Josh Writing Samples</div>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about/index.html">About Me</a></li>
+          <li><a href="../samples/index.html">Samples</a></li>
+          <li><a href="../knowledge-management/index.html">Knowledge Management</a></li>
+          <li><a href="../contact/index.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="sample-label">Process Sample</div>
+      <h1>Issue Intake Workflow Guide</h1>
+      <p>
+        A consistent intake workflow helps teams receive, assess, categorize, and route incoming issues with less ambiguity
+        and less rework. This guide outlines a practical issue intake model that supports clearer ownership, faster triage,
+        and more reliable downstream handling across support, product, operations, and governance functions.
+      </p>
+    </section>
+
+    <div class="layout">
+      <div>
+        <section class="panel">
+          <h2>Purpose</h2>
+          <p>
+            Issue intake is often where operational clarity either begins or breaks down. When teams accept requests through
+            inconsistent channels or with incomplete information, downstream work slows immediately. Triage becomes subjective,
+            duplication increases, and ownership gaps appear early.
+          </p>
+          <p>
+            A structured intake workflow reduces those failures by defining what information is required up front, how issues are
+            initially assessed, and where they go next. The goal is not to create administrative overhead. The goal is to improve
+            routing accuracy, response consistency, and accountability.
+          </p>
+
+          <div class="summary-box">
+            <strong>Bottom line:</strong> a good intake process creates cleaner inputs, faster decisions, and better visibility into
+            the work entering a team or governance function.
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Core Workflow</h2>
+          <div class="step-grid">
+            <div class="step-card">
+              <div class="step-number">Step 1</div>
+              <h3>Receive the issue</h3>
+              <p>
+                Capture the issue through an approved intake channel such as a form, service desk, ticketing queue, or managed inbox.
+                Avoid ad hoc intake through scattered chats or side conversations whenever possible.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 2</div>
+              <h3>Validate required information</h3>
+              <p>
+                Confirm that the submission includes enough detail to act. This should usually include a summary, business impact,
+                affected system or process, requester information, and any known urgency or deadline.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 3</div>
+              <h3>Classify and categorize</h3>
+              <p>
+                Determine what kind of issue has been submitted. Common categories may include incident, defect, enhancement request,
+                access request, content issue, governance question, or operational blocker.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 4</div>
+              <h3>Triage for urgency and impact</h3>
+              <p>
+                Assess severity, risk, urgency, and scope. This is where the team decides whether the issue is routine, time-sensitive,
+                high-risk, or requires escalation.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 5</div>
+              <h3>Assign owner or destination</h3>
+              <p>
+                Route the issue to the team, queue, or decision-maker that should own the next action. This may be a resolver group,
+                a product owner, a governance lead, or an operational function.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">Step 6</div>
+              <h3>Track disposition</h3>
+              <p>
+                Record what happened to the issue after intake. Was it accepted, merged, rejected, deferred, escalated, or resolved?
+                This creates traceability and supports reporting later.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Minimum Intake Fields</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Why It Matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Issue Title</td>
+                <td>Provides a quick, scannable summary for queues and reporting.</td>
+              </tr>
+              <tr>
+                <td>Description</td>
+                <td>Gives the team enough context to understand the problem or request.</td>
+              </tr>
+              <tr>
+                <td>Requester</td>
+                <td>Identifies who raised the issue and where follow-up should go.</td>
+              </tr>
+              <tr>
+                <td>Business Impact</td>
+                <td>Helps determine priority and whether the issue affects operations, customers, or compliance.</td>
+              </tr>
+              <tr>
+                <td>Category</td>
+                <td>Supports routing logic and consistent handling.</td>
+              </tr>
+              <tr>
+                <td>Urgency or Needed By Date</td>
+                <td>Provides timing context, even when it does not dictate final priority.</td>
+              </tr>
+              <tr>
+                <td>Attachments or Evidence</td>
+                <td>Reduces rework by preserving screenshots, logs, or supporting material early.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <h2>Triage Considerations</h2>
+          <p>
+            Not all issues should be treated the same. A useful intake process distinguishes between what is urgent,
+            what is merely visible, and what can be scheduled through normal planning channels.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Consideration</th>
+                <th>Guiding Question</th>
+                <th>Operational Effect</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Severity</td>
+                <td>How serious is the issue if left unaddressed?</td>
+                <td>May trigger faster escalation or senior review.</td>
+              </tr>
+              <tr>
+                <td>Urgency</td>
+                <td>How soon does action need to begin?</td>
+                <td>Influences queue placement and response timing.</td>
+              </tr>
+              <tr>
+                <td>Scope</td>
+                <td>How many systems, people, or workflows are affected?</td>
+                <td>May change ownership or coordination needs.</td>
+              </tr>
+              <tr>
+                <td>Risk</td>
+                <td>Does the issue create compliance, legal, security, or reputational concern?</td>
+                <td>Can require governance involvement or immediate controls.</td>
+              </tr>
+              <tr>
+                <td>Complexity</td>
+                <td>Can it be resolved directly, or does it need deeper analysis?</td>
+                <td>Shapes whether the issue is routed for immediate action or discovery.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel decision-box">
+          <h2>Recommended Intake Principles</h2>
+          <ul>
+            <li>Use one primary intake path for each kind of issue to reduce confusion.</li>
+            <li>Require only the fields needed to make a routing decision.</li>
+            <li>Separate intake from full resolution work so triage stays fast.</li>
+            <li>Define categories and severity language in advance.</li>
+            <li>Record final disposition so the process produces usable metrics.</li>
+            <li>Review intake patterns regularly to identify recurring pain points and workflow gaps.</li>
+          </ul>
+        </section>
+      </div>
+
+      <aside>
+        <section class="sidebar-card">
+          <h2>Audience</h2>
+          <ul class="fact-list">
+            <li>Project managers</li>
+            <li>Support teams</li>
+            <li>Cross-functional partners</li>
+            <li>Operations stakeholders</li>
+          </ul>
+        </section>
+
+        <section class="sidebar-card">
+          <h2>Guide Focus</h2>
+          <div class="metric">
+            <p class="metric-label">Primary Goal</p>
+            <p class="metric-value">Cleaner issue routing</p>
+          </div>
+          <div class="metric">
+            <p class="metric-label">Operational Benefit</p>
+            <p class="metric-value">Less rework and confusion</p>
+          </div>
+          <div class="metric">
+            <p class="metric-label">Success Measure</p>
+            <p class="metric-value">Faster and more accurate triage</p>
+          </div>
+        </section>
+
+        <section class="sidebar-card">
+          <h2>What Teams Should Ask</h2>
+          <ul class="fact-list">
+            <li>What issue types are we actually receiving?</li>
+            <li>What information is required to make a routing decision?</li>
+            <li>Who owns triage?</li>
+            <li>When does escalation begin?</li>
+            <li>How do we record disposition and outcomes?</li>
+          </ul>
+        </section>
+
+        <section class="sidebar-card">
+          <h2>Why This Sample Works</h2>
+          <ul class="fact-list">
+            <li>Clear operational framing</li>
+            <li>Structured workflow writing</li>
+            <li>Practical intake logic</li>
+            <li>Readable layout for process audiences</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <p class="footer-note">
+      This sample demonstrates process-centered documentation, operational clarity, and structured communication for cross-functional teams.
+    </p>
+  </main>
+</body>
+</html>
