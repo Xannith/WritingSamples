@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Information Governance Model — Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:         #0A0D0A;
+  --bg2:        #0F1410;
+  --bg3:        #151C15;
+  --bg4:        #1C251C;
+  --bg5:        #222D22;
+  --border:     rgba(255,255,255,0.05);
+  --border2:    rgba(255,255,255,0.09);
+  --border3:    rgba(255,255,255,0.14);
+  --text:       #DDE8DC;
+  --dim:        #7E9A7C;
+  --faint:      #3E5240;
+  --green:      #4E9A5F;
+  --green-b:    #6BBF7C;
+  --green-d:    rgba(78,154,95,0.12);
+  --green-g:    rgba(78,154,95,0.06);
+  --green-glow: rgba(78,154,95,0.22);
+  --teal:       #4AADA0;
+  --teal-d:     rgba(74,173,160,0.12);
+  --gold:       #C4A84A;
+  --gold-d:     rgba(196,168,74,0.12);
+  --serif:      'Playfair Display', Georgia, serif;
+  --body:       'Source Serif 4', Georgia, serif;
+  --mono:       'JetBrains Mono', 'Fira Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(78,154,95,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,154,95,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SITE NAV ── */
+#sitenav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(10,13,10,0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border2);
+}
+.sitenav-inner {
+  display: flex; align-items: center;
+  height: 56px; padding: 0 48px; gap: 0;
+}
+.sitenav-brand {
+  font-family: var(--serif); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); text-decoration: none;
+  display: flex; align-items: center; gap: 9px;
+  margin-right: auto; letter-spacing: 0.01em; white-space: nowrap;
+}
+.sitenav-brand::before { content: '&#9670;'; color: var(--green); font-size: 0.6rem; flex-shrink: 0; }
+.sitenav-links { display: flex; align-items: center; gap: 2px; }
+.sitenav-link {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--dim); text-decoration: none;
+  padding: 6px 14px; border-radius: 3px; border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap;
+}
+.sitenav-link:hover { color: var(--text); background: var(--bg3); border-color: var(--border2); }
+.sitenav-link.active { color: var(--green-b); background: var(--green-g); border-color: rgba(78,154,95,0.28); }
+.nav-breadcrumb {
+  height: 30px; padding: 0 48px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border); background: var(--bg2);
+}
+.nav-bc-item {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--faint); text-decoration: none; transition: color 0.15s;
+}
+.nav-bc-item:hover { color: var(--dim); }
+.nav-bc-sep { color: var(--faint); font-size: 0.5rem; }
+.nav-bc-item.current { color: var(--green); }
+.nav-hamburger {
+  display: none; background: none; border: 1px solid var(--border2);
+  border-radius: 3px; padding: 5px 9px; cursor: pointer;
+  color: var(--dim); font-size: 1rem; line-height: 1;
+}
+.nav-mobile-menu {
+  display: none; flex-direction: column;
+  background: var(--bg2); border-bottom: 1px solid var(--border2); padding: 8px 0;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-link {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--dim); text-decoration: none;
+  padding: 10px 28px; border-left: 2px solid transparent; transition: all 0.15s;
+}
+.nav-mobile-link:hover { color: var(--text); background: var(--bg3); }
+.nav-mobile-link.active { color: var(--green-b); border-left-color: var(--green); background: var(--green-g); }
+@media (max-width: 768px) {
+  .sitenav-links { display: none; }
+  .nav-hamburger { display: block; }
+  .sitenav-inner { padding: 0 20px; }
+  .nav-breadcrumb { padding: 0 20px; display: none; }
+}
+
+/* ── LAYOUT ── */
+#shell { display: flex; position: relative; z-index: 1; min-height: calc(100vh - 86px); }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: 240px; flex-shrink: 0;
+  background: var(--bg2); border-right: 1px solid var(--border);
+  height: calc(100vh - 86px); position: sticky; top: 86px;
+  overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--bg4) transparent;
+  padding: 28px 0;
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--bg4); }
+.sb-section-label {
+  padding: 0 20px 10px; font-family: var(--mono); font-size: 0.55rem;
+  font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint);
+}
+.sb-meta { padding: 0 20px 24px; }
+.sb-meta-item { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+.sb-meta-key { font-family: var(--mono); font-size: 0.55rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+.sb-meta-val { font-size: 0.78rem; color: var(--dim); }
+.sb-meta-val.accent { color: var(--green); font-family: var(--mono); font-size: 0.7rem; }
+.sb-divider { height: 1px; background: var(--border); margin: 0 0 20px; }
+.sb-nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 20px; text-decoration: none; font-size: 0.76rem;
+  color: var(--dim); border-left: 2px solid transparent; transition: all 0.15s; cursor: pointer;
+}
+.sb-nav-link:hover { color: var(--text); border-left-color: rgba(78,154,95,0.4); background: var(--bg3); }
+.sb-nav-link.active { color: var(--green-b); border-left-color: var(--green); background: var(--green-g); }
+.sb-nav-num { font-family: var(--mono); font-size: 0.58rem; color: var(--faint); flex-shrink: 0; width: 16px; }
+
+/* ── MAIN ── */
+#main { flex: 1; min-width: 0; padding: 0 0 120px; }
+
+/* ── HERO ── */
+#hero {
+  padding: 72px 80px 60px; border-bottom: 1px solid var(--border2);
+  position: relative; overflow: hidden;
+}
+#hero::before {
+  content: ''; position: absolute; top: -120px; right: -80px;
+  width: 600px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(78,154,95,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+#hero::after {
+  content: ''; position: absolute; bottom: -80px; left: 200px;
+  width: 400px; height: 400px;
+  background: radial-gradient(ellipse at center, rgba(74,173,160,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--green);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+}
+.hero-eyebrow::before { content: ''; display: inline-block; width: 28px; height: 1px; background: var(--green); }
+.hero-title {
+  font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 900; line-height: 1.08; color: var(--text);
+  max-width: 720px; margin-bottom: 24px;
+}
+.hero-title em { font-style: italic; color: var(--green-b); }
+.hero-sub { font-size: 1.05rem; color: var(--dim); max-width: 620px; line-height: 1.75; margin-bottom: 36px; }
+.hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-tag {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 2px; border: 1px solid var(--border2);
+}
+.hero-tag.primary  { background: var(--green-d); border-color: rgba(78,154,95,0.3);   color: var(--green-b); }
+.hero-tag.secondary{ background: var(--teal-d);  border-color: rgba(74,173,160,0.25); color: var(--teal); }
+.hero-tag.tertiary { background: var(--gold-d);  border-color: rgba(196,168,74,0.25); color: var(--gold); }
+
+/* ── CONTENT SECTIONS ── */
+.article-section {
+  padding: 60px 80px; border-bottom: 1px solid var(--border);
+  max-width: 860px; opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.article-section.visible { opacity: 1; transform: translateY(0); }
+.section-eyebrow {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--green);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+}
+.section-eyebrow::before { content: attr(data-num); color: var(--faint); }
+.section-title {
+  font-family: var(--serif); font-size: 1.8rem; font-weight: 700;
+  color: var(--text); line-height: 1.15; margin-bottom: 22px;
+}
+.section-title em { font-style: italic; color: var(--green-b); }
+.section-lead { font-size: 1rem; color: var(--dim); line-height: 1.85; margin-bottom: 24px; max-width: 680px; }
+p.body-text { font-size: 0.95rem; color: var(--dim); line-height: 1.85; margin-bottom: 18px; max-width: 680px; }
+
+/* ── SUBSECTION ── */
+.subsection { margin: 32px 0 16px; }
+.subsection-title {
+  font-family: var(--serif); font-size: 1.1rem; font-weight: 700;
+  color: var(--text); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.subsection-title::before {
+  content: ''; display: inline-block; width: 14px; height: 2px;
+  background: var(--green); flex-shrink: 0;
+}
+
+/* ── CALLOUT ── */
+.callout {
+  position: relative; padding: 18px 20px 18px 50px;
+  margin: 24px 0; border-radius: 3px; border: 1px solid var(--border2); max-width: 680px;
+}
+.callout::before { position: absolute; left: 17px; top: 18px; font-size: 0.9rem; }
+.callout.green  { background: var(--green-g); border-left: 3px solid var(--green); }
+.callout.green::before  { content: '&#9670;'; color: var(--green); }
+.callout.teal   { background: var(--teal-d);  border-left: 3px solid var(--teal); }
+.callout.teal::before   { content: '&#9672;'; color: var(--teal); }
+.callout.gold   { background: var(--gold-d);  border-left: 3px solid var(--gold); }
+.callout.gold::before   { content: '&#9671;'; color: var(--gold); }
+.callout-label {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 7px;
+}
+.callout.green .callout-label { color: var(--green-b); }
+.callout.teal  .callout-label { color: var(--teal); }
+.callout.gold  .callout-label { color: var(--gold); }
+.callout p { font-size: 0.9rem; color: var(--dim); line-height: 1.7; margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* ── BULLET LIST ── */
+.bullet-list { margin: 16px 0 20px; max-width: 680px; }
+.bullet-list-label {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px;
+}
+.bullet-list ul { list-style: none; padding: 0; }
+.bullet-list li {
+  font-size: 0.92rem; color: var(--dim); line-height: 1.75;
+  margin-bottom: 10px; padding-left: 20px; position: relative;
+}
+.bullet-list li::before {
+  content: '&#8212;'; position: absolute; left: 0;
+  color: var(--green); font-family: var(--mono); font-size: 0.75rem;
+}
+
+/* ── DATA TABLE ── */
+.data-table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border2); border-radius: 4px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.data-table thead tr { background: var(--bg4); }
+.data-table thead th {
+  padding: 10px 14px; text-align: left;
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint);
+  white-space: nowrap; border-bottom: 1px solid var(--border2);
+}
+.data-table tbody td {
+  padding: 10px 14px; color: var(--dim);
+  border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55;
+}
+.data-table tbody td:first-child { font-family: var(--mono); font-size: 0.75rem; color: var(--green-b); white-space: nowrap; }
+.data-table tbody tr:hover td { background: rgba(78,154,95,0.03); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ── PIPELINE STEPS ── */
+.pipeline { margin: 24px 0; max-width: 640px; position: relative; }
+.pipeline::before {
+  content: ''; position: absolute; left: 19px; top: 28px; bottom: 28px; width: 1px;
+  background: linear-gradient(to bottom, var(--green), var(--teal)); opacity: 0.2;
+}
+.pipe-step { display: flex; gap: 18px; align-items: flex-start; padding-bottom: 20px; position: relative; }
+.pipe-step:last-child { padding-bottom: 0; }
+.pipe-dot {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--bg4);
+  border: 1px solid var(--border2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 500; color: var(--green-b);
+  z-index: 1; transition: border-color 0.2s, background 0.2s;
+}
+.pipe-step:hover .pipe-dot { border-color: var(--green); background: var(--green-g); }
+.pipe-body { padding-top: 8px; }
+.pipe-body strong { display: block; font-size: 0.87rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.pipe-body p { font-size: 0.81rem; color: var(--dim); line-height: 1.6; margin: 0; max-width: 500px; }
+
+/* ── STAT BAND ── */
+.stat-band {
+  display: flex; gap: 0; margin: 28px 0;
+  border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; max-width: 680px;
+}
+.stat-item {
+  flex: 1; padding: 18px 20px; border-right: 1px solid var(--border2);
+  text-align: center; background: var(--bg3); transition: background 0.15s;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: var(--bg4); }
+.stat-num { font-family: var(--serif); font-size: 1.8rem; font-weight: 700; color: var(--green-b); line-height: 1; margin-bottom: 6px; }
+.stat-label { font-family: var(--mono); font-size: 0.58rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+
+/* ── HIERARCHY CHAIN ── */
+.hierarchy-chain {
+  display: flex; align-items: center; gap: 0;
+  margin: 24px 0; max-width: 680px;
+  border: 1px solid var(--border2); border-radius: 4px; overflow: hidden;
+}
+.hc-node {
+  flex: 1; padding: 14px 16px; background: var(--bg3);
+  border-right: 1px solid var(--border2);
+  transition: background 0.15s; cursor: default;
+}
+.hc-node:last-child { border-right: none; }
+.hc-node:hover { background: var(--bg4); }
+.hc-code {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--green);
+  margin-bottom: 5px;
+}
+.hc-title { font-family: var(--serif); font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.hc-desc { font-size: 0.72rem; color: var(--dim); line-height: 1.45; }
+.hc-arrow {
+  flex-shrink: 0; width: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); color: var(--faint); font-size: 0.75rem;
+  background: var(--bg4); border-right: 1px solid var(--border2);
+  align-self: stretch;
+}
+
+/* ── ROLE RESPONSIBILITY TABLE ── */
+.role-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin: 22px 0; max-width: 680px;
+}
+.role-card {
+  background: var(--bg3); border: 1px solid var(--border2); border-radius: 4px;
+  overflow: hidden; transition: border-color 0.15s, transform 0.15s;
+}
+.role-card:hover { border-color: rgba(78,154,95,0.3); transform: translateY(-2px); }
+.role-head {
+  padding: 11px 14px; background: var(--bg4); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.role-icon {
+  width: 28px; height: 28px; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;
+}
+.role-icon.green { background: var(--green-d); border: 1px solid rgba(78,154,95,0.25); }
+.role-icon.teal  { background: var(--teal-d);  border: 1px solid rgba(74,173,160,0.25); }
+.role-icon.gold  { background: var(--gold-d);  border: 1px solid rgba(196,168,74,0.25); }
+.role-head-text {}
+.role-head-title { font-family: var(--serif); font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.role-head-sub { font-family: var(--mono); font-size: 0.56rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green); margin-top: 2px; }
+.role-head-sub.teal { color: var(--teal); }
+.role-head-sub.gold { color: var(--gold); }
+.role-body { padding: 12px 14px; }
+.role-body ul { list-style: none; padding: 0; }
+.role-body li {
+  font-size: 0.77rem; color: var(--dim); padding-left: 14px;
+  position: relative; margin-bottom: 5px; line-height: 1.5;
+}
+.role-body li::before { content: '&#183;'; position: absolute; left: 4px; color: var(--green); }
+
+/* ── LIFECYCLE STATUS STRIP ── */
+.lifecycle-strip {
+  display: flex; gap: 0; margin: 24px 0;
+  border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; max-width: 680px;
+}
+.lc-stage {
+  flex: 1; padding: 12px 10px; text-align: center;
+  background: var(--bg3); border-right: 1px solid var(--border2);
+  transition: background 0.15s; cursor: default; position: relative;
+}
+.lc-stage:last-child { border-right: none; }
+.lc-stage:hover { background: var(--bg4); }
+.lc-stage.active-stage { background: var(--green-g); }
+.lc-stage-label {
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px;
+}
+.lc-stage.active-stage .lc-stage-label { color: var(--green-b); }
+.lc-stage:not(.active-stage) .lc-stage-label { color: var(--faint); }
+.lc-stage-desc { font-size: 0.72rem; color: var(--dim); line-height: 1.4; }
+.lc-connector {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--faint); font-size: 0.6rem; padding: 0 2px;
+  background: var(--bg4); border-right: 1px solid var(--border2);
+}
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  margin: 32px 0; padding: 28px 32px;
+  border-left: 3px solid var(--green); background: var(--bg3);
+  border-radius: 0 4px 4px 0; max-width: 640px;
+}
+.pull-quote p { font-family: var(--serif); font-size: 1.15rem; font-style: italic; color: var(--text); line-height: 1.65; margin-bottom: 12px; }
+.pull-quote cite { font-family: var(--mono); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); font-style: normal; }
+
+/* ── CONCLUSION ── */
+#conclusion { background: linear-gradient(135deg, var(--bg2), var(--bg3)); border-top: 1px solid var(--border2); border-bottom: 1px solid var(--border2); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 32px 80px; position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--border);
+}
+.footer-brand {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint);
+  display: flex; align-items: center; gap: 8px;
+}
+.footer-brand::before { content: '&#9670;'; color: var(--green); font-size: 0.5rem; }
+.footer-meta { font-family: var(--mono); font-size: 0.58rem; color: var(--faint); letter-spacing: 0.08em; }
+
+/* ── SCROLL PROGRESS ── */
+#progress-bar {
+  position: fixed; top: 86px; left: 0; height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+  z-index: 200; width: 0%; transition: width 0.1s;
+  box-shadow: 0 0 8px var(--green-glow);
+}
+
+code {
+  font-family: var(--mono); font-size: 0.8em;
+  background: var(--bg4); color: var(--teal);
+  padding: 1px 6px; border-radius: 2px; border: 1px solid var(--border2);
+}
+
+@media (max-width: 960px) {
+  #sidebar { display: none; }
+  #hero, .article-section { padding-left: 28px; padding-right: 28px; }
+  .role-grid { grid-template-columns: 1fr; }
+  .hierarchy-chain { flex-direction: column; }
+  .hc-arrow { display: none; }
+  .hc-node { border-right: none; border-bottom: 1px solid var(--border2); }
+  .hc-node:last-child { border-bottom: none; }
+  .lifecycle-strip { flex-wrap: wrap; }
+  .lc-connector { display: none; }
+  .stat-band { flex-wrap: wrap; }
+  footer { padding: 24px 28px; flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- SITE NAV -->
+<nav id="sitenav">
+  <div class="sitenav-inner">
+    <a href="https://joshwritingsamples.com" class="sitenav-brand">Josh Writing Samples</a>
+    <div class="sitenav-links">
+      <a href="https://joshwritingsamples.com"            class="sitenav-link">Home</a>
+      <a href="https://joshwritingsamples.com/about.html" class="sitenav-link">About Me</a>
+      <a href="https://joshwritingsamples.com/samples.html" class="sitenav-link active">Samples</a>
+      <a href="https://joshwritingsamples.com/knowledge.html" class="sitenav-link">Knowledge Management</a>
+      <a href="https://joshwritingsamples.com/contact.html"   class="sitenav-link">Contact</a>
+    </div>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">&#9776;</button>
+  </div>
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="https://joshwritingsamples.com"              class="nav-mobile-link">Home</a>
+    <a href="https://joshwritingsamples.com/about.html"   class="nav-mobile-link">About Me</a>
+    <a href="https://joshwritingsamples.com/samples.html" class="nav-mobile-link active">Samples</a>
+    <a href="https://joshwritingsamples.com/knowledge.html" class="nav-mobile-link">Knowledge Management</a>
+    <a href="https://joshwritingsamples.com/contact.html"   class="nav-mobile-link">Contact</a>
+  </div>
+  <div class="nav-breadcrumb">
+    <a href="https://joshwritingsamples.com"              class="nav-bc-item">Home</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <a href="https://joshwritingsamples.com/samples.html" class="nav-bc-item">Samples</a>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item">Architecture</span>
+    <span class="nav-bc-sep">&#8250;</span>
+    <span class="nav-bc-item current">Information Governance Model</span>
+  </div>
+</nav>
+
+<div id="shell">
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sb-section-label">Document Info</div>
+  <div class="sb-meta">
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Category</span>
+      <span class="sb-meta-val">Architecture</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Type</span>
+      <span class="sb-meta-val">Governance Framework</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Audience</span>
+      <span class="sb-meta-val">Leaders &amp; Architects</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Object ID</span>
+      <span class="sb-meta-val accent">POL00003</span>
+    </div>
+    <div class="sb-meta-item">
+      <span class="sb-meta-key">Version</span>
+      <span class="sb-meta-val">1.0 &middot; 2025</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-section-label">Sections</div>
+
+  <a class="sb-nav-link active" href="#overview">  <span class="sb-nav-num">01</span>Overview</a>
+  <a class="sb-nav-link" href="#why-governance">   <span class="sb-nav-num">02</span>Why Governance Fails</a>
+  <a class="sb-nav-link" href="#hierarchy">        <span class="sb-nav-num">03</span>Governance Hierarchy</a>
+  <a class="sb-nav-link" href="#ownership">        <span class="sb-nav-num">04</span>Domain Ownership</a>
+  <a class="sb-nav-link" href="#lifecycle">        <span class="sb-nav-num">05</span>Lifecycle Model</a>
+  <a class="sb-nav-link" href="#workflow">         <span class="sb-nav-num">06</span>Authoring Workflow</a>
+  <a class="sb-nav-link" href="#quality-gates">    <span class="sb-nav-num">07</span>Quality Gates</a>
+  <a class="sb-nav-link" href="#strategic">        <span class="sb-nav-num">08</span>Strategic Alignment</a>
+  <a class="sb-nav-link" href="#ai-safety">        <span class="sb-nav-num">09</span>Governance &amp; AI Safety</a>
+  <a class="sb-nav-link" href="#conclusion">       <span class="sb-nav-num">10</span>Conclusion</a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-eyebrow">Architecture &middot; Governance Framework</div>
+    <h1 class="hero-title"><em>Information Governance</em> Model</h1>
+    <p class="hero-sub">A structured framework for defining who owns organizational knowledge, how it is reviewed and maintained, what quality standards it must meet before delivery, and how governance status directly controls what AI systems can and cannot retrieve.</p>
+    <div class="hero-tags">
+      <span class="hero-tag primary">Architecture</span>
+      <span class="hero-tag primary">Governance</span>
+      <span class="hero-tag secondary">Knowledge Quality</span>
+      <span class="hero-tag secondary">AI Safety</span>
+      <span class="hero-tag tertiary">POL00003</span>
+    </div>
+  </section>
+
+  <!-- 01 OVERVIEW -->
+  <section id="overview" class="article-section">
+    <div class="section-eyebrow" data-num="01">Overview</div>
+    <h2 class="section-title">Governance as <em>Architecture</em>, Not Process</h2>
+    <p class="section-lead">Information governance is often treated as a process discipline — a set of review policies, approval workflows, and ownership assignments that content teams are expected to follow. In a stateless knowledge architecture, governance is something more fundamental: it is an architectural layer whose outputs directly determine what the system can deliver.</p>
+
+    <p class="body-text">The distinction matters. A governance process depends on human compliance. People must remember to follow it, have time to do so, and be motivated to maintain it under competing priorities. When the process is not followed — and eventually it is not — the content system accumulates ungoverned material: outdated policies, superseded procedures, orphaned fragments that were accurate once and have quietly become wrong.</p>
+
+    <p class="body-text">The Information Governance Model described here treats governance as a set of structural properties attached to every knowledge object — lifecycle status, version lineage, domain ownership, review date, and strategic alignment reference — that the delivery layer reads and acts on automatically. An ungoverned fragment is not merely unreviewed; it is structurally ineligible for delivery. The governance layer is not a checkpoint that can be bypassed; it is the gate through which all knowledge must pass before it reaches any consumer, human or AI.</p>
+
+    <div class="callout green">
+      <div class="callout-label">The Governance Guarantee</div>
+      <p>In a structurally governed knowledge system, the question is not whether governance was followed — it is structurally impossible to deliver content that has not cleared governance requirements. The guarantee is architectural, not behavioral.</p>
+    </div>
+
+    <div class="stat-band">
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Lifecycle States</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Governance Levels</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Owner Per Domain</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Ungoverned Deliveries</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 WHY GOVERNANCE FAILS -->
+  <section id="why-governance" class="article-section">
+    <div class="section-eyebrow" data-num="02">Why Governance Fails</div>
+    <h2 class="section-title">The Anatomy of <em>Knowledge Decay</em></h2>
+    <p class="section-lead">Enterprise content systems do not fail suddenly. They decay gradually, through a set of predictable failure patterns that share a common root: governance that is defined as a process but not enforced as a structure.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Ownership Without Accountability</h3>
+      <p class="body-text">Content ownership is assigned at creation and then forgotten. When the original author changes roles or leaves the organization, ownership is not automatically transferred. The content remains in the system attributed to a name that no longer corresponds to an active steward. Reviews go unscheduled, updates go unmade, and the content drifts silently from accuracy.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Review Without Enforcement</h3>
+      <p class="body-text">Review schedules are defined in policy but not enforced by tooling. Content that has passed its review date continues to be delivered without any signal to the reader that it has not been assessed for currency. In document-centric systems, the most-read content is often the most outdated — popular documents accumulate links and surface prominently in search, regardless of their currency.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Deprecation Without Removal</h3>
+      <p class="body-text">When a process or procedure changes, the new version is published but the old version often persists — in a different folder, at a legacy URL, or indexed by a search engine that has not yet updated its cache. Practitioners following search results may encounter and act on superseded instructions. In AI-augmented systems, the failure mode is more acute: a retrieval model that indexes both versions has no basis for preferring the current one.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Proliferation Without Consolidation</h3>
+      <p class="body-text">In the absence of a formal governance model, the typical response to outdated content is not to update it — it is to create new content that addresses the gap and leave the old content in place. Over time, the repository contains multiple overlapping treatments of the same topic, each accurate at the moment of creation, none maintained consistently, and no mechanism for determining which is authoritative.</p>
+    </div>
+
+    <div class="callout teal">
+      <div class="callout-label">The Structural Diagnosis</div>
+      <p>Each of these failure modes is a governance process failure, not a people failure. Well-intentioned content teams operating within poorly designed governance systems produce these outcomes reliably. The remedy is to redesign the governance system so that the correct behaviors are enforced structurally — not to ask people to be more disciplined about a process that the architecture does not support.</p>
+    </div>
+  </section>
+
+  <!-- 03 GOVERNANCE HIERARCHY -->
+  <section id="hierarchy" class="article-section">
+    <div class="section-eyebrow" data-num="03">Governance Hierarchy</div>
+    <h2 class="section-title">From Strategy to <em>Execution</em></h2>
+    <p class="section-lead">The Information Governance Model organizes all enterprise knowledge into a four-level hierarchy that traces every operational procedure back to the governing principles and strategic objectives that give it meaning. This hierarchy is not a taxonomic convenience — it is the structural mechanism through which governance authority is delegated and accountability is tracked.</p>
+
+    <p class="body-text">Each level of the hierarchy answers a different question. Together, they form a complete chain of accountability from the organizational level to the practitioner's desk. A gap at any level in the chain — a process that has no governing policy, a procedure that has no owning process, a policy that does not trace to any strategic objective — is not merely a documentation gap. It is a governance gap: an absence of accountability that the architecture makes visible and measurable.</p>
+
+    <div class="hierarchy-chain">
+      <div class="hc-node">
+        <div class="hc-code">Topic</div>
+        <div class="hc-title">Domain</div>
+        <div class="hc-desc">The organizational subject area. Entry point for a cluster of related knowledge. Owned at the domain level.</div>
+      </div>
+      <div class="hc-arrow">&#8250;</div>
+      <div class="hc-node">
+        <div class="hc-code">POL</div>
+        <div class="hc-title">Policy</div>
+        <div class="hc-desc">The governing principles and constraints. Normative — defines what must, should, or must not occur.</div>
+      </div>
+      <div class="hc-arrow">&#8250;</div>
+      <div class="hc-node">
+        <div class="hc-code">PCS</div>
+        <div class="hc-title">Process</div>
+        <div class="hc-desc">The operational workflow that implements policy. Describes how work moves through the organization.</div>
+      </div>
+      <div class="hc-arrow">&#8250;</div>
+      <div class="hc-node">
+        <div class="hc-code">PCD</div>
+        <div class="hc-title">Procedure</div>
+        <div class="hc-desc">The step-by-step execution instructions. Operational — tells a practitioner exactly what to do.</div>
+      </div>
+    </div>
+
+    <p class="body-text">The directional relationships in this hierarchy are governance relationships, not merely organizational ones. A Policy object governs one or more Process objects — meaning the policy's constraints must be satisfied by any compliant process implementation. A Process object produces one or more Procedure objects — meaning the procedure is the operational expression of that process stage. These relationships are declared explicitly in each object's metadata and are enforceable: a procedure cannot be published without a declared producing process; a process cannot be published without a declared governing policy.</p>
+
+    <div class="callout gold">
+      <div class="callout-label">Making Gaps Visible</div>
+      <p>The hierarchy's greatest governance value is not what it contains — it is what it reveals. A knowledge graph traversal that identifies processes without governing policies, or procedures without owning processes, surfaces structural governance gaps that are otherwise invisible in a document-centric system. These gaps are not documentation deficiencies; they are accountability voids that the architecture makes impossible to ignore.</p>
+    </div>
+  </section>
+
+  <!-- 04 DOMAIN OWNERSHIP -->
+  <section id="ownership" class="article-section">
+    <div class="section-eyebrow" data-num="04">Domain Ownership</div>
+    <h2 class="section-title">One Owner, <em>Clear Accountability</em></h2>
+    <p class="section-lead">Every knowledge domain has a designated domain owner — a named individual or role registered in the organizational context layer who is accountable for the quality, currency, and structural integrity of all knowledge objects within that domain. This is not a collective responsibility or a shared stewardship. It is a single point of accountability per domain.</p>
+
+    <p class="body-text">Domain ownership is declared in the Backstage Layer — the organizational registry of teams, systems, products, and strategic objectives. Ownership is a system property, not a document property. When a new fragment is authored within a domain, the domain owner's identity is automatically associated with its governance metadata. Review routing, quality alerts, and gap notifications are delivered to the domain owner without requiring manual configuration per object.</p>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-head">
+          <div class="role-icon green">&#9670;</div>
+          <div class="role-head-text">
+            <div class="role-head-title">Domain Owner</div>
+            <div class="role-head-sub">Primary Accountable Role</div>
+          </div>
+        </div>
+        <div class="role-body">
+          <ul>
+            <li>Reviews and approves pull requests for all objects in the domain</li>
+            <li>Initiates and tracks periodic review cycles</li>
+            <li>Declares deprecations when content is superseded</li>
+            <li>Maintains the domain model that governs template configuration</li>
+            <li>Receives quality health signals and gap indicators from telemetry</li>
+            <li>Escalates strategic gaps to the Knowledge Architecture team</li>
+          </ul>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-head">
+          <div class="role-icon teal">&#9672;</div>
+          <div class="role-head-text">
+            <div class="role-head-title">Subject Matter Expert</div>
+            <div class="role-head-sub teal">Contributing Author</div>
+          </div>
+        </div>
+        <div class="role-body">
+          <ul>
+            <li>Authors new knowledge objects on feature branches</li>
+            <li>Responds to review requests within SLA windows</li>
+            <li>Updates procedure objects when system or tool changes occur</li>
+            <li>Flags content accuracy concerns to the domain owner</li>
+            <li>Participates in periodic domain review cycles</li>
+            <li>Declares lineage references for Stage 2 promoted fragments</li>
+          </ul>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-head">
+          <div class="role-icon gold">&#9671;</div>
+          <div class="role-head-text">
+            <div class="role-head-title">Knowledge Architect</div>
+            <div class="role-head-sub gold">Systems Governance</div>
+          </div>
+        </div>
+        <div class="role-body">
+          <ul>
+            <li>Maintains the formal taxonomy and object type schema</li>
+            <li>Resolves cross-domain governance conflicts</li>
+            <li>Monitors knowledge graph structural integrity</li>
+            <li>Defines and enforces authoring standards across domains</li>
+            <li>Manages the strategic alignment layer and OKR linkage model</li>
+            <li>Operates the Learning Sphinx governance agent</li>
+          </ul>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-head">
+          <div class="role-icon green">&#9670;</div>
+          <div class="role-head-text">
+            <div class="role-head-title">Executive Sponsor</div>
+            <div class="role-head-sub">Strategic Governance</div>
+          </div>
+        </div>
+        <div class="role-body">
+          <ul>
+            <li>Owns the policy layer for their organizational domain</li>
+            <li>Approves changes to governing Policy objects</li>
+            <li>Aligns knowledge domain objectives to organizational strategy</li>
+            <li>Receives maturity model reporting and strategic gap analysis</li>
+            <li>Authorizes domain model restructuring and taxonomy changes</li>
+            <li>Accountable for knowledge gaps identified as strategic risks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Ownership Succession</h3>
+      <p class="body-text">Domain ownership is registered in the Backstage Layer, not embedded in individual content objects. When a domain owner changes roles or leaves the organization, a single update to the Backstage Layer record transfers ownership of the entire domain — including all review routing, quality alerts, and governance notifications — to the new owner. No individual content objects need to be updated. Orphaned domains are automatically detected by the Knowledge Architect role when no active owner is registered, and flagged as governance risk items.</p>
+    </div>
+  </section>
+
+  <!-- 05 LIFECYCLE MODEL -->
+  <section id="lifecycle" class="article-section">
+    <div class="section-eyebrow" data-num="05">Lifecycle Model</div>
+    <h2 class="section-title">Five States, <em>One Gate</em></h2>
+    <p class="section-lead">Every knowledge object in the governance model exists in one of five lifecycle states. These states are not labels applied for organizational convenience — they are system-enforced access controls. The delivery layer reads lifecycle status before assembling any experience, and only objects in <code>active</code> status are eligible for delivery to any consumer.</p>
+
+    <div class="lifecycle-strip">
+      <div class="lc-stage">
+        <div class="lc-stage-label">Draft</div>
+        <div class="lc-stage-desc">Authored but not yet submitted for review. Visible only to the authoring contributor and the domain owner.</div>
+      </div>
+      <div class="lc-connector">&#8250;</div>
+      <div class="lc-stage">
+        <div class="lc-stage-label">Under Review</div>
+        <div class="lc-stage-desc">Submitted via pull request. Domain owner review is in progress. Not yet eligible for delivery.</div>
+      </div>
+      <div class="lc-connector">&#8250;</div>
+      <div class="lc-stage active-stage">
+        <div class="lc-stage-label">Active &#10003;</div>
+        <div class="lc-stage-desc">Approved and published. Eligible for all template assembly, AI retrieval, and delivery contexts.</div>
+      </div>
+      <div class="lc-connector">&#8250;</div>
+      <div class="lc-stage">
+        <div class="lc-stage-label">Deprecated</div>
+        <div class="lc-stage-desc">Superseded by a newer object. Excluded from all delivery. Identifier and history preserved.</div>
+      </div>
+      <div class="lc-connector">&#8250;</div>
+      <div class="lc-stage">
+        <div class="lc-stage-label">Archived</div>
+        <div class="lc-stage-desc">Withdrawn from all active use. Retained for audit purposes and historical lineage records only.</div>
+      </div>
+    </div>
+
+    <p class="body-text">The transition from <code>under review</code> to <code>active</code> is the single governance gate through which all knowledge must pass. It requires domain owner approval — a deliberate human judgment that the content is accurate, well-formed, properly typed, and correctly related to adjacent objects in the governance hierarchy. Automated linting validates structural completeness before the pull request reaches the domain owner, ensuring that the human review focuses on content quality rather than metadata compliance.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Automated Lifecycle Transitions</h3>
+      <p class="body-text">Certain lifecycle transitions are triggered automatically by the system rather than requiring manual action. When a fragment is superseded by a new version and the new version is approved, the prior version is automatically transitioned to <code>deprecated</code> status. Time-bounded objects — a technical note marked with a scheduled deprecation date, for instance — are automatically transitioned at the declared date without requiring any manual intervention. Objects that have been in <code>deprecated</code> status beyond the defined retention window are automatically transitioned to <code>archived</code>. The human governance role is concentrated at the <code>active</code> gate; routine lifecycle maintenance is handled by the system.</p>
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">Why This Matters for AI</div>
+      <p>In an AI-augmented knowledge system, the lifecycle gate is a direct safety control. A deprecated procedure that contains superseded instructions is structurally excluded from every AI context package the moment its status transitions. No retrieval model tuning, no prompt engineering, and no post-generation filtering is required — the governance architecture prevents the content from being available to the AI in the first place.</p>
+    </div>
+  </section>
+
+  <!-- 06 AUTHORING WORKFLOW -->
+  <section id="workflow" class="article-section">
+    <div class="section-eyebrow" data-num="06">Authoring Workflow</div>
+    <h2 class="section-title">Distributed Contribution, <em>Structural Control</em></h2>
+    <p class="section-lead">The authoring model supports high-velocity, distributed contribution — any subject matter expert can author knowledge objects without coordination overhead — while maintaining the structural integrity of the governance hierarchy through automated validation at the moment of contribution.</p>
+
+    <p class="body-text">Knowledge objects are authored in Markdown with a structured YAML frontmatter block that declares all required governance metadata: type code, domain classification, audience tags, relationship declarations, and strategic alignment references. The frontmatter schema is enforced by automated linting that runs on every commit — before the contribution reaches a domain owner for review.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-dot">1</div>
+        <div class="pipe-body">
+          <strong>Branch creation</strong>
+          <p>The contributor creates a feature branch from the main repository trunk. Branch naming follows a convention that identifies the domain and object type, enabling automated routing and reporting at scale.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">2</div>
+        <div class="pipe-body">
+          <strong>Fragment authoring</strong>
+          <p>The contributor authors one or more knowledge objects on the branch. The authoring environment provides the schema template for each object type, pre-populating required frontmatter fields and prompting for relationship declarations.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">3</div>
+        <div class="pipe-body">
+          <strong>Automated linting on commit</strong>
+          <p>On commit, the CI pipeline validates frontmatter schema completeness, checks that declared relationship targets exist in the graph, verifies cognitive quality heuristics (word count bounds, single-topic tests), and flags any structural violations before the contribution advances.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">4</div>
+        <div class="pipe-body">
+          <strong>Pull request and review routing</strong>
+          <p>The contributor opens a pull request. Reviewers are automatically assigned based on the domain tags of the modified objects — routing to the domain owner and, for policy-level objects, to the executive sponsor. The review SLA timer begins at pull request open.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">5</div>
+        <div class="pipe-body">
+          <strong>Domain owner review</strong>
+          <p>The domain owner reviews for content accuracy, relationship correctness, cognitive quality, and authoring standards adherence. For new objects, the domain owner also confirms correct placement in the governance hierarchy and appropriate audience tagging.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">6</div>
+        <div class="pipe-body">
+          <strong>Merge and activation</strong>
+          <p>On approval, the branch is merged to main. The new or modified objects transition to <code>active</code> status and become immediately available to all delivery templates and AI retrieval interfaces. No additional publication step is required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 QUALITY GATES -->
+  <section id="quality-gates" class="article-section">
+    <div class="section-eyebrow" data-num="07">Quality Gates</div>
+    <h2 class="section-title">Definition of Ready — <em>Six Criteria</em></h2>
+    <p class="section-lead">Before any knowledge object can transition from <code>under review</code> to <code>active</code> status, it must satisfy six quality criteria — the Definition of Ready. These criteria are the structural expression of what it means for a fragment to be governance-compliant. Each criterion is either validated automatically by the linting pipeline or assessed by the domain owner during review.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Criterion</th>
+            <th>What It Requires</th>
+            <th>Validated By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Schema Completeness</td>
+            <td>All required frontmatter fields are present and correctly typed. No missing object ID, type code, domain classification, audience tags, or lifecycle status declaration.</td>
+            <td>Automated linting on commit</td>
+          </tr>
+          <tr>
+            <td>Relationship Integrity</td>
+            <td>All declared relationship targets exist in the graph with <code>active</code> or <code>under review</code> status. No dangling references to non-existent or archived identifiers.</td>
+            <td>Automated graph validation on commit</td>
+          </tr>
+          <tr>
+            <td>Cognitive Completeness</td>
+            <td>The fragment addresses exactly one coherent knowledge unit. It is independently meaningful without requiring adjacent fragments to be simultaneously present. It is within the word count bounds for its object type.</td>
+            <td>Domain owner review</td>
+          </tr>
+          <tr>
+            <td>Content Accuracy</td>
+            <td>The knowledge expressed by the fragment is factually correct, current, and consistent with the governing policy objects in its hierarchy chain.</td>
+            <td>Domain owner and SME review</td>
+          </tr>
+          <tr>
+            <td>Governance Hierarchy Placement</td>
+            <td>The fragment's position in the governance hierarchy is correct — governed-by relationships point to the appropriate policy level, produced-by relationships reflect the correct process stage.</td>
+            <td>Domain owner review</td>
+          </tr>
+          <tr>
+            <td>Authoring Standards</td>
+            <td>The fragment adheres to the style guide for its object type: appropriate register, correct tense for procedural content, no embedded layout instructions, no audience-specific framing in the content layer.</td>
+            <td>Automated style linting &amp; domain owner review</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">The Learning Sphinx: Continuous Post-Publication Governance</h3>
+      <p class="body-text">The Definition of Ready governs the <code>active</code> gate — the moment of publication. But governance does not end at publication. The Learning Sphinx, the Knowledge Intelligence Layer's governance agent, operates continuously on the active fragment corpus, monitoring for quality degradation over time: freshness dates approaching, usage patterns suggesting review priority, relationship graph anomalies indicating structural drift, and style compliance signals that may emerge as the corpus evolves.</p>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-list-label">Learning Sphinx Continuous Monitoring Signals</div>
+      <ul>
+        <li><strong>Review date proximity</strong> — fragments approaching their scheduled review date are surfaced to domain owners before they become overdue, not after.</li>
+        <li><strong>Zero-usage detection</strong> — fragments with no delivery events over a sustained period are flagged for review: potentially orphaned by a relationship graph change, superseded by an adjacent object, or simply undiscovered.</li>
+        <li><strong>Search gap correlation</strong> — repeated search queries that do not resolve to engaged fragments indicate knowledge the organization seeks but cannot find, triggering a gap authoring task.</li>
+        <li><strong>Abandonment anomalies</strong> — consistent reader exit at the same fragment position in a standard assembly indicates a quality concern at that specific object, surfaced as a targeted review request rather than a general audit.</li>
+        <li><strong>Relationship graph orphans</strong> — fragments that have lost all inbound and outbound relationships due to upstream deprecations are flagged for domain owner assessment.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 08 STRATEGIC ALIGNMENT -->
+  <section id="strategic" class="article-section">
+    <div class="section-eyebrow" data-num="08">Strategic Alignment</div>
+    <h2 class="section-title">Knowledge as a <em>Measurable Asset</em></h2>
+    <p class="section-lead">The final layer of the governance model connects knowledge objects to organizational strategy — the objectives, key results, and initiatives that define what the organization is trying to accomplish. This connection transforms the knowledge system from an operational support function into a measurable contributor to organizational outcomes.</p>
+
+    <p class="body-text">Each knowledge object can carry one or more strategic alignment references: typed links to organizational objectives or key results registered in the Backstage Layer. These references are declared at the policy level and flow downward through the governance hierarchy — a policy aligned to a strategic objective automatically aligns all the processes and procedures governed by it, unless explicitly overridden.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Chain Element</th>
+            <th>Question Answered</th>
+            <th>Governance Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Strategic Objective</td>
+            <td>What is the organization trying to achieve?</td>
+            <td>Executive Leadership</td>
+          </tr>
+          <tr>
+            <td>Key Result</td>
+            <td>How will we know we have achieved it, and by when?</td>
+            <td>Executive Leadership &amp; OKR Sponsors</td>
+          </tr>
+          <tr>
+            <td>Strategic Initiative</td>
+            <td>What programs of work are in motion to reach the objective?</td>
+            <td>Domain Leaders &amp; Program Managers</td>
+          </tr>
+          <tr>
+            <td>Policy (POL)</td>
+            <td>What governing principles constrain and guide the work?</td>
+            <td>Domain Owner &amp; Executive Sponsor</td>
+          </tr>
+          <tr>
+            <td>Process (PCS)</td>
+            <td>How does the work actually move through the organization?</td>
+            <td>Domain Owner &amp; Operations Leads</td>
+          </tr>
+          <tr>
+            <td>Procedure (PCD)</td>
+            <td>What does a practitioner do, step by step, to execute the work?</td>
+            <td>Domain Owner &amp; Subject Matter Experts</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subsection-title">Knowledge Gaps as Strategic Risks</h3>
+      <p class="body-text">The strategic alignment layer changes the framing of a knowledge gap from a documentation deficiency to a strategic risk. When a knowledge graph traversal from an active strategic objective reaches a domain where process coverage is incomplete — processes exist but have no implementing procedures, or a policy governs a process that has no knowledge objects at all — that gap is not merely an item for the authoring backlog. It is an accountability void: the organization has a strategic commitment it cannot trace to operational knowledge that would enable practitioners to deliver on it.</p>
+    </div>
+
+    <div class="callout teal">
+      <div class="callout-label">From Activity Metrics to Outcome Metrics</div>
+      <p>Without strategic alignment, knowledge system reporting is limited to activity metrics: pages viewed, documents published, review cycles completed. With strategic alignment, reporting can answer the questions that actually matter: which strategic objectives are well-supported by the knowledge system, which are under-resourced, and where knowledge gaps correlate with initiative underperformance? This is the difference between a knowledge system that is managed and one that is governed.</p>
+    </div>
+  </section>
+
+  <!-- 09 GOVERNANCE AND AI SAFETY -->
+  <section id="ai-safety" class="article-section">
+    <div class="section-eyebrow" data-num="09">Governance &amp; AI Safety</div>
+    <h2 class="section-title">The Governance Model as an <em>AI Control Layer</em></h2>
+    <p class="section-lead">As organizations deploy AI systems that generate responses from their knowledge repositories, the governance model becomes something more than an operational quality framework. It becomes the primary control layer for AI reliability — the mechanism that determines what the AI can know, what it can cite, and how confident any consumer can be in an AI-generated response that draws from the knowledge system.</p>
+
+    <p class="body-text">An AI retrieval system operating on a well-governed knowledge corpus is structurally constrained to produce responses grounded in knowledge that has cleared a human review gate, carries version lineage, belongs to a named accountable owner, and has not been deprecated. Each of these properties — not the sophistication of the retrieval model — is what makes an AI response trustworthy.</p>
+
+    <div class="subsection">
+      <h3 class="subsection-title">What Governance Provides to AI</h3>
+    </div>
+
+    <div class="bullet-list">
+      <ul>
+        <li><strong>Currency assurance</strong> — the lifecycle filter ensures the AI retrieves from current, reviewed content. Deprecated and archived fragments are structurally excluded from every context package before retrieval begins.</li>
+        <li><strong>Source traceability</strong> — every AI-generated response that cites a fragment can include the fragment's ID, version number, domain owner, and last review date. The response is not just grounded in a source — it is grounded in a governed, identified, versioned source.</li>
+        <li><strong>Governance chain completeness</strong> — graph-aware retrieval assembles the full governance chain (policy → process → procedure) rather than returning isolated fragments. The AI has context for why a procedure exists, what policy it implements, and what organizational objective that policy supports.</li>
+        <li><strong>Accountability attribution</strong> — every fragment has a named domain owner. If an AI response is challenged, the governance model provides a direct path to the accountable human who reviewed and approved the underlying content.</li>
+        <li><strong>Gap signal propagation</strong> — when AI retrieval attempts to assemble a governance chain and finds a gap — a process with no implementing procedures, a procedure without a governing policy — the system signals that gap rather than silently returning incomplete context. Transparent incompleteness is a better AI behavior than confident hallucination.</li>
+      </ul>
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">The Governance–AI Alignment</div>
+      <p>A knowledge governance model designed for human practitioners produces, as a direct consequence, an AI retrieval corpus that is typed, versioned, owned, reviewed, and relationally connected. These are precisely the properties that make AI retrieval reliable and AI responses auditable. Governance investment and AI readiness investment are not separate programs — they are the same program.</p>
+    </div>
+  </section>
+
+  <!-- 10 CONCLUSION -->
+  <section id="conclusion" class="article-section">
+    <div class="section-eyebrow" data-num="10">Conclusion</div>
+    <h2 class="section-title">Governance as <em>Durable Infrastructure</em></h2>
+
+    <p class="section-lead">The Information Governance Model described in this document is not a heavyweight compliance framework layered on top of a content system. It is the structural foundation that makes the content system trustworthy — for the practitioners who depend on it, for the organization that invests in it, and for the AI systems that will increasingly generate from it.</p>
+
+    <p class="body-text">The model's key design decisions — treating governance as a structural property rather than a process, concentrating human judgment at the <code>active</code> gate rather than distributing it across every delivery event, registering ownership in the organizational context layer rather than in individual content objects, and connecting knowledge to strategy through explicit typed references — are each individually defensible. Together, they constitute a governance architecture that scales with the organization without requiring proportionally more governance overhead.</p>
+
+    <p class="body-text">The maturity progression from unstructured documentation to a fully governed, strategically aligned, AI-ready knowledge corpus is real and requires real investment. But the investment is front-loaded in ways that compound over time. A domain with one well-governed owner and a clean governance hierarchy costs less to maintain next year than it does this year. A knowledge graph with complete relationship declarations enables more powerful retrieval next year than it does this year. Every governance action taken today improves the reliability of every AI-generated response tomorrow.</p>
+
+    <div class="pull-quote">
+      <p>Governance is not the price of a reliable knowledge system. It is the mechanism by which reliability is produced — and the architecture that makes that mechanism structural rather than aspirational.</p>
+      <cite>Information Governance Model &middot; Core Design Principle</cite>
+    </div>
+
+    <p class="body-text">Organizations that defer governance investment typically frame the deferral as a pragmatic choice — a decision to move fast now and govern later. The evidence of enterprise knowledge systems at scale suggests the opposite: governance deferred is governance debt compounded, and the cost of retroactive governance is an order of magnitude higher than the cost of building it in from the beginning. The governance model is not a constraint on the knowledge system. It is the architecture that makes the knowledge system worth building.</p>
+  </section>
+
+</main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Josh Writing Samples &middot; Architecture Series</div>
+  <div class="footer-meta">Information Governance Model &middot; POL00003 &middot; v1.0 &middot; 2025</div>
+</footer>
+
+<script>
+// ── MOBILE MENU ──
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── SCROLL PROGRESS ──
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  progressBar.style.width = Math.min(pct, 100) + '%';
+});
+
+// ── SECTION REVEAL ──
+const sections = document.querySelectorAll('.article-section');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+  });
+}, { threshold: 0.06 });
+sections.forEach(s => revealObs.observe(s));
+
+// ── ACTIVE SIDEBAR LINK ──
+const navLinks  = document.querySelectorAll('.sb-nav-link');
+const sectionEls = document.querySelectorAll('section[id]');
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sectionEls.forEach(s => navObs.observe(s));
+</script>
+</body>
+</html>
