@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Role-Based Standard Operating Procedure — Operations</title>
+<title>Role-Based Standard Operating Procedure | Operations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-  /* Light operational palette */
   --bg:         #F7F8F6;
   --bg2:        #FFFFFF;
   --bg3:        #F0F2EF;
@@ -18,33 +18,34 @@
   --bg5:        #DCE2DA;
   --border:     #D4DAD2;
   --border2:    #C2CAC0;
-  /* Text */
+
   --text:       #1A2119;
   --text2:      #2E3D2C;
   --dim:        #4A5E48;
   --muted:      #7A8E78;
   --faint:      #A8B8A6;
-  /* Green accent system — same family as architecture articles */
+
   --green:      #3A8049;
   --green-b:    #2D6B3C;
   --green-l:    #4E9A5F;
   --green-d:    rgba(58,128,73,0.10);
   --green-g:    rgba(58,128,73,0.06);
   --green-line: rgba(58,128,73,0.25);
-  /* Status colours */
+
   --warn:       #B5740A;
   --warn-d:     rgba(181,116,10,0.10);
   --caution:    #1A6B8A;
   --caution-d:  rgba(26,107,138,0.10);
   --critical:   #9B2626;
   --critical-d: rgba(155,38,38,0.10);
-  /* Fonts */
-  --sans:   'IBM Plex Sans',  sans-serif;
-  --mono:   'IBM Plex Mono',  monospace;
-  --serif:  'IBM Plex Serif', Georgia, serif;
+
+  --sans:  'IBM Plex Sans', sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'IBM Plex Serif', Georgia, serif;
 }
 
 html { scroll-behavior: smooth; }
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -54,64 +55,150 @@ body {
   line-height: 1.6;
 }
 
-/* ── SITE NAV (dark — matches architecture articles) ── */
+/* SITE NAV */
 #sitenav {
-  position: sticky; top: 0; z-index: 200;
+  position: sticky;
+  top: 0;
+  z-index: 200;
   background: rgba(10,13,10,0.97);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255,255,255,0.09);
 }
+
 .sitenav-inner {
-  display: flex; align-items: center;
-  height: 56px; padding: 0 48px;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 48px;
 }
+
 .sitenav-brand {
-  font-family: var(--serif); font-size: 0.95rem; font-weight: 700;
-  color: #DDE8DC; text-decoration: none;
-  display: flex; align-items: center; gap: 9px;
-  margin-right: auto; letter-spacing: 0.01em; white-space: nowrap;
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #DDE8DC;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-right: auto;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
-.sitenav-brand::before { content: '&#9670;'; color: #4E9A5F; font-size: 0.6rem; }
-.sitenav-links { display: flex; align-items: center; gap: 2px; }
+
+.sitenav-brand::before {
+  content: '◆';
+  color: #4E9A5F;
+  font-size: 0.6rem;
+}
+
+.sitenav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
 .sitenav-link {
-  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: #7E9A7C; text-decoration: none;
-  padding: 6px 14px; border-radius: 3px; border: 1px solid transparent;
-  transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7E9A7C;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  white-space: nowrap;
 }
-.sitenav-link:hover { color: #DDE8DC; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.09); }
-.sitenav-link.active { color: #6BBF7C; background: rgba(78,154,95,0.15); border-color: rgba(78,154,95,0.3); }
+
+.sitenav-link:hover {
+  color: #DDE8DC;
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.09);
+}
+
+.sitenav-link.active {
+  color: #6BBF7C;
+  background: rgba(78,154,95,0.15);
+  border-color: rgba(78,154,95,0.3);
+}
+
 .nav-breadcrumb {
-  height: 30px; padding: 0 48px;
-  display: flex; align-items: center; gap: 8px;
+  height: 30px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   border-bottom: 1px solid var(--border);
   background: var(--bg2);
 }
+
 .nav-bc-item {
-  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--muted); text-decoration: none; transition: color 0.15s;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
 }
+
 .nav-bc-item:hover { color: var(--dim); }
-.nav-bc-sep { color: var(--faint); font-size: 0.5rem; }
 .nav-bc-item.current { color: var(--green); }
+
+.nav-bc-sep {
+  color: var(--faint);
+  font-size: 0.5rem;
+}
+
 .nav-hamburger {
-  display: none; background: none; border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 3px; padding: 5px 9px; cursor: pointer; color: #7E9A7C; font-size: 1rem;
+  display: none;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 3px;
+  padding: 5px 9px;
+  cursor: pointer;
+  color: #7E9A7C;
+  font-size: 1rem;
 }
+
 .nav-mobile-menu {
-  display: none; flex-direction: column;
-  background: #0F1410; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 8px 0;
+  display: none;
+  flex-direction: column;
+  background: #0F1410;
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+  padding: 8px 0;
 }
+
 .nav-mobile-menu.open { display: flex; }
+
 .nav-mobile-link {
-  font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
-  letter-spacing: 0.1em; text-transform: uppercase; color: #7E9A7C;
-  text-decoration: none; padding: 10px 28px; border-left: 2px solid transparent; transition: all 0.15s;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7E9A7C;
+  text-decoration: none;
+  padding: 10px 28px;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
 }
-.nav-mobile-link:hover { color: #DDE8DC; background: rgba(255,255,255,0.05); }
-.nav-mobile-link.active { color: #6BBF7C; border-left-color: #4E9A5F; background: rgba(78,154,95,0.1); }
+
+.nav-mobile-link:hover {
+  color: #DDE8DC;
+  background: rgba(255,255,255,0.05);
+}
+
+.nav-mobile-link.active {
+  color: #6BBF7C;
+  border-left-color: #4E9A5F;
+  background: rgba(78,154,95,0.1);
+}
+
 @media (max-width: 768px) {
   .sitenav-links { display: none; }
   .nav-hamburger { display: block; }
@@ -119,75 +206,167 @@ body {
   .nav-breadcrumb { display: none; }
 }
 
-/* ── PROGRESS BAR ── */
+/* PROGRESS BAR */
 #progress-bar {
-  position: fixed; top: 86px; left: 0; height: 3px;
+  position: fixed;
+  top: 86px;
+  left: 0;
+  height: 3px;
   background: linear-gradient(90deg, var(--green-l), #4AADA0);
-  z-index: 300; width: 0%; transition: width 0.1s;
+  z-index: 300;
+  width: 0%;
+  transition: width 0.1s;
   box-shadow: 0 0 6px rgba(78,154,95,0.4);
 }
 
-/* ── LAYOUT SHELL ── */
-#shell { display: flex; min-height: calc(100vh - 86px); }
+/* LAYOUT */
+#shell {
+  display: flex;
+  min-height: calc(100vh - 86px);
+}
 
-/* ── LEFT SIDEBAR ── */
+/* SIDEBAR */
 #sidebar {
-  width: 260px; flex-shrink: 0;
+  width: 260px;
+  flex-shrink: 0;
   background: var(--bg2);
   border-right: 1px solid var(--border);
-  height: calc(100vh - 86px); position: sticky; top: 86px;
-  overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+  height: calc(100vh - 86px);
+  position: sticky;
+  top: 86px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
   padding: 24px 0;
 }
+
 #sidebar::-webkit-scrollbar { width: 3px; }
 #sidebar::-webkit-scrollbar-thumb { background: var(--border2); }
 
 .sb-label {
   padding: 0 20px 8px;
-  font-family: var(--mono); font-size: 0.55rem; font-weight: 600;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
 }
+
 .sb-meta { padding: 0 20px 20px; }
+
 .sb-meta-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 5px 0; border-bottom: 1px solid var(--bg3);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--bg3);
 }
-.sb-meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); }
-.sb-meta-val { font-size: 0.75rem; font-weight: 500; color: var(--text2); text-align: right; }
-.sb-meta-val.code { font-family: var(--mono); color: var(--green); font-size: 0.7rem; }
 
-/* Role badges in sidebar */
+.sb-meta-key {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--muted);
+}
+
+.sb-meta-val {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text2);
+  text-align: right;
+}
+
+.sb-meta-val.code {
+  font-family: var(--mono);
+  color: var(--green);
+  font-size: 0.7rem;
+}
+
 .sb-roles { padding: 0 20px 20px; }
-.role-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 3px 8px; border-radius: 2px; margin: 3px 3px 0 0;
-  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
-  letter-spacing: 0.06em; text-transform: uppercase;
-}
-.role-badge.primary   { background: var(--green-d); color: var(--green-b); border: 1px solid var(--green-line); }
-.role-badge.secondary { background: var(--caution-d); color: var(--caution); border: 1px solid rgba(26,107,138,0.25); }
-.role-badge.tertiary  { background: var(--warn-d); color: var(--warn); border: 1px solid rgba(181,116,10,0.25); }
 
-.sb-divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  margin: 3px 3px 0 0;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.role-badge.primary {
+  background: var(--green-d);
+  color: var(--green-b);
+  border: 1px solid var(--green-line);
+}
+
+.role-badge.secondary {
+  background: var(--caution-d);
+  color: var(--caution);
+  border: 1px solid rgba(26,107,138,0.25);
+}
+
+.role-badge.tertiary {
+  background: var(--warn-d);
+  color: var(--warn);
+  border: 1px solid rgba(181,116,10,0.25);
+}
+
+.sb-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 16px;
+}
 
 .sb-nav-link {
-  display: flex; align-items: center; gap: 0;
-  padding: 6px 20px; text-decoration: none; font-size: 0.75rem;
-  font-weight: 400; color: var(--dim);
-  border-left: 3px solid transparent; transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 6px 20px;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--dim);
+  border-left: 3px solid transparent;
+  transition: all 0.12s;
 }
-.sb-nav-link:hover { color: var(--green-b); background: var(--green-g); border-left-color: var(--green-line); }
-.sb-nav-link.active { color: var(--green-b); background: var(--green-d); border-left-color: var(--green); font-weight: 600; }
+
+.sb-nav-link:hover {
+  color: var(--green-b);
+  background: var(--green-g);
+  border-left-color: var(--green-line);
+}
+
+.sb-nav-link.active {
+  color: var(--green-b);
+  background: var(--green-d);
+  border-left-color: var(--green);
+  font-weight: 600;
+}
+
 .sb-nav-num {
-  font-family: var(--mono); font-size: 0.58rem; color: var(--faint);
-  width: 22px; flex-shrink: 0; font-weight: 400;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--faint);
+  width: 22px;
+  flex-shrink: 0;
+  font-weight: 400;
 }
+
 .sb-nav-link.active .sb-nav-num { color: var(--green); }
 
-/* ── MAIN ── */
-#main { flex: 1; min-width: 0; padding-bottom: 100px; }
+/* MAIN */
+#main {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 100px;
+}
 
-/* ── DOC HEADER BAND ── */
+/* DOC HEADER */
 #doc-header {
   background: var(--bg2);
   border-bottom: 3px solid var(--green);
@@ -195,304 +374,787 @@ body {
   position: relative;
   overflow: hidden;
 }
+
 #doc-header::after {
   content: '';
-  position: absolute; top: 0; right: 0;
-  width: 300px; height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 100%;
   background: linear-gradient(135deg, transparent 60%, var(--green-g));
   pointer-events: none;
 }
-.doc-category {
-  font-family: var(--mono); font-size: 0.62rem; font-weight: 600;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--green);
-  margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
-}
-.doc-category::before { content: ''; display: inline-block; width: 20px; height: 2px; background: var(--green); }
-.doc-title {
-  font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 700; line-height: 1.15; color: var(--text);
-  margin-bottom: 12px; max-width: 700px;
-}
-.doc-title em { font-style: italic; color: var(--green-b); }
-.doc-subtitle {
-  font-size: 0.95rem; color: var(--dim); max-width: 620px; line-height: 1.65; margin-bottom: 20px;
-}
-.doc-meta-strip {
-  display: flex; gap: 0;
-  border: 1px solid var(--border); border-radius: 3px;
-  overflow: hidden; max-width: 560px; background: var(--bg3);
-}
-.doc-meta-cell {
-  flex: 1; padding: 8px 14px; border-right: 1px solid var(--border);
-}
-.doc-meta-cell:last-child { border-right: none; }
-.dmc-key { font-family: var(--mono); font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
-.dmc-val { font-size: 0.78rem; font-weight: 600; color: var(--text2); }
-.dmc-val.green { color: var(--green); font-family: var(--mono); }
 
-/* ── CONTENT SECTIONS ── */
+.doc-category {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doc-category::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  background: var(--green);
+}
+
+.doc-title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+  margin-bottom: 12px;
+  max-width: 700px;
+}
+
+.doc-title em {
+  font-style: italic;
+  color: var(--green-b);
+}
+
+.doc-subtitle {
+  font-size: 0.95rem;
+  color: var(--dim);
+  max-width: 620px;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+.doc-meta-strip {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 560px;
+  background: var(--bg3);
+}
+
+.doc-meta-cell {
+  flex: 1;
+  padding: 8px 14px;
+  border-right: 1px solid var(--border);
+}
+
+.doc-meta-cell:last-child { border-right: none; }
+
+.dmc-key {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 3px;
+}
+
+.dmc-val {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text2);
+}
+
+.dmc-val.green {
+  color: var(--green);
+  font-family: var(--mono);
+}
+
+/* CONTENT SECTIONS */
 .sop-section {
   padding: 40px 60px;
   border-bottom: 1px solid var(--border);
-  opacity: 0; transform: translateY(12px);
+  opacity: 0;
+  transform: translateY(12px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
-.sop-section.visible { opacity: 1; transform: translateY(0); }
+
+.sop-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .section-header {
-  display: flex; align-items: flex-start; gap: 16px;
-  margin-bottom: 24px; padding-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
+
 .section-num {
-  font-family: var(--mono); font-size: 0.7rem; font-weight: 600;
-  color: var(--bg2); background: var(--green);
-  width: 28px; height: 28px; border-radius: 2px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  margin-top: 3px; letter-spacing: 0;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--bg2);
+  background: var(--green);
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3px;
+  letter-spacing: 0;
 }
-.section-titles {}
+
 .section-eyebrow {
-  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
 }
+
 .section-title {
-  font-family: var(--serif); font-size: 1.35rem; font-weight: 700;
-  color: var(--text); line-height: 1.2;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
 }
-.section-title em { font-style: italic; color: var(--green-b); }
+
+.section-title em {
+  font-style: italic;
+  color: var(--green-b);
+}
 
 p.body-text {
-  font-size: 0.92rem; color: var(--dim); line-height: 1.8;
-  margin-bottom: 16px; max-width: 700px;
-}
-
-/* ── ROLE HEADER (for role-specific sections) ── */
-.role-section-header {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px; margin-bottom: 20px;
-  background: var(--bg3); border: 1px solid var(--border);
-  border-left: 4px solid var(--green); border-radius: 0 3px 3px 0;
+  font-size: 0.92rem;
+  color: var(--dim);
+  line-height: 1.8;
+  margin-bottom: 16px;
   max-width: 700px;
 }
-.role-section-header.caution { border-left-color: var(--caution); background: var(--caution-d); }
-.role-section-header.warn    { border-left-color: var(--warn);    background: var(--warn-d); }
+
+/* ROLE HEADER */
+.role-section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--green);
+  border-radius: 0 3px 3px 0;
+  max-width: 700px;
+}
+
+.role-section-header.caution {
+  border-left-color: var(--caution);
+  background: var(--caution-d);
+}
+
+.role-section-header.warn {
+  border-left-color: var(--warn);
+  background: var(--warn-d);
+}
+
 .rsh-badge {
-  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  padding: 3px 9px; border-radius: 2px; white-space: nowrap; flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.rsh-badge.green   { background: var(--green-d); color: var(--green-b); border: 1px solid var(--green-line); }
-.rsh-badge.caution { background: var(--caution-d); color: var(--caution); border: 1px solid rgba(26,107,138,0.25); }
-.rsh-badge.warn    { background: var(--warn-d); color: var(--warn); border: 1px solid rgba(181,116,10,0.25); }
-.rsh-text { font-size: 0.82rem; color: var(--text2); font-weight: 500; }
 
-/* ── PROCEDURE STEPS ── */
-.procedure-block { max-width: 700px; margin: 20px 0; }
+.rsh-badge.green {
+  background: var(--green-d);
+  color: var(--green-b);
+  border: 1px solid var(--green-line);
+}
+
+.rsh-badge.caution {
+  background: var(--caution-d);
+  color: var(--caution);
+  border: 1px solid rgba(26,107,138,0.25);
+}
+
+.rsh-badge.warn {
+  background: var(--warn-d);
+  color: var(--warn);
+  border: 1px solid rgba(181,116,10,0.25);
+}
+
+.rsh-text {
+  font-size: 0.82rem;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* PROCEDURE STEPS */
+.procedure-block {
+  max-width: 700px;
+  margin: 20px 0;
+}
+
 .procedure-block-title {
-  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
-  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.procedure-block-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-.step-list { display: flex; flex-direction: column; gap: 3px; }
+.procedure-block-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .step {
-  display: grid; grid-template-columns: 36px 1fr;
-  gap: 0; border: 1px solid var(--border); border-radius: 3px;
-  background: var(--bg2); overflow: hidden;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg2);
+  overflow: hidden;
   transition: border-color 0.12s, box-shadow 0.12s;
 }
-.step:hover { border-color: var(--green-line); box-shadow: 0 1px 6px rgba(58,128,73,0.08); }
-.step-num {
-  background: var(--bg3); border-right: 1px solid var(--border);
-  display: flex; align-items: flex-start; justify-content: center;
-  padding-top: 14px;
-  font-family: var(--mono); font-size: 0.65rem; font-weight: 600; color: var(--muted);
-}
-.step-content { padding: 12px 16px; }
-.step-action {
-  font-size: 0.88rem; font-weight: 600; color: var(--text);
-  margin-bottom: 4px; line-height: 1.4;
-}
-.step-detail {
-  font-size: 0.8rem; color: var(--dim); line-height: 1.6; margin-bottom: 6px;
-}
-.step-detail:last-child { margin-bottom: 0; }
-.step-code {
-  font-family: var(--mono); font-size: 0.78rem;
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--green-b); padding: 6px 10px; border-radius: 2px;
-  display: block; margin: 6px 0; white-space: pre;
-}
-.step-note {
-  display: flex; gap: 7px; align-items: flex-start;
-  background: var(--caution-d); border: 1px solid rgba(26,107,138,0.2);
-  border-radius: 2px; padding: 6px 10px; margin-top: 8px;
-  font-size: 0.78rem; color: var(--caution); line-height: 1.5;
-}
-.step-note::before { content: 'ℹ'; font-size: 0.75rem; flex-shrink: 0; margin-top: 1px; }
-.step-warn {
-  display: flex; gap: 7px; align-items: flex-start;
-  background: var(--warn-d); border: 1px solid rgba(181,116,10,0.2);
-  border-radius: 2px; padding: 6px 10px; margin-top: 8px;
-  font-size: 0.78rem; color: var(--warn); line-height: 1.5;
-}
-.step-warn::before { content: '⚠'; font-size: 0.75rem; flex-shrink: 0; margin-top: 1px; }
-.step-critical {
-  display: flex; gap: 7px; align-items: flex-start;
-  background: var(--critical-d); border: 1px solid rgba(155,38,38,0.2);
-  border-radius: 2px; padding: 6px 10px; margin-top: 8px;
-  font-size: 0.78rem; color: var(--critical); line-height: 1.5; font-weight: 500;
-}
-.step-critical::before { content: '✕'; font-family: var(--mono); font-size: 0.7rem; flex-shrink: 0; margin-top: 1px; }
 
-/* ── CALLOUT BOXES ── */
+.step:hover {
+  border-color: var(--green-line);
+  box-shadow: 0 1px 6px rgba(58,128,73,0.08);
+}
+
+.step-num {
+  background: var(--bg3);
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.step-content { padding: 12px 16px; }
+
+.step-action {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.step-detail {
+  font-size: 0.8rem;
+  color: var(--dim);
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.step-detail:last-child { margin-bottom: 0; }
+
+.step-code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--green-b);
+  padding: 6px 10px;
+  border-radius: 2px;
+  display: block;
+  margin: 6px 0;
+  white-space: pre;
+}
+
+.step-note,
+.step-warn,
+.step-critical {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  border-radius: 2px;
+  padding: 6px 10px;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.step-note {
+  background: var(--caution-d);
+  border: 1px solid rgba(26,107,138,0.2);
+  color: var(--caution);
+}
+
+.step-note::before {
+  content: 'ℹ';
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-warn {
+  background: var(--warn-d);
+  border: 1px solid rgba(181,116,10,0.2);
+  color: var(--warn);
+}
+
+.step-warn::before {
+  content: '⚠';
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-critical {
+  background: var(--critical-d);
+  border: 1px solid rgba(155,38,38,0.2);
+  color: var(--critical);
+  font-weight: 500;
+}
+
+.step-critical::before {
+  content: '✕';
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* CALLOUTS */
 .callout {
-  position: relative; padding: 14px 16px 14px 46px;
-  margin: 18px 0; border-radius: 3px; max-width: 700px;
+  position: relative;
+  padding: 14px 16px 14px 46px;
+  margin: 18px 0;
+  border-radius: 3px;
+  max-width: 700px;
   border: 1px solid var(--border);
 }
-.callout::before { position: absolute; left: 14px; top: 14px; font-size: 0.85rem; }
-.callout.note    { background: var(--caution-d); border-left: 3px solid var(--caution); }
-.callout.note::before    { content: 'ℹ'; color: var(--caution); }
-.callout.warning { background: var(--warn-d);    border-left: 3px solid var(--warn); }
-.callout.warning::before { content: '⚠'; color: var(--warn); }
-.callout.stop    { background: var(--critical-d); border-left: 3px solid var(--critical); }
-.callout.stop::before    { content: '✕'; font-family: var(--mono); font-size: 0.8rem; color: var(--critical); top: 15px; }
-.callout.tip     { background: var(--green-g);   border-left: 3px solid var(--green); }
-.callout.tip::before     { content: '&#10003;'; color: var(--green); font-weight: 700; }
-.callout-label {
-  font-family: var(--mono); font-size: 0.58rem; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 5px;
+
+.callout::before {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  font-size: 0.85rem;
 }
-.callout.note    .callout-label { color: var(--caution); }
+
+.callout.note {
+  background: var(--caution-d);
+  border-left: 3px solid var(--caution);
+}
+
+.callout.note::before {
+  content: 'ℹ';
+  color: var(--caution);
+}
+
+.callout.warning {
+  background: var(--warn-d);
+  border-left: 3px solid var(--warn);
+}
+
+.callout.warning::before {
+  content: '⚠';
+  color: var(--warn);
+}
+
+.callout.stop {
+  background: var(--critical-d);
+  border-left: 3px solid var(--critical);
+}
+
+.callout.stop::before {
+  content: '✕';
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--critical);
+  top: 15px;
+}
+
+.callout.tip {
+  background: var(--green-g);
+  border-left: 3px solid var(--green);
+}
+
+.callout.tip::before {
+  content: '✓';
+  color: var(--green);
+  font-weight: 700;
+}
+
+.callout-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.callout.note .callout-label { color: var(--caution); }
 .callout.warning .callout-label { color: var(--warn); }
-.callout.stop    .callout-label { color: var(--critical); }
-.callout.tip     .callout-label { color: var(--green-b); }
-.callout p { font-size: 0.84rem; line-height: 1.65; color: var(--text2); margin-bottom: 4px; }
+.callout.stop .callout-label { color: var(--critical); }
+.callout.tip .callout-label { color: var(--green-b); }
+
+.callout p {
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+
 .callout p:last-child { margin-bottom: 0; }
 
-/* ── DECISION TABLE ── */
-.decision-table-wrap { overflow-x: auto; margin: 18px 0; max-width: 700px; border: 1px solid var(--border); border-radius: 3px; }
-.decision-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-.decision-table thead tr { background: var(--text); }
+/* DECISION TABLE */
+.decision-table-wrap {
+  overflow-x: auto;
+  margin: 18px 0;
+  max-width: 700px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.decision-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.decision-table thead tr {
+  background: var(--text);
+}
+
 .decision-table thead th {
-  padding: 9px 14px; text-align: left;
-  font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg3); white-space: nowrap;
+  padding: 9px 14px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bg3);
+  white-space: nowrap;
 }
+
 .decision-table tbody td {
-  padding: 9px 14px; color: var(--dim);
-  border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5;
+  padding: 9px 14px;
+  color: var(--dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
 }
-.decision-table tbody td:first-child { font-weight: 600; color: var(--text2); }
+
+.decision-table tbody td:first-child {
+  font-weight: 600;
+  color: var(--text2);
+}
+
 .decision-table tbody tr:nth-child(even) td { background: var(--bg3); }
 .decision-table tbody tr:hover td { background: var(--green-g); }
 .decision-table tbody tr:last-child td { border-bottom: none; }
-.tag {
-  display: inline-block; font-family: var(--mono); font-size: 0.58rem; font-weight: 600;
-  padding: 2px 7px; border-radius: 2px; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap;
-}
-.tag.green  { background: var(--green-d); color: var(--green-b); border: 1px solid var(--green-line); }
-.tag.blue   { background: var(--caution-d); color: var(--caution); border: 1px solid rgba(26,107,138,0.25); }
-.tag.amber  { background: var(--warn-d); color: var(--warn); border: 1px solid rgba(181,116,10,0.25); }
-.tag.red    { background: var(--critical-d); color: var(--critical); border: 1px solid rgba(155,38,38,0.25); }
 
-/* ── CHECKLIST ── */
-.checklist { max-width: 700px; margin: 16px 0; }
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tag.green {
+  background: var(--green-d);
+  color: var(--green-b);
+  border: 1px solid var(--green-line);
+}
+
+.tag.blue {
+  background: var(--caution-d);
+  color: var(--caution);
+  border: 1px solid rgba(26,107,138,0.25);
+}
+
+.tag.amber {
+  background: var(--warn-d);
+  color: var(--warn);
+  border: 1px solid rgba(181,116,10,0.25);
+}
+
+.tag.red {
+  background: var(--critical-d);
+  color: var(--critical);
+  border: 1px solid rgba(155,38,38,0.25);
+}
+
+/* CHECKLIST */
+.checklist {
+  max-width: 700px;
+  margin: 16px 0;
+}
+
 .checklist-title {
-  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
 }
-.checklist ul { list-style: none; padding: 0; }
+
+.checklist ul {
+  list-style: none;
+  padding: 0;
+}
+
 .checklist li {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 7px 12px; border-bottom: 1px solid var(--bg3);
-  font-size: 0.84rem; color: var(--text2); line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--bg3);
+  font-size: 0.84rem;
+  color: var(--text2);
+  line-height: 1.5;
 }
+
 .checklist li:last-child { border-bottom: none; }
+
 .checklist li::before {
-  content: ''; flex-shrink: 0; margin-top: 4px;
-  width: 14px; height: 14px; border: 1.5px solid var(--border2); border-radius: 2px; background: var(--bg2);
+  content: '';
+  flex-shrink: 0;
+  margin-top: 4px;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border2);
+  border-radius: 2px;
+  background: var(--bg2);
 }
+
 .checklist-group {
-  border: 1px solid var(--border); border-radius: 3px;
-  margin-bottom: 10px; overflow: hidden; background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  background: var(--bg2);
 }
+
 .checklist-group-header {
-  padding: 7px 12px; background: var(--bg3); border-bottom: 1px solid var(--border);
-  font-family: var(--mono); font-size: 0.58rem; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  display: flex; align-items: center; gap: 8px; color: var(--dim);
+  padding: 7px 12px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dim);
 }
+
 .checklist-group-header .role-badge { margin: 0; }
 
-/* ── REFERENCE TABLE ── */
-.ref-table-wrap { overflow-x: auto; margin: 16px 0; max-width: 700px; }
-.ref-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+/* REFERENCE TABLE */
+.ref-table-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
+  max-width: 700px;
+}
+
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.81rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
 .ref-table thead th {
-  padding: 8px 12px; background: var(--bg4);
-  font-family: var(--mono); font-size: 0.57rem; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
-  text-align: left; border-bottom: 1px solid var(--border2); white-space: nowrap;
+  padding: 8px 12px;
+  background: var(--bg4);
+  font-family: var(--mono);
+  font-size: 0.57rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  border-bottom: 1px solid var(--border2);
+  white-space: nowrap;
 }
+
 .ref-table tbody td {
-  padding: 8px 12px; border-bottom: 1px solid var(--border);
-  color: var(--dim); line-height: 1.5; vertical-align: top;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--dim);
+  line-height: 1.5;
+  vertical-align: top;
 }
-.ref-table tbody td:first-child { font-family: var(--mono); font-size: 0.75rem; color: var(--green); white-space: nowrap; font-weight: 500; }
+
+.ref-table tbody td:first-child {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--green);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
 .ref-table tbody tr:hover td { background: var(--green-g); }
 .ref-table tbody tr:last-child td { border-bottom: none; }
 
-/* ── SUBSECTION ── */
-.subsection { margin: 28px 0 12px; }
+/* SUBSECTION */
+.subsection {
+  margin: 28px 0 12px;
+}
+
 .subsection-title {
-  font-size: 0.95rem; font-weight: 700; color: var(--text);
-  margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--sans);
 }
+
 .subsection-title::before {
-  content: ''; display: inline-block;
-  width: 3px; height: 16px; background: var(--green); border-radius: 1px; flex-shrink: 0;
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 16px;
+  background: var(--green);
+  border-radius: 1px;
+  flex-shrink: 0;
 }
 
-/* ── PULL QUOTE ── */
+/* PULL QUOTE */
 .pull-quote {
-  margin: 24px 0; padding: 20px 24px;
-  border-left: 3px solid var(--green); background: var(--bg2);
-  border: 1px solid var(--border); border-left: 3px solid var(--green);
-  border-radius: 0 3px 3px 0; max-width: 640px;
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 0 3px 3px 0;
+  max-width: 640px;
 }
-.pull-quote p { font-family: var(--serif); font-size: 1.05rem; font-style: italic; color: var(--text2); line-height: 1.6; margin-bottom: 8px; }
-.pull-quote cite { font-family: var(--mono); font-size: 0.58rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); font-style: normal; }
 
-/* ── FOOTER ── */
+.pull-quote p {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.pull-quote cite {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  font-style: normal;
+}
+
+/* FOOTER */
 footer {
-  padding: 24px 60px; background: var(--bg2);
+  padding: 24px 60px;
+  background: var(--bg2);
   border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.footer-left { display: flex; flex-direction: column; gap: 3px; }
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .footer-brand {
-  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
-  display: flex; align-items: center; gap: 7px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
-.footer-brand::before { content: '&#9670;'; color: var(--green); font-size: 0.45rem; }
-.footer-doc { font-family: var(--mono); font-size: 0.58rem; color: var(--faint); }
-.footer-right { font-family: var(--mono); font-size: 0.58rem; color: var(--faint); text-align: right; }
+
+.footer-brand::before {
+  content: '◆';
+  color: var(--green);
+  font-size: 0.45rem;
+}
+
+.footer-doc {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--faint);
+}
+
+.footer-right {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--faint);
+  text-align: right;
+}
 
 code {
-  font-family: var(--mono); font-size: 0.82em;
-  background: var(--bg3); color: var(--green-b);
-  padding: 1px 5px; border-radius: 2px; border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: var(--bg3);
+  color: var(--green-b);
+  padding: 1px 5px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
 }
 
 @media (max-width: 960px) {
   #sidebar { display: none; }
   #doc-header, .sop-section { padding-left: 24px; padding-right: 24px; }
-  footer { padding: 20px 24px; flex-direction: column; gap: 6px; }
+  footer {
+    padding: 20px 24px;
+    flex-direction: column;
+    gap: 6px;
+  }
 }
 </style>
 </head>
@@ -500,28 +1162,31 @@ code {
 
 <div id="progress-bar"></div>
 
-<!-- SITE NAV -->
 <nav id="sitenav">
   <div class="sitenav-inner">
     <a href="https://joshwritingsamples.com" class="sitenav-brand">Josh Writing Samples</a>
+
     <div class="sitenav-links">
-      <a href="https://joshwritingsamples.com"                   class="sitenav-link">Home</a>
-      <a href="https://joshwritingsamples.com/about.html"        class="sitenav-link">About Me</a>
+      <a href="https://joshwritingsamples.com" class="sitenav-link">Home</a>
+      <a href="https://joshwritingsamples.com/about.html" class="sitenav-link">About Me</a>
       <a href="https://joshwritingsamples.com/samples/index.html" class="sitenav-link active">Samples</a>
-      <a href="https://joshwritingsamples.com/knowledge.html"    class="sitenav-link">Knowledge Management</a>
-      <a href="https://joshwritingsamples.com/contact.html"      class="sitenav-link">Contact</a>
+      <a href="https://joshwritingsamples.com/knowledge.html" class="sitenav-link">Knowledge Management</a>
+      <a href="https://joshwritingsamples.com/contact.html" class="sitenav-link">Contact</a>
     </div>
+
     <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">&#9776;</button>
   </div>
+
   <div class="nav-mobile-menu" id="mobileMenu">
-    <a href="https://joshwritingsamples.com"                   class="nav-mobile-link">Home</a>
-    <a href="https://joshwritingsamples.com/about.html"        class="nav-mobile-link">About Me</a>
+    <a href="https://joshwritingsamples.com" class="nav-mobile-link">Home</a>
+    <a href="https://joshwritingsamples.com/about.html" class="nav-mobile-link">About Me</a>
     <a href="https://joshwritingsamples.com/samples/index.html" class="nav-mobile-link active">Samples</a>
-    <a href="https://joshwritingsamples.com/knowledge.html"    class="nav-mobile-link">Knowledge Management</a>
-    <a href="https://joshwritingsamples.com/contact.html"      class="nav-mobile-link">Contact</a>
+    <a href="https://joshwritingsamples.com/knowledge.html" class="nav-mobile-link">Knowledge Management</a>
+    <a href="https://joshwritingsamples.com/contact.html" class="nav-mobile-link">Contact</a>
   </div>
+
   <div class="nav-breadcrumb">
-    <a href="https://joshwritingsamples.com"                    class="nav-bc-item">Home</a>
+    <a href="https://joshwritingsamples.com" class="nav-bc-item">Home</a>
     <span class="nav-bc-sep">&#8250;</span>
     <a href="https://joshwritingsamples.com/samples/index.html" class="nav-bc-item">Samples</a>
     <span class="nav-bc-sep">&#8250;</span>
@@ -532,750 +1197,767 @@ code {
 </nav>
 
 <div id="shell">
-
-<!-- SIDEBAR -->
-<aside id="sidebar">
-  <div class="sb-label">Document Info</div>
-  <div class="sb-meta">
-    <div class="sb-meta-row"><span class="sb-meta-key">Category</span><span class="sb-meta-val">Operations</span></div>
-    <div class="sb-meta-row"><span class="sb-meta-key">Type</span><span class="sb-meta-val">SOP Template</span></div>
-    <div class="sb-meta-row"><span class="sb-meta-key">Object ID</span><span class="sb-meta-val code">PCD00010</span></div>
-    <div class="sb-meta-row"><span class="sb-meta-key">Version</span><span class="sb-meta-val">2.1</span></div>
-    <div class="sb-meta-row"><span class="sb-meta-key">Reviewed</span><span class="sb-meta-val">2025-Q1</span></div>
-    <div class="sb-meta-row"><span class="sb-meta-key">Status</span><span class="sb-meta-val code">Active</span></div>
-  </div>
-
-  <div class="sb-divider"></div>
-  <div class="sb-label">Applies To</div>
-  <div class="sb-roles">
-    <span class="role-badge primary">Tier 1 Support</span>
-    <span class="role-badge primary">Tier 2 Support</span>
-    <span class="role-badge secondary">Team Lead</span>
-    <span class="role-badge tertiary">Operations Manager</span>
-  </div>
-
-  <div class="sb-divider"></div>
-  <div class="sb-label">Sections</div>
-  <a class="sb-nav-link active" href="#purpose">      <span class="sb-nav-num">01</span>Purpose &amp; Scope</a>
-  <a class="sb-nav-link" href="#roles">               <span class="sb-nav-num">02</span>Role Definitions</a>
-  <a class="sb-nav-link" href="#escalation-criteria"> <span class="sb-nav-num">03</span>Escalation Criteria</a>
-  <a class="sb-nav-link" href="#tier1">               <span class="sb-nav-num">04</span>Tier 1 Procedures</a>
-  <a class="sb-nav-link" href="#tier2">               <span class="sb-nav-num">05</span>Tier 2 Procedures</a>
-  <a class="sb-nav-link" href="#lead">                <span class="sb-nav-num">06</span>Team Lead Procedures</a>
-  <a class="sb-nav-link" href="#handoff">             <span class="sb-nav-num">07</span>Handoff Protocol</a>
-  <a class="sb-nav-link" href="#checklists">          <span class="sb-nav-num">08</span>Role Checklists</a>
-  <a class="sb-nav-link" href="#exceptions">          <span class="sb-nav-num">09</span>Exception Handling</a>
-  <a class="sb-nav-link" href="#references">          <span class="sb-nav-num">10</span>References</a>
-</aside>
-
-<!-- MAIN CONTENT -->
-<main id="main">
-
-  <!-- DOC HEADER -->
-  <header id="doc-header">
-    <div class="doc-category">Operations &middot; Standard Operating Procedure</div>
-    <h1 class="doc-title"><em>Role-Based</em> Standard Operating Procedure</h1>
-    <p class="doc-subtitle">A structured SOP framework for multi-role operational teams, demonstrating how procedural knowledge is organized by role context, escalation path, and execution authority — with clear handoff protocols between tiers.</p>
-    <div class="doc-meta-strip">
-      <div class="doc-meta-cell"><div class="dmc-key">Document ID</div><div class="dmc-val green">PCD00010</div></div>
-      <div class="doc-meta-cell"><div class="dmc-key">Version</div><div class="dmc-val">2.1 · 2025-Q1</div></div>
-      <div class="doc-meta-cell"><div class="dmc-key">Owner</div><div class="dmc-val">Operations Lead</div></div>
-      <div class="doc-meta-cell"><div class="dmc-key">Status</div><div class="dmc-val green">Active</div></div>
-    </div>
-  </header>
-
-  <!-- 01 PURPOSE & SCOPE -->
-  <section id="purpose" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">01</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Purpose &amp; Scope</div>
-        <h2 class="section-title">What This SOP Governs</h2>
-      </div>
+  <aside id="sidebar">
+    <div class="sb-label">Document Info</div>
+    <div class="sb-meta">
+      <div class="sb-meta-row"><span class="sb-meta-key">Category</span><span class="sb-meta-val">Operations</span></div>
+      <div class="sb-meta-row"><span class="sb-meta-key">Type</span><span class="sb-meta-val">SOP Template</span></div>
+      <div class="sb-meta-row"><span class="sb-meta-key">Object ID</span><span class="sb-meta-val code">PCD00010</span></div>
+      <div class="sb-meta-row"><span class="sb-meta-key">Version</span><span class="sb-meta-val">2.1</span></div>
+      <div class="sb-meta-row"><span class="sb-meta-key">Reviewed</span><span class="sb-meta-val">2025-Q1</span></div>
+      <div class="sb-meta-row"><span class="sb-meta-key">Status</span><span class="sb-meta-val code">Active</span></div>
     </div>
 
-    <p class="body-text">This Standard Operating Procedure establishes the role-differentiated workflows, escalation paths, and handoff protocols for the operations support function. It defines what each role is authorized to do, in what order, and under what conditions authority transfers to the next tier.</p>
+    <div class="sb-divider"></div>
 
-    <p class="body-text">A role-based SOP exists because not all operational actions belong to all roles. Executing the wrong procedure at the wrong tier — whether by under-escalating a critical issue or by over-escalating a routine one — degrades both resolution speed and team capacity. This document eliminates ambiguity by making each role's scope explicit, bounded, and non-overlapping.</p>
-
-    <div class="callout tip">
-      <div class="callout-label">Design Principle</div>
-      <p>Each section of this SOP is scoped to a specific role. Practitioners should read the section corresponding to their role and the escalation criteria section in full. Reading sections for other roles is encouraged for situational awareness but is not required for operational compliance.</p>
+    <div class="sb-label">Applies To</div>
+    <div class="sb-roles">
+      <span class="role-badge primary">Tier 1 Support</span>
+      <span class="role-badge primary">Tier 2 Support</span>
+      <span class="role-badge secondary">Team Lead</span>
+      <span class="role-badge tertiary">Operations Manager</span>
     </div>
 
-    <div class="subsection">
-      <h3 class="subsection-title">Scope of Coverage</h3>
-    </div>
+    <div class="sb-divider"></div>
 
-    <div class="decision-table-wrap">
-      <table class="decision-table">
-        <thead>
-          <tr>
-            <th>In Scope</th>
-            <th>Out of Scope</th>
-            <th>Governing Document</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Tier 1 triage and initial response</td>
-            <td>Customer refund authorization</td>
-            <td>FIN-POL-004</td>
-          </tr>
-          <tr>
-            <td>Tier 2 investigation and resolution</td>
-            <td>Data deletion requests under privacy regulations</td>
-            <td>PRI-PCD-012</td>
-          </tr>
-          <tr>
-            <td>Team lead override and priority adjustment</td>
-            <td>Infrastructure provisioning and deprovisioning</td>
-            <td>INF-PCS-007</td>
-          </tr>
-          <tr>
-            <td>Shift handoff between all roles</td>
-            <td>Third-party vendor escalations</td>
-            <td>VND-PCS-003</td>
-          </tr>
-          <tr>
-            <td>Exception handling and deviation logging</td>
-            <td>Security incident response (Severity 1)</td>
-            <td>SEC-PCD-001</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+    <div class="sb-label">Sections</div>
+    <a class="sb-nav-link active" href="#purpose"><span class="sb-nav-num">01</span>Purpose &amp; Scope</a>
+    <a class="sb-nav-link" href="#roles"><span class="sb-nav-num">02</span>Role Definitions</a>
+    <a class="sb-nav-link" href="#escalation-criteria"><span class="sb-nav-num">03</span>Escalation Criteria</a>
+    <a class="sb-nav-link" href="#tier1"><span class="sb-nav-num">04</span>Tier 1 Procedures</a>
+    <a class="sb-nav-link" href="#tier2"><span class="sb-nav-num">05</span>Tier 2 Procedures</a>
+    <a class="sb-nav-link" href="#lead"><span class="sb-nav-num">06</span>Team Lead Procedures</a>
+    <a class="sb-nav-link" href="#handoff"><span class="sb-nav-num">07</span>Handoff Protocol</a>
+    <a class="sb-nav-link" href="#checklists"><span class="sb-nav-num">08</span>Role Checklists</a>
+    <a class="sb-nav-link" href="#exceptions"><span class="sb-nav-num">09</span>Exception Handling</a>
+    <a class="sb-nav-link" href="#references"><span class="sb-nav-num">10</span>References</a>
+  </aside>
 
-  <!-- 02 ROLE DEFINITIONS -->
-  <section id="roles" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">02</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Role Definitions</div>
-        <h2 class="section-title">Roles, Authority, and <em>Boundaries</em></h2>
-      </div>
-    </div>
+  <main id="main">
+    <header id="doc-header">
+      <div class="doc-category">Operations &middot; Standard Operating Procedure</div>
+      <h1 class="doc-title"><em>Role-Based</em> Standard Operating Procedure</h1>
+      <p class="doc-subtitle">A structured SOP framework for multi-role operational teams, demonstrating how procedural knowledge is organized by role context, escalation path, and execution authority, with clear handoff protocols between tiers.</p>
 
-    <p class="body-text">Each role in this SOP carries a defined scope of authority. Acting within that scope is expected; acting outside it without explicit authorization from the tier above is a procedure deviation that must be logged. Authority boundaries exist to protect both the practitioner and the customer — not to create bureaucratic friction.</p>
-
-    <div class="decision-table-wrap">
-      <table class="decision-table">
-        <thead>
-          <tr>
-            <th>Role</th>
-            <th>Primary Responsibility</th>
-            <th>Authorized Actions</th>
-            <th>Escalates To</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="tag green">Tier 1 Support</span></td>
-            <td>Initial triage, classification, and resolution of routine issues within the defined resolution playbook</td>
-            <td>Classify, acknowledge, apply Standard Fixes 1–12, close resolved tickets, escalate per criteria</td>
-            <td>Tier 2 Support</td>
-          </tr>
-          <tr>
-            <td><span class="tag blue">Tier 2 Support</span></td>
-            <td>Investigation, root cause analysis, and resolution of escalated and non-routine issues</td>
-            <td>All Tier 1 actions; access to diagnostic tooling; config read access; apply Extended Fixes 1–8</td>
-            <td>Team Lead</td>
-          </tr>
-          <tr>
-            <td><span class="tag amber">Team Lead</span></td>
-            <td>Priority overrides, cross-team coordination, SLA breach intervention, and exception authorization</td>
-            <td>All Tier 2 actions; config write access; SLA override; exception log authorization; vendor contact</td>
-            <td>Operations Manager</td>
-          </tr>
-          <tr>
-            <td><span class="tag red">Operations Manager</span></td>
-            <td>Policy exceptions, cross-functional escalations, and operational incident declarations</td>
-            <td>Full authority within operations scope; policy deviation authorization; incident declaration</td>
-            <td>Executive escalation</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="callout warning">
-      <div class="callout-label">Authority Boundary Reminder</div>
-      <p>Borrowing authority — applying an action that belongs to a higher tier because it seems faster — is a procedure deviation regardless of outcome. If you believe escalation criteria are not well-calibrated, log the deviation and raise it in the next SOP review cycle. Do not self-authorize.</p>
-    </div>
-  </section>
-
-  <!-- 03 ESCALATION CRITERIA -->
-  <section id="escalation-criteria" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">03</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Escalation Criteria</div>
-        <h2 class="section-title">When to Escalate, <em>Without Hesitation</em></h2>
-      </div>
-    </div>
-
-    <p class="body-text">Escalation is not a failure signal — it is a routing decision. The criteria below define when an issue has exceeded the current role's scope of authority or resolution capability and must be transferred to the next tier. Apply them without judgment; they exist so that practitioners do not need to make judgment calls under pressure.</p>
-
-    <div class="subsection">
-      <h3 class="subsection-title">Tier 1 &#8594; Tier 2 Escalation Triggers</h3>
-    </div>
-
-    <div class="decision-table-wrap">
-      <table class="decision-table">
-        <thead>
-          <tr><th>Condition</th><th>Trigger</th><th>Action</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Time threshold exceeded</td>
-            <td>Issue unresolved after 20 minutes of active work</td>
-            <td><span class="tag amber">Escalate immediately</span></td>
-          </tr>
-          <tr>
-            <td>Standard Fix exhausted</td>
-            <td>All applicable Standard Fixes applied; issue persists</td>
-            <td><span class="tag amber">Escalate immediately</span></td>
-          </tr>
-          <tr>
-            <td>Classification uncertainty</td>
-            <td>Issue does not clearly match any documented category</td>
-            <td><span class="tag amber">Escalate for classification</span></td>
-          </tr>
-          <tr>
-            <td>Data access required</td>
-            <td>Resolution requires accessing customer data beyond read-only profile</td>
-            <td><span class="tag red">Escalate — do not proceed</span></td>
-          </tr>
-          <tr>
-            <td>Configuration change required</td>
-            <td>Resolution requires any system configuration change</td>
-            <td><span class="tag red">Escalate — do not proceed</span></td>
-          </tr>
-          <tr>
-            <td>Pattern detected</td>
-            <td>Three or more identical issues reported within one hour</td>
-            <td><span class="tag red">Escalate + flag as potential incident</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="subsection">
-      <h3 class="subsection-title">Tier 2 &#8594; Team Lead Escalation Triggers</h3>
-    </div>
-
-    <div class="decision-table-wrap">
-      <table class="decision-table">
-        <thead>
-          <tr><th>Condition</th><th>Trigger</th><th>Action</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>SLA at risk</td>
-            <td>Issue approaching SLA breach with no clear resolution path</td>
-            <td><span class="tag amber">Notify lead immediately</span></td>
-          </tr>
-          <tr>
-            <td>Extended Fix exhausted</td>
-            <td>All applicable Extended Fixes applied; root cause unidentified</td>
-            <td><span class="tag amber">Escalate for investigation</span></td>
-          </tr>
-          <tr>
-            <td>Customer impact broadening</td>
-            <td>Issue confirmed to affect more than one customer account</td>
-            <td><span class="tag red">Escalate + open incident draft</span></td>
-          </tr>
-          <tr>
-            <td>External system dependency</td>
-            <td>Resolution requires coordination with another team or vendor</td>
-            <td><span class="tag amber">Escalate for coordination</span></td>
-          </tr>
-          <tr>
-            <td>Policy exception needed</td>
-            <td>Resolution requires action outside the defined authorization boundary</td>
-            <td><span class="tag red">Escalate — do not self-authorize</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="callout stop">
-      <div class="callout-label">Non-Negotiable Escalation</div>
-      <p>Any issue involving suspected data breach, unauthorized access, or potential regulatory exposure must be escalated to Team Lead <strong>immediately</strong> — bypassing normal escalation sequence if necessary. Do not attempt to investigate or resolve independently. Do not communicate findings to the customer before escalation.</p>
-    </div>
-  </section>
-
-  <!-- 04 TIER 1 PROCEDURES -->
-  <section id="tier1" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">04</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Tier 1 Procedures</div>
-        <h2 class="section-title">Initial Triage and <em>First Response</em></h2>
-      </div>
-    </div>
-
-    <div class="role-section-header">
-      <span class="rsh-badge green">Tier 1 Support</span>
-      <span class="rsh-text">The following procedures apply to Tier 1 Support agents. Do not proceed with steps that require Tier 2 authorization.</span>
-    </div>
-
-    <div class="procedure-block">
-      <div class="procedure-block-title">Phase A — Ticket Receipt and Initial Classification</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-action">Open the ticket and record the receipt timestamp</div>
-            <div class="step-detail">Navigate to the queue, open the oldest unassigned ticket in priority order. Log the receipt time in the SLA tracking field — this starts the response clock.</div>
-            <div class="step-warn">Do not open a ticket and then leave it unassigned. Once opened, you own it until resolved or formally transferred.</div>
-          </div>
+      <div class="doc-meta-strip">
+        <div class="doc-meta-cell">
+          <div class="dmc-key">Document ID</div>
+          <div class="dmc-val green">PCD00010</div>
         </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-action">Read the full ticket description before classifying</div>
-            <div class="step-detail">Read the complete customer-submitted description and any attached screenshots or logs. Do not classify based on the subject line alone — subject lines are frequently inaccurate or incomplete.</div>
-          </div>
+        <div class="doc-meta-cell">
+          <div class="dmc-key">Version</div>
+          <div class="dmc-val">2.1 &middot; 2025-Q1</div>
         </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-action">Apply the classification matrix to assign a category and priority</div>
-            <div class="step-detail">Use the Issue Classification Matrix (REF-OPS-002) to assign both a category code and a priority level. Enter both in the ticket fields before proceeding.</div>
-            <div class="step-code">Category codes: AUTH / PERF / DATA / INTG / UI / BILLING / OTHER
+        <div class="doc-meta-cell">
+          <div class="dmc-key">Owner</div>
+          <div class="dmc-val">Operations Lead</div>
+        </div>
+        <div class="doc-meta-cell">
+          <div class="dmc-key">Status</div>
+          <div class="dmc-val green">Active</div>
+        </div>
+      </div>
+    </header>
+
+    <section id="purpose" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Purpose &amp; Scope</div>
+          <h2 class="section-title">What This SOP Governs</h2>
+        </div>
+      </div>
+
+      <p class="body-text">This Standard Operating Procedure establishes the role-differentiated workflows, escalation paths, and handoff protocols for the operations support function. It defines what each role is authorized to do, in what order, and under what conditions authority transfers to the next tier.</p>
+
+      <p class="body-text">A role-based SOP exists because not all operational actions belong to all roles. Executing the wrong procedure at the wrong tier, whether by under-escalating a critical issue or by over-escalating a routine one, degrades both resolution speed and team capacity. This document eliminates ambiguity by making each role's scope explicit, bounded, and non-overlapping.</p>
+
+      <div class="callout tip">
+        <div class="callout-label">Design Principle</div>
+        <p>Each section of this SOP is scoped to a specific role. Practitioners should read the section corresponding to their role and the escalation criteria section in full. Reading sections for other roles is encouraged for situational awareness but is not required for operational compliance.</p>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Scope of Coverage</h3>
+      </div>
+
+      <div class="decision-table-wrap">
+        <table class="decision-table">
+          <thead>
+            <tr>
+              <th>In Scope</th>
+              <th>Out of Scope</th>
+              <th>Governing Document</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tier 1 triage and initial response</td>
+              <td>Customer refund authorization</td>
+              <td>FIN-POL-004</td>
+            </tr>
+            <tr>
+              <td>Tier 2 investigation and resolution</td>
+              <td>Data deletion requests under privacy regulations</td>
+              <td>PRI-PCD-012</td>
+            </tr>
+            <tr>
+              <td>Team lead override and priority adjustment</td>
+              <td>Infrastructure provisioning and deprovisioning</td>
+              <td>INF-PCS-007</td>
+            </tr>
+            <tr>
+              <td>Shift handoff between all roles</td>
+              <td>Third-party vendor escalations</td>
+              <td>VND-PCS-003</td>
+            </tr>
+            <tr>
+              <td>Exception handling and deviation logging</td>
+              <td>Security incident response (Severity 1)</td>
+              <td>SEC-PCD-001</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="roles" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Role Definitions</div>
+          <h2 class="section-title">Roles, Authority, and <em>Boundaries</em></h2>
+        </div>
+      </div>
+
+      <p class="body-text">Each role in this SOP carries a defined scope of authority. Acting within that scope is expected. Acting outside it without explicit authorization from the tier above is a procedure deviation that must be logged. Authority boundaries exist to protect both the practitioner and the customer, not to create bureaucratic friction.</p>
+
+      <div class="decision-table-wrap">
+        <table class="decision-table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Primary Responsibility</th>
+              <th>Authorized Actions</th>
+              <th>Escalates To</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tag green">Tier 1 Support</span></td>
+              <td>Initial triage, classification, and resolution of routine issues within the defined resolution playbook</td>
+              <td>Classify, acknowledge, apply Standard Fixes 1 to 12, close resolved tickets, escalate per criteria</td>
+              <td>Tier 2 Support</td>
+            </tr>
+            <tr>
+              <td><span class="tag blue">Tier 2 Support</span></td>
+              <td>Investigation, root cause analysis, and resolution of escalated and non-routine issues</td>
+              <td>All Tier 1 actions, access to diagnostic tooling, config read access, apply Extended Fixes 1 to 8</td>
+              <td>Team Lead</td>
+            </tr>
+            <tr>
+              <td><span class="tag amber">Team Lead</span></td>
+              <td>Priority overrides, cross-team coordination, SLA breach intervention, and exception authorization</td>
+              <td>All Tier 2 actions, config write access, SLA override, exception log authorization, vendor contact</td>
+              <td>Operations Manager</td>
+            </tr>
+            <tr>
+              <td><span class="tag red">Operations Manager</span></td>
+              <td>Policy exceptions, cross-functional escalations, and operational incident declarations</td>
+              <td>Full authority within operations scope, policy deviation authorization, incident declaration</td>
+              <td>Executive escalation</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warning">
+        <div class="callout-label">Authority Boundary Reminder</div>
+        <p>Borrowing authority, applying an action that belongs to a higher tier because it seems faster, is a procedure deviation regardless of outcome. If you believe escalation criteria are not well-calibrated, log the deviation and raise it in the next SOP review cycle. Do not self-authorize.</p>
+      </div>
+    </section>
+
+    <section id="escalation-criteria" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Escalation Criteria</div>
+          <h2 class="section-title">When to Escalate, <em>Without Hesitation</em></h2>
+        </div>
+      </div>
+
+      <p class="body-text">Escalation is not a failure signal. It is a routing decision. The criteria below define when an issue has exceeded the current role's scope of authority or resolution capability and must be transferred to the next tier. Apply them without judgment. They exist so that practitioners do not need to make judgment calls under pressure.</p>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Tier 1 &#8594; Tier 2 Escalation Triggers</h3>
+      </div>
+
+      <div class="decision-table-wrap">
+        <table class="decision-table">
+          <thead>
+            <tr><th>Condition</th><th>Trigger</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Time threshold exceeded</td>
+              <td>Issue unresolved after 20 minutes of active work</td>
+              <td><span class="tag amber">Escalate immediately</span></td>
+            </tr>
+            <tr>
+              <td>Standard Fix exhausted</td>
+              <td>All applicable Standard Fixes applied, issue persists</td>
+              <td><span class="tag amber">Escalate immediately</span></td>
+            </tr>
+            <tr>
+              <td>Classification uncertainty</td>
+              <td>Issue does not clearly match any documented category</td>
+              <td><span class="tag amber">Escalate for classification</span></td>
+            </tr>
+            <tr>
+              <td>Data access required</td>
+              <td>Resolution requires accessing customer data beyond read-only profile</td>
+              <td><span class="tag red">Escalate, do not proceed</span></td>
+            </tr>
+            <tr>
+              <td>Configuration change required</td>
+              <td>Resolution requires any system configuration change</td>
+              <td><span class="tag red">Escalate, do not proceed</span></td>
+            </tr>
+            <tr>
+              <td>Pattern detected</td>
+              <td>Three or more identical issues reported within one hour</td>
+              <td><span class="tag red">Escalate + flag as potential incident</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Tier 2 &#8594; Team Lead Escalation Triggers</h3>
+      </div>
+
+      <div class="decision-table-wrap">
+        <table class="decision-table">
+          <thead>
+            <tr><th>Condition</th><th>Trigger</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SLA at risk</td>
+              <td>Issue approaching SLA breach with no clear resolution path</td>
+              <td><span class="tag amber">Notify lead immediately</span></td>
+            </tr>
+            <tr>
+              <td>Extended Fix exhausted</td>
+              <td>All applicable Extended Fixes applied, root cause unidentified</td>
+              <td><span class="tag amber">Escalate for investigation</span></td>
+            </tr>
+            <tr>
+              <td>Customer impact broadening</td>
+              <td>Issue confirmed to affect more than one customer account</td>
+              <td><span class="tag red">Escalate + open incident draft</span></td>
+            </tr>
+            <tr>
+              <td>External system dependency</td>
+              <td>Resolution requires coordination with another team or vendor</td>
+              <td><span class="tag amber">Escalate for coordination</span></td>
+            </tr>
+            <tr>
+              <td>Policy exception needed</td>
+              <td>Resolution requires action outside the defined authorization boundary</td>
+              <td><span class="tag red">Escalate, do not self-authorize</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout stop">
+        <div class="callout-label">Non-Negotiable Escalation</div>
+        <p>Any issue involving suspected data breach, unauthorized access, or potential regulatory exposure must be escalated to Team Lead <strong>immediately</strong>, bypassing normal escalation sequence if necessary. Do not attempt to investigate or resolve independently. Do not communicate findings to the customer before escalation.</p>
+      </div>
+    </section>
+
+    <section id="tier1" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Tier 1 Procedures</div>
+          <h2 class="section-title">Initial Triage and <em>First Response</em></h2>
+        </div>
+      </div>
+
+      <div class="role-section-header">
+        <span class="rsh-badge green">Tier 1 Support</span>
+        <span class="rsh-text">The following procedures apply to Tier 1 Support agents. Do not proceed with steps that require Tier 2 authorization.</span>
+      </div>
+
+      <div class="procedure-block">
+        <div class="procedure-block-title">Phase A | Ticket Receipt and Initial Classification</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-action">Open the ticket and record the receipt timestamp</div>
+              <div class="step-detail">Navigate to the queue, open the oldest unassigned ticket in priority order. Log the receipt time in the SLA tracking field. This starts the response clock.</div>
+              <div class="step-warn">Do not open a ticket and then leave it unassigned. Once opened, you own it until resolved or formally transferred.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-action">Read the full ticket description before classifying</div>
+              <div class="step-detail">Read the complete customer-submitted description and any attached screenshots or logs. Do not classify based on the subject line alone. Subject lines are frequently inaccurate or incomplete.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-action">Apply the classification matrix to assign a category and priority</div>
+              <div class="step-detail">Use the Issue Classification Matrix (REF-OPS-002) to assign both a category code and a priority level. Enter both in the ticket fields before proceeding.</div>
+              <div class="step-code">Category codes: AUTH / PERF / DATA / INTG / UI / BILLING / OTHER
 Priority levels: P1 (Critical) / P2 (High) / P3 (Standard) / P4 (Low)</div>
-            <div class="step-note">If the issue does not clearly match any category, assign OTHER and escalate to Tier 2 for classification. Do not guess.</div>
+              <div class="step-note">If the issue does not clearly match any category, assign OTHER and escalate to Tier 2 for classification. Do not guess.</div>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <div class="step-action">Send the acknowledgment response within SLA window</div>
-            <div class="step-detail">Using the approved acknowledgment template for the assigned priority level, send the initial response to the customer. Acknowledge receipt, confirm the category as you understand it, and provide the expected response time for that priority.</div>
-            <div class="step-warn">Do not promise a resolution time — only a response time. Resolution time commitments require Team Lead authorization.</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="procedure-block">
-      <div class="procedure-block-title">Phase B — Standard Resolution Attempt</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-content">
-            <div class="step-action">Locate the applicable Standard Fix in the resolution playbook</div>
-            <div class="step-detail">Open the Tier 1 Resolution Playbook and navigate to the section for the assigned category. Identify all Standard Fixes marked as applicable to the customer's reported symptom.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">6</div>
-          <div class="step-content">
-            <div class="step-action">Apply Standard Fixes in documented order — do not skip or reorder</div>
-            <div class="step-detail">Apply each applicable Standard Fix in the sequence documented in the playbook. The sequence reflects known dependency relationships between fixes. Reordering may produce unpredictable results or mask the underlying issue.</div>
-            <div class="step-critical">Never apply Standard Fix 7 (Force Session Reset) or Standard Fix 11 (Cache Purge — Account-Wide) without first confirming the customer is not in an active transaction. These fixes are non-reversible.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">7</div>
-          <div class="step-content">
-            <div class="step-action">Verify resolution before closing or communicating resolution to the customer</div>
-            <div class="step-detail">After applying the fix, independently verify that the reported symptom is resolved using the verification steps documented alongside each Standard Fix. Do not rely on the customer's confirmation alone as the verification step.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">8</div>
-          <div class="step-content">
-            <div class="step-action">Document the applied fix and close the ticket with the correct resolution code</div>
-            <div class="step-detail">Record which Standard Fix was applied, the verification method used, and the outcome. Select the appropriate resolution code. Close the ticket — do not leave resolved tickets in an open state.</div>
-            <div class="step-note">Resolution codes feed the telemetry system. Accurate coding is what enables pattern detection that prevents future escalations.</div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-action">Send the acknowledgment response within SLA window</div>
+              <div class="step-detail">Using the approved acknowledgment template for the assigned priority level, send the initial response to the customer. Acknowledge receipt, confirm the category as you understand it, and provide the expected response time for that priority.</div>
+              <div class="step-warn">Do not promise a resolution time. Only a response time. Resolution time commitments require Team Lead authorization.</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- 05 TIER 2 PROCEDURES -->
-  <section id="tier2" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">05</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Tier 2 Procedures</div>
-        <h2 class="section-title">Investigation and <em>Root Cause Resolution</em></h2>
-      </div>
-    </div>
-
-    <div class="role-section-header caution">
-      <span class="rsh-badge caution">Tier 2 Support</span>
-      <span class="rsh-text">The following procedures apply to Tier 2 Support specialists. All Tier 1 escalation procedures remain valid at this tier.</span>
-    </div>
-
-    <div class="procedure-block">
-      <div class="procedure-block-title">Phase A — Escalation Receipt and Context Capture</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-action">Accept the escalated ticket and review the full Tier 1 record</div>
-            <div class="step-detail">Read all notes added by the Tier 1 agent, including the classification, all Standard Fixes applied, the verification steps performed, and the reason for escalation. Do not repeat diagnostic steps already documented as completed.</div>
+      <div class="procedure-block">
+        <div class="procedure-block-title">Phase B | Standard Resolution Attempt</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <div class="step-action">Locate the applicable Standard Fix in the resolution playbook</div>
+              <div class="step-detail">Open the Tier 1 Resolution Playbook and navigate to the section for the assigned category. Identify all Standard Fixes marked as applicable to the customer's reported symptom.</div>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-action">Contact the Tier 1 agent for verbal context handoff if the ticket is less than 30 minutes old</div>
-            <div class="step-detail">For recently escalated tickets, a brief verbal handoff from the Tier 1 agent frequently surfaces context that was not captured in the ticket notes. This step is strongly recommended but not required if the Tier 1 agent is unavailable.</div>
+
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <div class="step-action">Apply Standard Fixes in documented order. Do not skip or reorder.</div>
+              <div class="step-detail">Apply each applicable Standard Fix in the sequence documented in the playbook. The sequence reflects known dependency relationships between fixes. Reordering may produce unpredictable results or mask the underlying issue.</div>
+              <div class="step-critical">Never apply Standard Fix 7 (Force Session Reset) or Standard Fix 11 (Cache Purge, Account-Wide) without first confirming the customer is not in an active transaction. These fixes are non-reversible.</div>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-action">Update the customer with a Tier 2 acknowledgment and revised response window</div>
-            <div class="step-detail">Send the Tier 2 acknowledgment template, indicating that the issue has been escalated and is under active investigation. Provide the response time appropriate to the assigned priority. Do not speculate on cause or resolution approach in this communication.</div>
+
+          <div class="step">
+            <div class="step-num">7</div>
+            <div class="step-content">
+              <div class="step-action">Verify resolution before closing or communicating resolution to the customer</div>
+              <div class="step-detail">After applying the fix, independently verify that the reported symptom is resolved using the verification steps documented alongside each Standard Fix. Do not rely on the customer's confirmation alone as the verification step.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">8</div>
+            <div class="step-content">
+              <div class="step-action">Document the applied fix and close the ticket with the correct resolution code</div>
+              <div class="step-detail">Record which Standard Fix was applied, the verification method used, and the outcome. Select the appropriate resolution code. Close the ticket. Do not leave resolved tickets in an open state.</div>
+              <div class="step-note">Resolution codes feed the telemetry system. Accurate coding is what enables pattern detection that prevents future escalations.</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="procedure-block">
-      <div class="procedure-block-title">Phase B — Root Cause Investigation</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <div class="step-action">Pull the diagnostic data package for the affected account</div>
-            <div class="step-detail">Using the diagnostic tooling dashboard, generate the standard data package for the account: session logs (last 48 hours), error log extract, configuration snapshot, and recent change history. Record the package generation timestamp in the ticket.</div>
-            <div class="step-code">Dashboard path: Ops Tools > Diagnostics > Account Package > [Account ID]</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-content">
-            <div class="step-action">Identify the proximate cause using the Tier 2 Investigation Framework</div>
-            <div class="step-detail">Work through the applicable investigation pathway in the Tier 2 Investigation Framework (REF-OPS-008) for the ticket category. Document your findings at each decision point — not just the final conclusion. Undocumented investigation steps cannot be peer-reviewed or referenced in future cases.</div>
-            <div class="step-note">Proximate cause (what caused the symptom) and root cause (why the proximate cause occurred) are distinct. Document both if identifiable. A ticket closed with only proximate cause addressed is likely to recur.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">6</div>
-          <div class="step-content">
-            <div class="step-action">Apply the Extended Fix corresponding to the identified root cause</div>
-            <div class="step-detail">Select the Extended Fix from the Tier 2 resolution library that addresses the identified root cause — not just the symptom. If no Extended Fix matches the identified cause, do not improvise a resolution; escalate to Team Lead with your investigation findings documented.</div>
-            <div class="step-critical">Extended Fix 5 (Account Permission Rebuild) and Extended Fix 8 (Integration Token Revocation) require a second-agent confirmation before execution. These actions affect live customer environments and are not reversible within the same session.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">7</div>
-          <div class="step-content">
-            <div class="step-action">Verify resolution, document findings, and close with full root cause record</div>
-            <div class="step-detail">Complete the Tier 2 resolution record: root cause code, Extended Fix applied, verification method, and any recommended follow-up actions (configuration review, knowledge update, pattern monitoring flag). This record feeds the knowledge improvement loop.</div>
-          </div>
+    <section id="tier2" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Tier 2 Procedures</div>
+          <h2 class="section-title">Investigation and <em>Root Cause Resolution</em></h2>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- 06 TEAM LEAD PROCEDURES -->
-  <section id="lead" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">06</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Team Lead Procedures</div>
-        <h2 class="section-title">Override, Coordination, and <em>SLA Intervention</em></h2>
+      <div class="role-section-header caution">
+        <span class="rsh-badge caution">Tier 2 Support</span>
+        <span class="rsh-text">The following procedures apply to Tier 2 Support specialists. All Tier 1 escalation procedures remain valid at this tier.</span>
       </div>
-    </div>
 
-    <div class="role-section-header warn">
-      <span class="rsh-badge warn">Team Lead</span>
-      <span class="rsh-text">Team Lead actions carry elevated authority. All escalation procedures remain valid. All overrides must be logged.</span>
-    </div>
+      <div class="procedure-block">
+        <div class="procedure-block-title">Phase A | Escalation Receipt and Context Capture</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-action">Accept the escalated ticket and review the full Tier 1 record</div>
+              <div class="step-detail">Read all notes added by the Tier 1 agent, including the classification, all Standard Fixes applied, the verification steps performed, and the reason for escalation. Do not repeat diagnostic steps already documented as completed.</div>
+            </div>
+          </div>
 
-    <div class="procedure-block">
-      <div class="procedure-block-title">Priority Override Procedure</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-action">Review the escalated ticket and the escalating agent's documentation in full</div>
-            <div class="step-detail">Do not accept the escalation verbally without reviewing the written ticket record. The written record is the authoritative account; verbal context supplements but does not replace it.</div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-action">Contact the Tier 1 agent for verbal context handoff if the ticket is less than 30 minutes old</div>
+              <div class="step-detail">For recently escalated tickets, a brief verbal handoff from the Tier 1 agent frequently surfaces context that was not captured in the ticket notes. This step is strongly recommended but not required if the Tier 1 agent is unavailable.</div>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-action">Assess whether a priority adjustment is warranted</div>
-            <div class="step-detail">Apply the Priority Adjustment Criteria (PAC) documented in SEC. 03 to determine if the ticket's current priority correctly reflects its business impact. Priority adjustments must be based on documented criteria — not on customer pressure or relationship considerations.</div>
-            <div class="step-warn">Upward priority adjustments affect the entire queue and displace work for other customers. Document the business impact justification before applying the adjustment.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-action">Apply the priority override and notify all affected parties</div>
-            <div class="step-detail">Update the ticket priority, log the adjustment reason in the override field, and notify the assigned Tier 2 agent and the Operations Manager if the adjustment is to P1. For P1 escalations, initiate the P1 Communication Protocol immediately.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <div class="step-action">Monitor the ticket at 15-minute intervals until resolved or re-escalated</div>
-            <div class="step-detail">Active Team Lead oversight continues until the ticket is resolved, escalated to the Operations Manager, or explicitly handed off to the incoming shift lead through the Shift Handoff Protocol (SEC. 07).</div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-action">Update the customer with a Tier 2 acknowledgment and revised response window</div>
+              <div class="step-detail">Send the Tier 2 acknowledgment template, indicating that the issue has been escalated and is under active investigation. Provide the response time appropriate to the assigned priority. Do not speculate on cause or resolution approach in this communication.</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- 07 HANDOFF PROTOCOL -->
-  <section id="handoff" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">07</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Handoff Protocol</div>
-        <h2 class="section-title">Clean Transfer, <em>No Lost Context</em></h2>
-      </div>
-    </div>
+      <div class="procedure-block">
+        <div class="procedure-block-title">Phase B | Root Cause Investigation</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-action">Pull the diagnostic data package for the affected account</div>
+              <div class="step-detail">Using the diagnostic tooling dashboard, generate the standard data package for the account: session logs (last 48 hours), error log extract, configuration snapshot, and recent change history. Record the package generation timestamp in the ticket.</div>
+              <div class="step-code">Dashboard path: Ops Tools &gt; Diagnostics &gt; Account Package &gt; [Account ID]</div>
+            </div>
+          </div>
 
-    <p class="body-text">The shift handoff is the single highest-risk moment in continuous operations. More issues are lost, misclassified, or allowed to breach SLA during shift transitions than at any other point in the operational cycle. This protocol is non-optional for all roles and applies at every shift boundary, including partial-day coverage changes.</p>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <div class="step-action">Identify the proximate cause using the Tier 2 Investigation Framework</div>
+              <div class="step-detail">Work through the applicable investigation pathway in the Tier 2 Investigation Framework (REF-OPS-008) for the ticket category. Document your findings at each decision point, not just the final conclusion. Undocumented investigation steps cannot be peer-reviewed or referenced in future cases.</div>
+              <div class="step-note">Proximate cause (what caused the symptom) and root cause (why the proximate cause occurred) are distinct. Document both if identifiable. A ticket closed with only proximate cause addressed is likely to recur.</div>
+            </div>
+          </div>
 
-    <div class="procedure-block">
-      <div class="procedure-block-title">Outgoing Agent / Lead — Handoff Steps</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-action">Begin handoff preparation 20 minutes before shift end — not at shift end</div>
-            <div class="step-detail">Do not accept new tickets in the final 20 minutes of your shift unless the queue is empty and no incoming agent is available. Use this time to update all open ticket notes to current status.</div>
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <div class="step-action">Apply the Extended Fix corresponding to the identified root cause</div>
+              <div class="step-detail">Select the Extended Fix from the Tier 2 resolution library that addresses the identified root cause, not just the symptom. If no Extended Fix matches the identified cause, do not improvise a resolution. Escalate to Team Lead with your investigation findings documented.</div>
+              <div class="step-critical">Extended Fix 5 (Account Permission Rebuild) and Extended Fix 8 (Integration Token Revocation) require a second-agent confirmation before execution. These actions affect live customer environments and are not reversible within the same session.</div>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-action">Complete the Shift Handoff Record for all open tickets</div>
-            <div class="step-detail">For each open ticket, document: current status, last action taken, next action required, any waiting dependencies, and the SLA clock status. The Shift Handoff Record is the incoming agent's primary context source.</div>
-            <div class="step-code">Handoff Record location: Ops Dashboard > Shift Tools > Handoff Record > [Your Name]</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-action">Deliver a verbal briefing to the incoming agent or lead</div>
-            <div class="step-detail">Verbally walk through active tickets, emphasizing any items approaching SLA thresholds, any known patterns or suspected incidents, and any tickets where context was not fully captured in writing. The verbal briefing is a supplement to the written record, not a substitute for it.</div>
-            <div class="step-warn">If the incoming agent is not available for verbal handoff, escalate to the Team Lead before leaving. Do not leave the shift without confirming the incoming agent has received and acknowledged the Handoff Record.</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="procedure-block">
-      <div class="procedure-block-title">Incoming Agent / Lead — Receipt Steps</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <div class="step-action">Review the Shift Handoff Record before accepting the queue</div>
-            <div class="step-detail">Read the complete Shift Handoff Record before opening the queue. Flag any tickets whose status is unclear and clarify with the outgoing agent before they leave. You own the queue from the moment you acknowledge receipt of the Handoff Record.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-content">
-            <div class="step-action">Prioritize your first 10 minutes on SLA-at-risk items</div>
-            <div class="step-detail">Sort the open queue by SLA time remaining. Immediately action any ticket within 15 minutes of SLA breach. Notify the Team Lead of any ticket already in breach that was not flagged in the Handoff Record.</div>
+          <div class="step">
+            <div class="step-num">7</div>
+            <div class="step-content">
+              <div class="step-action">Verify resolution, document findings, and close with full root cause record</div>
+              <div class="step-detail">Complete the Tier 2 resolution record: root cause code, Extended Fix applied, verification method, and any recommended follow-up actions (configuration review, knowledge update, pattern monitoring flag). This record feeds the knowledge improvement loop.</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 08 ROLE CHECKLISTS -->
-  <section id="checklists" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">08</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Role Checklists</div>
-        <h2 class="section-title">Shift-Start and Shift-End <em>Verification</em></h2>
-      </div>
-    </div>
-
-    <p class="body-text">These checklists are minimum required actions at shift boundaries for each role. They are not exhaustive operational guides — full procedures are in the sections above. They exist so that no critical operational action is missed in the context-switching pressure of shift start or end.</p>
-
-    <div class="checklist-group">
-      <div class="checklist-group-header">
-        <span class="role-badge primary">Tier 1 Support</span> — Shift Start
-      </div>
-      <div class="checklist">
-        <ul>
-          <li>Review Shift Handoff Record from outgoing agent</li>
-          <li>Confirm acknowledgment in the Handoff Record system</li>
-          <li>Check queue for any items at or near SLA breach</li>
-          <li>Verify access to the Tier 1 Resolution Playbook (current version)</li>
-          <li>Confirm classification matrix version in use matches the current published version</li>
-          <li>Review any system status alerts posted since last shift</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="checklist-group">
-      <div class="checklist-group-header">
-        <span class="role-badge primary">Tier 1 Support</span> — Shift End
-      </div>
-      <div class="checklist">
-        <ul>
-          <li>Stop accepting new tickets 20 minutes before shift end</li>
-          <li>Update all open ticket notes to current status</li>
-          <li>Complete Shift Handoff Record for all open tickets</li>
-          <li>Verbally brief incoming agent on active and at-risk items</li>
-          <li>Confirm incoming agent has acknowledged the Handoff Record</li>
-          <li>Log any observed patterns or anomalies in the shift notes field</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="checklist-group">
-      <div class="checklist-group-header">
-        <span class="role-badge secondary">Team Lead</span> — Shift Start
-      </div>
-      <div class="checklist">
-        <ul>
-          <li>Review Team Lead Handoff Record from outgoing lead</li>
-          <li>Confirm coverage for all Tier 1 and Tier 2 positions for the shift</li>
-          <li>Review any open priority overrides and confirm current status</li>
-          <li>Check for any active incidents or monitoring flags from the previous shift</li>
-          <li>Confirm escalation paths are staffed (Operations Manager reachable)</li>
-          <li>Brief the shift team on any known risks or elevated monitoring requirements</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- 09 EXCEPTION HANDLING -->
-  <section id="exceptions" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">09</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">Exception Handling</div>
-        <h2 class="section-title">When the Procedure <em>Doesn't Fit</em></h2>
-      </div>
-    </div>
-
-    <p class="body-text">No SOP covers every situation. When a practitioner encounters a scenario that the documented procedures do not address — or where following the documented procedure would clearly produce a worse outcome — they are in an exception situation. The purpose of this section is not to discourage judgment; it is to ensure that judgment exercised outside the documented procedure is captured, reviewed, and used to improve the SOP.</p>
-
-    <div class="callout note">
-      <div class="callout-label">What Is an Exception</div>
-      <p>An exception is any case where a practitioner takes an action that is not documented in this SOP or that deviates from a documented step. This includes both situations where the SOP is silent (the scenario is not covered) and situations where the practitioner chose not to follow a documented step.</p>
-    </div>
-
-    <div class="procedure-block">
-      <div class="procedure-block-title">Exception Logging Procedure — All Roles</div>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-action">Notify your tier lead before taking the exception action, if time permits</div>
-            <div class="step-detail">For non-time-critical exceptions, contact your tier lead before proceeding. For time-critical situations where prior notification is not possible, notify immediately after.</div>
-          </div>
+    <section id="lead" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Team Lead Procedures</div>
+          <h2 class="section-title">Override, Coordination, and <em>SLA Intervention</em></h2>
         </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-action">Log the exception in the ticket and in the Exception Register</div>
-            <div class="step-detail">Document in the ticket: what the documented procedure required, what you did instead, and why. Then log the same information in the Exception Register within 30 minutes of the shift end.</div>
-            <div class="step-code">Exception Register: Ops Dashboard > Quality > Exception Register > New Entry</div>
+      </div>
+
+      <div class="role-section-header warn">
+        <span class="rsh-badge warn">Team Lead</span>
+        <span class="rsh-text">Team Lead actions carry elevated authority. All escalation procedures remain valid. All overrides must be logged.</span>
+      </div>
+
+      <div class="procedure-block">
+        <div class="procedure-block-title">Priority Override Procedure</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-action">Review the escalated ticket and the escalating agent's documentation in full</div>
+              <div class="step-detail">Do not accept the escalation verbally without reviewing the written ticket record. The written record is the authoritative account. Verbal context supplements but does not replace it.</div>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-action">Flag the exception for SOP review if it reveals a gap in the procedure</div>
-            <div class="step-detail">If the exception arose because the SOP did not cover the scenario — not because you chose to deviate — mark the Exception Register entry for SOP Review. These flagged entries are the primary input to the quarterly SOP review cycle.</div>
-            <div class="step-note">SOPs improve because practitioners flag gaps. Logging an exception that reveals a real gap is a contribution to the team's operational quality — not a report of a failure.</div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-action">Assess whether a priority adjustment is warranted</div>
+              <div class="step-detail">Apply the Priority Adjustment Criteria (PAC) documented in SEC. 03 to determine if the ticket's current priority correctly reflects its business impact. Priority adjustments must be based on documented criteria, not on customer pressure or relationship considerations.</div>
+              <div class="step-warn">Upward priority adjustments affect the entire queue and displace work for other customers. Document the business impact justification before applying the adjustment.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-action">Apply the priority override and notify all affected parties</div>
+              <div class="step-detail">Update the ticket priority, log the adjustment reason in the override field, and notify the assigned Tier 2 agent and the Operations Manager if the adjustment is to P1. For P1 escalations, initiate the P1 Communication Protocol immediately.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-action">Monitor the ticket at 15-minute intervals until resolved or re-escalated</div>
+              <div class="step-detail">Active Team Lead oversight continues until the ticket is resolved, escalated to the Operations Manager, or explicitly handed off to the incoming shift lead through the Shift Handoff Protocol (SEC. 07).</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="pull-quote">
-      <p>A procedure that is followed until it fails, and then abandoned silently, teaches the organization nothing. A procedure that is followed, found wanting, and then improved — that is how operational knowledge compounds.</p>
-      <cite>Operations Quality Framework &middot; Core Principle</cite>
-    </div>
-  </section>
-
-  <!-- 10 REFERENCES -->
-  <section id="references" class="sop-section">
-    <div class="section-header">
-      <div class="section-num">10</div>
-      <div class="section-titles">
-        <div class="section-eyebrow">References</div>
-        <h2 class="section-title">Related Documents and <em>Governing Objects</em></h2>
+    <section id="handoff" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Handoff Protocol</div>
+          <h2 class="section-title">Clean Transfer, <em>No Lost Context</em></h2>
+        </div>
       </div>
-    </div>
 
-    <p class="body-text">The following documents govern, supplement, or are referenced by this SOP. All referenced documents are active at the time of this version's publication. Version currency should be confirmed before use in any exception or audit context.</p>
+      <p class="body-text">The shift handoff is the single highest-risk moment in continuous operations. More issues are lost, misclassified, or allowed to breach SLA during shift transitions than at any other point in the operational cycle. This protocol is non-optional for all roles and applies at every shift boundary, including partial-day coverage changes.</p>
 
-    <div class="ref-table-wrap">
-      <table class="ref-table">
-        <thead>
-          <tr>
-            <th>Document ID</th>
-            <th>Title</th>
-            <th>Relationship</th>
-            <th>Owner</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>POL00001</td>
-            <td>Customer Support Operations Policy</td>
-            <td>Governing policy — this SOP implements its requirements</td>
-            <td>VP Operations</td>
-          </tr>
-          <tr>
-            <td>PCS00004</td>
-            <td>Support Escalation Process</td>
-            <td>Parent process — this SOP documents procedures for stages 2–4</td>
-            <td>Operations Lead</td>
-          </tr>
-          <tr>
-            <td>REF-OPS-002</td>
-            <td>Issue Classification Matrix</td>
-            <td>Referenced in Section 04, Step 3</td>
-            <td>Tier 2 Lead</td>
-          </tr>
-          <tr>
-            <td>REF-OPS-008</td>
-            <td>Tier 2 Investigation Framework</td>
-            <td>Referenced in Section 05, Step 5</td>
-            <td>Tier 2 Lead</td>
-          </tr>
-          <tr>
-            <td>PCD00011</td>
-            <td>P1 Communication Protocol</td>
-            <td>Invoked in Section 06 for P1 escalations</td>
-            <td>Operations Lead</td>
-          </tr>
-          <tr>
-            <td>SEC-PCD-001</td>
-            <td>Security Incident Response Procedure</td>
-            <td>Out of scope for this SOP — referenced in Section 03</td>
-            <td>Security Operations</td>
-          </tr>
-          <tr>
-            <td>PRI-PCD-012</td>
-            <td>Privacy Request Handling Procedure</td>
-            <td>Out of scope for this SOP — referenced in Section 01</td>
-            <td>Privacy &amp; Compliance</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+      <div class="procedure-block">
+        <div class="procedure-block-title">Outgoing Agent / Lead | Handoff Steps</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-action">Begin handoff preparation 20 minutes before shift end, not at shift end</div>
+              <div class="step-detail">Do not accept new tickets in the final 20 minutes of your shift unless the queue is empty and no incoming agent is available. Use this time to update all open ticket notes to current status.</div>
+            </div>
+          </div>
 
-</main>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-action">Complete the Shift Handoff Record for all open tickets</div>
+              <div class="step-detail">For each open ticket, document current status, last action taken, next action required, any waiting dependencies, and the SLA clock status. The Shift Handoff Record is the incoming agent's primary context source.</div>
+              <div class="step-code">Handoff Record location: Ops Dashboard &gt; Shift Tools &gt; Handoff Record &gt; [Your Name]</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-action">Deliver a verbal briefing to the incoming agent or lead</div>
+              <div class="step-detail">Verbally walk through active tickets, emphasizing any items approaching SLA thresholds, any known patterns or suspected incidents, and any tickets where context was not fully captured in writing. The verbal briefing is a supplement to the written record, not a substitute for it.</div>
+              <div class="step-warn">If the incoming agent is not available for verbal handoff, escalate to the Team Lead before leaving. Do not leave the shift without confirming the incoming agent has received and acknowledged the Handoff Record.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="procedure-block">
+        <div class="procedure-block-title">Incoming Agent / Lead | Receipt Steps</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-action">Review the Shift Handoff Record before accepting the queue</div>
+              <div class="step-detail">Read the complete Shift Handoff Record before opening the queue. Flag any tickets whose status is unclear and clarify with the outgoing agent before they leave. You own the queue from the moment you acknowledge receipt of the Handoff Record.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <div class="step-action">Prioritize your first 10 minutes on SLA-at-risk items</div>
+              <div class="step-detail">Sort the open queue by SLA time remaining. Immediately action any ticket within 15 minutes of SLA breach. Notify the Team Lead of any ticket already in breach that was not flagged in the Handoff Record.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="checklists" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">08</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Role Checklists</div>
+          <h2 class="section-title">Shift-Start and Shift-End <em>Verification</em></h2>
+        </div>
+      </div>
+
+      <p class="body-text">These checklists are minimum required actions at shift boundaries for each role. They are not exhaustive operational guides. Full procedures are in the sections above. They exist so that no critical operational action is missed in the context-switching pressure of shift start or end.</p>
+
+      <div class="checklist-group">
+        <div class="checklist-group-header">
+          <span class="role-badge primary">Tier 1 Support</span> | Shift Start
+        </div>
+        <div class="checklist">
+          <ul>
+            <li>Review Shift Handoff Record from outgoing agent</li>
+            <li>Confirm acknowledgment in the Handoff Record system</li>
+            <li>Check queue for any items at or near SLA breach</li>
+            <li>Verify access to the Tier 1 Resolution Playbook (current version)</li>
+            <li>Confirm classification matrix version in use matches the current published version</li>
+            <li>Review any system status alerts posted since last shift</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="checklist-group">
+        <div class="checklist-group-header">
+          <span class="role-badge primary">Tier 1 Support</span> | Shift End
+        </div>
+        <div class="checklist">
+          <ul>
+            <li>Stop accepting new tickets 20 minutes before shift end</li>
+            <li>Update all open ticket notes to current status</li>
+            <li>Complete Shift Handoff Record for all open tickets</li>
+            <li>Verbally brief incoming agent on active and at-risk items</li>
+            <li>Confirm incoming agent has acknowledged the Handoff Record</li>
+            <li>Log any observed patterns or anomalies in the shift notes field</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="checklist-group">
+        <div class="checklist-group-header">
+          <span class="role-badge secondary">Team Lead</span> | Shift Start
+        </div>
+        <div class="checklist">
+          <ul>
+            <li>Review Team Lead Handoff Record from outgoing lead</li>
+            <li>Confirm coverage for all Tier 1 and Tier 2 positions for the shift</li>
+            <li>Review any open priority overrides and confirm current status</li>
+            <li>Check for any active incidents or monitoring flags from the previous shift</li>
+            <li>Confirm escalation paths are staffed (Operations Manager reachable)</li>
+            <li>Brief the shift team on any known risks or elevated monitoring requirements</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="exceptions" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">09</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">Exception Handling</div>
+          <h2 class="section-title">When the Procedure <em>Doesn't Fit</em></h2>
+        </div>
+      </div>
+
+      <p class="body-text">No SOP covers every situation. When a practitioner encounters a scenario that the documented procedures do not address, or where following the documented procedure would clearly produce a worse outcome, they are in an exception situation. The purpose of this section is not to discourage judgment. It is to ensure that judgment exercised outside the documented procedure is captured, reviewed, and used to improve the SOP.</p>
+
+      <div class="callout note">
+        <div class="callout-label">What Is an Exception</div>
+        <p>An exception is any case where a practitioner takes an action that is not documented in this SOP or that deviates from a documented step. This includes both situations where the SOP is silent (the scenario is not covered) and situations where the practitioner chose not to follow a documented step.</p>
+      </div>
+
+      <div class="procedure-block">
+        <div class="procedure-block-title">Exception Logging Procedure | All Roles</div>
+        <div class="step-list">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-action">Notify your tier lead before taking the exception action, if time permits</div>
+              <div class="step-detail">For non-time-critical exceptions, contact your tier lead before proceeding. For time-critical situations where prior notification is not possible, notify immediately after.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-action">Log the exception in the ticket and in the Exception Register</div>
+              <div class="step-detail">Document in the ticket what the documented procedure required, what you did instead, and why. Then log the same information in the Exception Register within 30 minutes of shift end.</div>
+              <div class="step-code">Exception Register: Ops Dashboard &gt; Quality &gt; Exception Register &gt; New Entry</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-action">Flag the exception for SOP review if it reveals a gap in the procedure</div>
+              <div class="step-detail">If the exception arose because the SOP did not cover the scenario, not because you chose to deviate, mark the Exception Register entry for SOP Review. These flagged entries are the primary input to the quarterly SOP review cycle.</div>
+              <div class="step-note">SOPs improve because practitioners flag gaps. Logging an exception that reveals a real gap is a contribution to the team's operational quality, not a report of a failure.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pull-quote">
+        <p>A procedure that is followed until it fails, and then abandoned silently, teaches the organization nothing. A procedure that is followed, found wanting, and then improved, that is how operational knowledge compounds.</p>
+        <cite>Operations Quality Framework &middot; Core Principle</cite>
+      </div>
+    </section>
+
+    <section id="references" class="sop-section">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-titles">
+          <div class="section-eyebrow">References</div>
+          <h2 class="section-title">Related Documents and <em>Governing Objects</em></h2>
+        </div>
+      </div>
+
+      <p class="body-text">The following documents govern, supplement, or are referenced by this SOP. All referenced documents are active at the time of this version's publication. Version currency should be confirmed before use in any exception or audit context.</p>
+
+      <div class="ref-table-wrap">
+        <table class="ref-table">
+          <thead>
+            <tr>
+              <th>Document ID</th>
+              <th>Title</th>
+              <th>Relationship</th>
+              <th>Owner</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>POL00001</td>
+              <td>Customer Support Operations Policy</td>
+              <td>Governing policy, this SOP implements its requirements</td>
+              <td>VP Operations</td>
+            </tr>
+            <tr>
+              <td>PCS00004</td>
+              <td>Support Escalation Process</td>
+              <td>Parent process, this SOP documents procedures for stages 2 to 4</td>
+              <td>Operations Lead</td>
+            </tr>
+            <tr>
+              <td>REF-OPS-002</td>
+              <td>Issue Classification Matrix</td>
+              <td>Referenced in Section 04, Step 3</td>
+              <td>Tier 2 Lead</td>
+            </tr>
+            <tr>
+              <td>REF-OPS-008</td>
+              <td>Tier 2 Investigation Framework</td>
+              <td>Referenced in Section 05, Step 5</td>
+              <td>Tier 2 Lead</td>
+            </tr>
+            <tr>
+              <td>PCD00011</td>
+              <td>P1 Communication Protocol</td>
+              <td>Invoked in Section 06 for P1 escalations</td>
+              <td>Operations Lead</td>
+            </tr>
+            <tr>
+              <td>SEC-PCD-001</td>
+              <td>Security Incident Response Procedure</td>
+              <td>Out of scope for this SOP, referenced in Section 03</td>
+              <td>Security Operations</td>
+            </tr>
+            <tr>
+              <td>PRI-PCD-012</td>
+              <td>Privacy Request Handling Procedure</td>
+              <td>Out of scope for this SOP, referenced in Section 01</td>
+              <td>Privacy &amp; Compliance</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-left">
     <div class="footer-brand">Josh Writing Samples &middot; Operations Series</div>
@@ -1297,23 +1979,32 @@ window.addEventListener('scroll', () => {
 
 const sections = document.querySelectorAll('.sop-section');
 const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObs.unobserve(entry.target);
+    }
   });
 }, { threshold: 0.04 });
-sections.forEach(s => revealObs.observe(s));
 
-const navLinks   = document.querySelectorAll('.sb-nav-link');
+sections.forEach(section => revealObs.observe(section));
+
+const navLinks = document.querySelectorAll('.sb-nav-link');
 const sectionEls = document.querySelectorAll('section[id], header[id]');
+
 const navObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const id = e.target.id;
-      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
     }
   });
 }, { rootMargin: '-25% 0px -65% 0px' });
-sectionEls.forEach(s => navObs.observe(s));
+
+sectionEls.forEach(section => navObs.observe(section));
 </script>
+
 </body>
 </html>
