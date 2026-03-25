@@ -3,8 +3,9 @@
    
    SCOPE: All four shell pages import this file.
           index.html, about.html, contact.html, knowledge.html
+          samples/index.html also imports this file.
    
-   OUT OF SCOPE: samples/ pages are visually independent.
+   OUT OF SCOPE: samples/ individual pages are visually independent.
                  ska_prototype/ manages its own styles.
    
    SECTIONS:
@@ -25,6 +26,7 @@
     15.  Contact Forms
     16.  Footer
     17.  Responsive
+    18.  Samples Index Page
    ── DARK THEME ─────────────────────────────────────────────
     K1.  Dark Tokens & Reset
     K2.  Dark Body & Grid Overlay
@@ -154,7 +156,6 @@ li {
     margin: 0;
 }
 
-/* Legacy support — pages using plain h1 inside .site-header */
 .site-header h1 {
     margin: 0 0 6px;
     font-family: 'DM Serif Display', serif;
@@ -209,7 +210,6 @@ nav.top-nav a[aria-current="page"] {
     opacity: 1;
 }
 
-/* Nav rendered as ul/li (semantic pattern) */
 .top-nav ul {
     list-style: none;
     margin: 0;
@@ -255,7 +255,6 @@ nav.top-nav a[aria-current="page"] {
     margin: 48px 0;
 }
 
-/* Hero area used on index.html */
 .hero {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
@@ -319,7 +318,6 @@ nav.top-nav a[aria-current="page"] {
     font-style: italic;
 }
 
-/* Section container used on index.html */
 .section {
     max-width: 1200px;
     margin: 0 auto;
@@ -394,7 +392,6 @@ h3.card-title {
     margin-bottom: 8px;
 }
 
-/* About page eyebrow / lead */
 .eyebrow {
     color: #4d7a4d;
     text-transform: uppercase;
@@ -483,7 +480,6 @@ h3.card-title {
     display: block;
 }
 
-/* Closing callout band used on index.html */
 .closing-callout {
     background: var(--moss);
     color: white;
@@ -503,7 +499,6 @@ h3.card-title {
     color: rgba(255, 255, 255, 0.88);
 }
 
-/* About page grid variants */
 .bio-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -531,7 +526,6 @@ h3.card-title {
     margin: 0;
 }
 
-/* CTA row */
 .cta-row {
     display: flex;
     flex-wrap: wrap;
@@ -968,7 +962,6 @@ h3.card-title {
     gap: 16px;
 }
 
-/* Google Form iframe wrapper (contact.html) */
 .form-wrapper {
     max-width: 900px;
     margin: 40px auto;
@@ -980,7 +973,6 @@ h3.card-title {
     border: none;
 }
 
-/* Contact page h1 */
 .contact-heading {
     text-align: center;
     margin-top: 40px;
@@ -1015,7 +1007,6 @@ footer {
     color: rgba(207, 232, 207, 0.55);
 }
 
-/* Simple text footer fallback */
 footer p {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.8rem;
@@ -1107,6 +1098,385 @@ footer p {
 
     .section {
         padding: 20px 20px 40px;
+    }
+}
+
+
+/* ============================================================
+   18. SAMPLES INDEX PAGE
+   Applies to samples/index.html only. Uses the dark green
+   topbar pattern shared with the DITA and other sample pages,
+   plus the sidebar accordion, sample grid, and sample cards.
+   ============================================================ */
+
+/* -- Topbar (dark forest green, flex, right-aligned nav) -- */
+.site-top-header {
+    background: #1f5a3f;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+}
+
+.topbar {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: nowrap;
+}
+
+.site-title {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #f3f0e8;
+}
+
+.site-title a {
+    color: #f3f0e8;
+    text-decoration: none;
+}
+
+.site-title a:hover {
+    opacity: 0.92;
+}
+
+.site-top-header nav {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+.site-top-header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    flex-wrap: nowrap;
+}
+
+.site-top-header nav li {
+    margin: 0;
+    padding: 0;
+}
+
+.site-top-header nav a {
+    color: #f3f0e8;
+    text-decoration: none;
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.site-top-header nav a:hover {
+    text-decoration: underline;
+}
+
+/* -- Page hero (gradient green band) -- */
+.samples-hero {
+    background: linear-gradient(135deg, #24543f, #3d7a5d);
+    color: white;
+    padding: 34px 24px;
+    border-bottom: 4px solid #8fc8a5;
+}
+
+.samples-hero-inner {
+    max-width: 1220px;
+    margin: 0 auto;
+}
+
+.samples-hero h1 {
+    margin: 0 0 10px 0;
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.1rem;
+    line-height: 1.15;
+    color: white;
+}
+
+.samples-hero p {
+    margin: 0;
+    font-size: 1.05rem;
+    max-width: 850px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* -- Two-column layout -- */
+.samples-layout {
+    display: flex;
+    align-items: flex-start;
+    min-height: calc(100vh - 180px);
+}
+
+/* -- Sidebar -- */
+.samples-sidebar {
+    width: 310px;
+    background: #e7f4eb;
+    border-right: 1px solid #c7dfcf;
+    padding: 24px 20px;
+    flex-shrink: 0;
+}
+
+.samples-sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-size: 1.25rem;
+    color: #214c38;
+    font-family: 'DM Serif Display', serif;
+}
+
+.samples-sidebar-intro {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: #355444;
+    margin-bottom: 20px;
+}
+
+/* -- Accordion menu -- */
+.menu-group {
+    margin-bottom: 14px;
+    border: 1px solid #bfd7c6;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f8fcf9;
+}
+
+.menu-toggle {
+    width: 100%;
+    background: #d9eee0;
+    color: #1f4d3a;
+    border: none;
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.menu-toggle:hover {
+    background: #cbe6d3;
+}
+
+.menu-toggle.active {
+    background: #b9dcc5;
+}
+
+.submenu {
+    display: none;
+    padding: 8px 0;
+    background: #f8fcf9;
+}
+
+.submenu a {
+    display: block;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #244634;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    border-top: 1px solid #e2efe6;
+}
+
+.submenu a:hover {
+    background: #edf7f0;
+    text-decoration: none;
+}
+
+/* -- Main content area -- */
+.samples-content {
+    flex: 1;
+    padding: 32px 34px 48px;
+    min-width: 0;
+}
+
+/* -- Sample groups -- */
+.sample-group {
+    margin-bottom: 42px;
+}
+
+.sample-group h3 {
+    color: #1f4d3a;
+    font-size: 1.75rem;
+    margin: 0 0 8px 0;
+    font-family: 'DM Serif Display', serif;
+}
+
+.group-description {
+    margin-top: 0;
+    margin-bottom: 18px;
+    color: #496555;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* -- Sample grid -- */
+.sample-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+/* -- Sample cards -- */
+.sample-card {
+    background: white;
+    border: 1px solid #d6e6db;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.sample-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* -- Sample tag pill -- */
+.sample-tag {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #dff1e5;
+    color: #24543f;
+    font-size: 0.78rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    align-self: flex-start;
+}
+
+.sample-card h4 {
+    margin: 0 0 10px 0;
+    color: #1d4332;
+    font-size: 1.1rem;
+    line-height: 1.35;
+    font-family: 'DM Serif Display', serif;
+}
+
+.sample-card p {
+    margin: 0 0 12px 0;
+    line-height: 1.6;
+    color: #40594a;
+    font-size: 0.96rem;
+    flex: 1;
+}
+
+.sample-meta {
+    font-size: 0.88rem;
+    color: #587263;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+.sample-card a {
+    display: inline-block;
+    text-decoration: none;
+    background: #2f6a4e;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.92rem;
+    transition: background 0.2s ease;
+    align-self: flex-start;
+}
+
+.sample-card a:hover {
+    background: #25563f;
+    text-decoration: none;
+}
+
+/* -- Samples responsive -- */
+@media (max-width: 1080px) {
+    .topbar {
+        padding: 18px 20px;
+        gap: 18px;
+    }
+
+    .site-title {
+        font-size: 1.25rem;
+    }
+
+    .site-top-header nav ul {
+        gap: 14px;
+    }
+
+    .site-top-header nav a {
+        font-size: 0.84rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .site-top-header nav {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .site-top-header nav ul {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 12px 16px;
+    }
+
+    .samples-layout {
+        flex-direction: column;
+    }
+
+    .samples-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #c7dfcf;
+    }
+
+    .samples-content {
+        padding: 24px 18px 36px;
+    }
+
+    .samples-hero {
+        padding: 28px 20px;
+    }
+
+    .samples-hero h1 {
+        font-size: 1.85rem;
+    }
+
+    .samples-hero p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .site-title {
+        font-size: 1.15rem;
+    }
+
+    .site-top-header nav a {
+        font-size: 0.9rem;
+    }
+
+    .sample-group h3 {
+        font-size: 1.5rem;
     }
 }
 
@@ -1595,7 +1965,6 @@ body.knowledge-page h3.subsub-title {
    K8. WHITEPAPER COMPONENTS
    ============================================================ */
 
-/* Tables */
 body.knowledge-page .tbl-wrap {
     overflow-x: auto;
     margin: 28px auto;
@@ -1651,7 +2020,6 @@ body.knowledge-page tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* Callouts */
 body.knowledge-page .callout {
     position: relative;
     padding: 20px 22px 20px 52px;
@@ -1707,7 +2075,6 @@ body.knowledge-page .callout p {
 
 body.knowledge-page .callout p:last-child { margin-bottom: 0; }
 
-/* Principle grid */
 body.knowledge-page .principle-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1765,7 +2132,6 @@ body.knowledge-page .p-body p {
     max-width: 100%;
 }
 
-/* Pipeline */
 body.knowledge-page .pipeline {
     margin: 28px 0;
     max-width: 900px;
@@ -1828,7 +2194,6 @@ body.knowledge-page .pipe-content p {
     max-width: 100%;
 }
 
-/* Maturity model */
 body.knowledge-page .maturity {
     margin: 24px 0;
     max-width: 900px;
@@ -1888,7 +2253,6 @@ body.knowledge-page .m-desc {
     align-items: center;
 }
 
-/* Architecture stack */
 body.knowledge-page .arch-stack {
     margin: 24px 0;
     max-width: 620px;
@@ -1940,7 +2304,6 @@ body.knowledge-page .arch-desc {
     line-height: 1.5;
 }
 
-/* Agents */
 body.knowledge-page .agents {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2004,7 +2367,6 @@ body.knowledge-page .agent-body p {
 body.knowledge-page .agent-body ul { padding-left: 1.2em; }
 body.knowledge-page .agent-body li { font-size: 0.8rem; margin-bottom: 5px; }
 
-/* TOC */
 body.knowledge-page .toc-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
