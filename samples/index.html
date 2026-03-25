@@ -5,366 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Writing Samples | Joshua Bechtel</title>
 <link rel="stylesheet" href="../style.css">
-
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background: #f5fbf7;
-        color: #1f2d24;
-    }
-
-    /* TOP HEADER */
-    .site-top-header {
-        background: #1f5a3f;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        width: 100%;
-    }
-
-    .topbar {
-        max-width: 1220px;
-        margin: 0 auto;
-        padding: 18px 28px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        flex-wrap: nowrap;
-    }
-
-    .site-title {
-        flex-shrink: 0;
-        white-space: nowrap;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 1.45rem;
-        font-weight: 700;
-        line-height: 1.1;
-        color: #f3f0e8;
-    }
-
-    .site-title a {
-        color: #f3f0e8;
-        text-decoration: none;
-    }
-
-    .site-title a:hover {
-        opacity: 0.92;
-    }
-
-    .site-top-header nav {
-        flex: 1;
-        display: flex;
-        justify-content: flex-end;
-        min-width: 0;
-    }
-
-    .site-top-header nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 18px;
-        flex-wrap: nowrap;
-    }
-
-    .site-top-header nav li {
-        margin: 0;
-        padding: 0;
-    }
-
-    .site-top-header nav a {
-        color: #f3f0e8;
-        text-decoration: none;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 0.9rem;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .site-top-header nav a:hover {
-        text-decoration: underline;
-    }
-
-    /* PAGE HERO */
-    .site-header {
-        background: linear-gradient(135deg, #24543f, #3d7a5d);
-        color: white;
-        padding: 34px 24px;
-        border-bottom: 4px solid #8fc8a5;
-    }
-
-    .site-header-inner {
-        max-width: 1220px;
-        margin: 0 auto;
-    }
-
-    .site-header h1 {
-        margin: 0 0 10px 0;
-        font-size: 2.1rem;
-        line-height: 1.15;
-    }
-
-    .site-header p {
-        margin: 0;
-        font-size: 1.05rem;
-        max-width: 850px;
-        line-height: 1.65;
-    }
-
-    /* MAIN LAYOUT */
-    .layout {
-        display: flex;
-        align-items: flex-start;
-        min-height: calc(100vh - 180px);
-    }
-
-    .sidebar {
-        width: 310px;
-        background: #e7f4eb;
-        border-right: 1px solid #c7dfcf;
-        padding: 24px 20px;
-    }
-
-    .sidebar h2 {
-        margin-top: 0;
-        margin-bottom: 14px;
-        font-size: 1.25rem;
-        color: #214c38;
-    }
-
-    .sidebar-intro {
-        font-size: 0.95rem;
-        line-height: 1.55;
-        color: #355444;
-        margin-bottom: 20px;
-    }
-
-    .menu-group {
-        margin-bottom: 14px;
-        border: 1px solid #bfd7c6;
-        border-radius: 10px;
-        overflow: hidden;
-        background: #f8fcf9;
-    }
-
-    .menu-toggle {
-        width: 100%;
-        background: #d9eee0;
-        color: #1f4d3a;
-        border: none;
-        text-align: left;
-        padding: 14px 16px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.2s ease;
-    }
-
-    .menu-toggle:hover {
-        background: #cbe6d3;
-    }
-
-    .menu-toggle.active {
-        background: #b9dcc5;
-    }
-
-    .submenu {
-        display: none;
-        padding: 8px 0;
-        background: #f8fcf9;
-    }
-
-    .submenu a {
-        display: block;
-        padding: 10px 16px;
-        text-decoration: none;
-        color: #244634;
-        font-size: 0.95rem;
-        line-height: 1.35;
-        border-top: 1px solid #e2efe6;
-    }
-
-    .submenu a:hover {
-        background: #edf7f0;
-    }
-
-    .content {
-        flex: 1;
-        padding: 32px 34px 48px;
-    }
-
-    .sample-group {
-        margin-bottom: 42px;
-    }
-
-    .sample-group h3 {
-        color: #1f4d3a;
-        font-size: 1.75rem;
-        margin: 0 0 8px 0;
-    }
-
-    .group-description {
-        margin-top: 0;
-        margin-bottom: 18px;
-        color: #496555;
-        line-height: 1.6;
-        font-size: 1rem;
-    }
-
-    .sample-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 18px;
-    }
-
-    .sample-card {
-        background: white;
-        border: 1px solid #d6e6db;
-        border-radius: 14px;
-        padding: 20px;
-        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .sample-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    }
-
-    .sample-tag {
-        display: inline-block;
-        margin-bottom: 10px;
-        padding: 5px 10px;
-        border-radius: 999px;
-        background: #dff1e5;
-        color: #24543f;
-        font-size: 0.78rem;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-
-    .sample-card h4 {
-        margin: 0 0 10px 0;
-        color: #1d4332;
-        font-size: 1.1rem;
-        line-height: 1.35;
-    }
-
-    .sample-card p {
-        margin: 0 0 12px 0;
-        line-height: 1.6;
-        color: #40594a;
-        font-size: 0.96rem;
-    }
-
-    .sample-meta {
-        font-size: 0.88rem;
-        color: #587263;
-        margin-bottom: 14px;
-        line-height: 1.5;
-    }
-
-    .sample-card a {
-        display: inline-block;
-        text-decoration: none;
-        background: #2f6a4e;
-        color: white;
-        padding: 10px 14px;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 0.92rem;
-        transition: background 0.2s ease;
-    }
-
-    .sample-card a:hover {
-        background: #25563f;
-    }
-
-    @media (max-width: 1080px) {
-        .topbar {
-            padding: 18px 20px;
-            gap: 18px;
-        }
-
-        .site-title {
-            font-size: 1.25rem;
-        }
-
-        .site-top-header nav ul {
-            gap: 14px;
-        }
-
-        .site-top-header nav a {
-            font-size: 0.84rem;
-        }
-    }
-
-    @media (max-width: 900px) {
-        .topbar {
-            flex-direction: column;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-
-        .site-top-header nav {
-            width: 100%;
-            justify-content: flex-start;
-        }
-
-        .site-top-header nav ul {
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 12px 16px;
-        }
-
-        .layout {
-            flex-direction: column;
-        }
-
-        .sidebar {
-            width: 100%;
-            border-right: none;
-            border-bottom: 1px solid #c7dfcf;
-        }
-
-        .content {
-            padding: 24px 18px 36px;
-        }
-
-        .site-header {
-            padding: 28px 20px;
-        }
-
-        .site-header h1 {
-            font-size: 1.85rem;
-        }
-
-        .site-header p {
-            font-size: 1rem;
-        }
-    }
-
-    @media (max-width: 640px) {
-        .site-title {
-            font-size: 1.15rem;
-        }
-
-        .site-top-header nav a {
-            font-size: 0.9rem;
-        }
-
-        .sample-group h3 {
-            font-size: 1.5rem;
-        }
-    }
-</style>
 </head>
 <body>
 
@@ -373,7 +13,6 @@
         <div class="site-title">
             <a href="../index.html">Joshua Bechtel</a>
         </div>
-
         <nav aria-label="Main navigation">
             <ul>
                 <li><a href="../index.html">Home</a></li>
@@ -386,8 +25,8 @@
     </div>
 </header>
 
-<header class="site-header">
-    <div class="site-header-inner">
+<div class="samples-hero">
+    <div class="samples-hero-inner">
         <h1>Writing Samples</h1>
         <p>
             A curated collection of technical, strategic, instructional, and creative communication
@@ -395,12 +34,12 @@
             and structured thinking.
         </p>
     </div>
-</header>
+</div>
 
-<div class="layout">
-    <aside class="sidebar">
+<div class="samples-layout">
+    <aside class="samples-sidebar">
         <h2>Browse Samples</h2>
-        <p class="sidebar-intro">
+        <p class="samples-sidebar-intro">
             Explore the portfolio by category. Each section highlights a different communication strength,
             from enterprise documentation and knowledge strategy to training design and creative systems thinking.
         </p>
@@ -449,7 +88,7 @@
         </div>
     </aside>
 
-    <main class="content">
+    <main class="samples-content">
 
         <section class="sample-group" id="architecture">
             <h3>Architecture</h3>
@@ -506,11 +145,13 @@
             <div class="sample-grid">
 
                 <article class="sample-card">
-                    <span class="sample-tag">Technical</span>
+                    <span class="sample-tag">DITA</span>
                     <h4>Incident Management Playbook</h4>
                     <p>
-                        Incident definitions, severity levels, escalation logic, and role assignments structured across three DITA topic types: concept, task, and reference. 
-                       View the XML source and rendered output side by side to see how structured authoring produces clean, consistent, reusable documentation at scale.
+                        Incident definitions, severity levels, escalation logic, and role assignments
+                        structured across three DITA topic types: concept, task, and reference. View the
+                        XML source and rendered output side by side to see how structured authoring produces
+                        clean, consistent, reusable documentation at scale.
                     </p>
                     <div class="sample-meta">Audience: Engineers, operations teams, incident responders</div>
                     <a href="incident-management-playbook.html">Read Sample</a>
