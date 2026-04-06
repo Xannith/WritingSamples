@@ -213,55 +213,80 @@ li {
 
 .top-nav,
 nav.top-nav {
-    background: rgba(31,80,31,0.72);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(120,200,120,0.45);
-    border-bottom: 1px solid rgba(10,40,10,0.3);
+    /* Deep emerald glass — layered gradients simulate depth + refraction */
+    background:
+        linear-gradient(
+            180deg,
+            rgba(80,160,80,0.18) 0%,
+            rgba(0,0,0,0) 40%
+        ),
+        linear-gradient(
+            180deg,
+            #2a6b2a 0%,
+            #1e501e 60%,
+            #163d16 100%
+        );
+    border-top: 1px solid rgba(140,220,140,0.5);
+    border-bottom: 1px solid rgba(10,35,10,0.5);
     box-shadow:
-        0 1px 0 rgba(140,220,140,0.35) inset,
-        0 -1px 0 rgba(0,0,0,0.15) inset,
-        0 4px 20px rgba(10,40,10,0.2);
+        0 1px 0 rgba(160,240,160,0.4) inset,
+        0 -2px 4px rgba(0,0,0,0.25) inset,
+        0 5px 20px rgba(10,40,10,0.25),
+        0 1px 3px rgba(0,0,0,0.2);
     padding: 15px 24px;
     text-align: center;
     position: relative;
     z-index: 10;
 }
 
-/* Top edge glow — light refracting through the glass slab */
+/* Top edge glow — bright refraction line across the glass surface */
 .top-nav::before,
 nav.top-nav::before {
     content: '';
     position: absolute;
-    top: 0; left: 5%; right: 5%;
-    height: 1px;
+    top: 0; left: 0; right: 0;
+    height: 2px;
     background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba(180,255,180,0.6) 30%,
-        rgba(220,255,220,0.9) 50%,
-        rgba(180,255,180,0.6) 70%,
+        rgba(180,255,160,0.5) 20%,
+        rgba(230,255,210,0.95) 50%,
+        rgba(180,255,160,0.5) 80%,
         transparent 100%
     );
     pointer-events: none;
 }
 
+/* Bottom inner depth shadow */
+.top-nav::after,
+nav.top-nav::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(0deg, rgba(0,0,0,0.12) 0%, transparent 100%);
+    pointer-events: none;
+}
+
 .top-nav a,
 nav.top-nav a {
-    color: white;
+    color: rgba(230,255,230,0.92);
     text-decoration: none;
     margin: 0 16px;
     font-weight: 600;
     font-size: 0.95rem;
     display: inline-block;
-    transition: opacity 0.15s;
+    transition: color 0.18s, text-shadow 0.18s, opacity 0.15s;
     opacity: 0.92;
+    text-shadow: 0 0 12px rgba(160,255,140,0);
 }
 
 .top-nav a:hover,
 nav.top-nav a:hover {
     opacity: 1;
     text-decoration: none;
+    color: #ffffff;
+    text-shadow: 0 0 14px rgba(180,255,160,0.7), 0 0 30px rgba(120,220,100,0.3);
 }
 
 /* Animated slide-in underline on nav hover */
