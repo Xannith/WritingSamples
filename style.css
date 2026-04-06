@@ -237,6 +237,8 @@ nav.top-nav {
     text-align: center;
     position: relative;
     z-index: 10;
+    min-height: 52px;
+    box-sizing: border-box;
 }
 
 /* Top edge glow — bright refraction line across the glass surface */
@@ -275,6 +277,8 @@ nav.top-nav a {
     margin: 0 16px;
     font-weight: 600;
     font-size: 0.95rem;
+    font-family: 'DM Sans', Arial, sans-serif;
+    line-height: 1.4;
     display: inline-block;
     transition: color 0.18s, text-shadow 0.18s, opacity 0.15s;
     opacity: 0.92;
