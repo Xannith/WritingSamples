@@ -8,6 +8,7 @@
     name="description"
     content="About Joshua Bechtel: technical writer, content architect, knowledge strategist, project leader, and builder of scalable information systems."
   />
+  <link rel="stylesheet" href="style.css">
   <style>
     :root {
       --bg: #f7faf7;
@@ -48,23 +49,7 @@
       color: #111;
     }
 
-    nav {
-      background: #9fca9f;
-      padding: 16px 24px;
-      text-align: center;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 18px;
-      font-weight: bold;
-      display: inline-block;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
+    /* nav styles handled by style.css .top-nav — removed local overrides */
 
     main {
       max-width: var(--maxw);
@@ -257,9 +242,7 @@
     }
 
     @media (max-width: 640px) {
-      nav a {
-        margin: 8px 10px;
-      }
+/* nav responsive handled by style.css */
     }
   </style>
 <script src="nav.js"></script>
