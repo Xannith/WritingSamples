@@ -126,11 +126,39 @@ li {
    ============================================================ */
 
 .site-header {
-    background: #cfe8cf;
+    background: linear-gradient(160deg, #dff0df 0%, #cfe8cf 60%, #bfe0bf 100%);
     text-align: center;
-    padding: 32px 20px 18px;
+    padding: 36px 20px 22px;
     position: relative;
     z-index: 10;
+}
+
+/* Glass window panel around the title */
+.site-header::before {
+    content: '';
+    position: absolute;
+    inset: 10px 50px;
+    background: rgba(255,255,255,0.38);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.75);
+    border-bottom-color: rgba(255,255,255,0.25);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 4px 24px rgba(31,59,31,0.08),
+        0 1px 4px rgba(0,0,0,0.06);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.site-header .wordmark,
+.site-header .site-tagline,
+.site-header h1,
+.site-header .tagline,
+.tagline {
+    position: relative;
+    z-index: 1;
 }
 
 .site-header .wordmark {
@@ -138,10 +166,11 @@ li {
     font-family: 'DM Serif Display', serif;
     font-size: 2.8rem;
     font-weight: 400;
-    color: #000;
+    color: #1a1a1a;
     text-decoration: none;
     margin-bottom: 6px;
     line-height: 1;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.6);
 }
 
 .site-header .wordmark:hover {
@@ -152,7 +181,7 @@ li {
 .site-tagline {
     font-family: 'DM Sans', sans-serif;
     font-size: 1.05rem;
-    color: #111;
+    color: #2a3a2a;
     margin: 0;
 }
 
@@ -161,15 +190,20 @@ li {
     font-family: 'DM Serif Display', serif;
     font-size: 2.8rem;
     font-weight: 400;
-    color: #000;
+    color: #1a1a1a;
     line-height: 1;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.6);
 }
 
 .site-header .tagline,
 .tagline {
     font-size: 1.05rem;
-    color: #111;
+    color: #2a3a2a;
     margin: 0;
+    position: relative;
+    z-index: 1;
 }
 
 
@@ -179,11 +213,37 @@ li {
 
 .top-nav,
 nav.top-nav {
-    background: #9fca9f;
-    padding: 14px 24px;
+    background: rgba(31,80,31,0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(120,200,120,0.45);
+    border-bottom: 1px solid rgba(10,40,10,0.3);
+    box-shadow:
+        0 1px 0 rgba(140,220,140,0.35) inset,
+        0 -1px 0 rgba(0,0,0,0.15) inset,
+        0 4px 20px rgba(10,40,10,0.2);
+    padding: 15px 24px;
     text-align: center;
     position: relative;
     z-index: 10;
+}
+
+/* Top edge glow — light refracting through the glass slab */
+.top-nav::before,
+nav.top-nav::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 5%; right: 5%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(180,255,180,0.6) 30%,
+        rgba(220,255,220,0.9) 50%,
+        rgba(180,255,180,0.6) 70%,
+        transparent 100%
+    );
+    pointer-events: none;
 }
 
 .top-nav a,
@@ -240,7 +300,7 @@ nav.top-nav a[aria-current="page"]::after {
 
 .top-nav a.active,
 nav.top-nav a[aria-current="page"] {
-    text-decoration: underline;
+    text-decoration: none;
     opacity: 1;
 }
 
