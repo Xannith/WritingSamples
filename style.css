@@ -201,7 +201,41 @@ nav.top-nav a {
 .top-nav a:hover,
 nav.top-nav a:hover {
     opacity: 1;
-    text-decoration: underline;
+    text-decoration: none;
+}
+
+/* Animated slide-in underline on nav hover */
+.top-nav a,
+nav.top-nav a {
+    position: relative;
+}
+
+.top-nav a::after,
+nav.top-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 1px;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.22s cubic-bezier(0.23,1,0.32,1);
+    pointer-events: none;
+}
+
+.top-nav a:hover::after,
+nav.top-nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+}
+
+.top-nav a.active::after,
+nav.top-nav a[aria-current="page"]::after {
+    transform: scaleX(1);
+    background: rgba(255,255,255,0.7);
 }
 
 .top-nav a.active,
