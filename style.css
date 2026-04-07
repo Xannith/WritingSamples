@@ -1686,6 +1686,9 @@ body.knowledge-page .site-tagline {
     line-height: normal;
     color: #2a3a2a;
     margin: 0;
+    text-align: center;
+    display: block;
+    width: 100%;
 }
 body.knowledge-page .top-nav a,
 body.knowledge-page nav.top-nav a {
