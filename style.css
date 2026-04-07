@@ -1666,6 +1666,18 @@ body.knowledge-page .site-header {
     position: relative;
     z-index: 100;
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    left: 0;
+    margin-left: 0;
+}
+body.knowledge-page .site-header .wordmark,
+body.knowledge-page .site-header .site-tagline {
+    display: block;
+    text-align: center;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 body.knowledge-page .top-nav,
 body.knowledge-page nav.top-nav {
