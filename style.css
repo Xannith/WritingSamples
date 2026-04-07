@@ -2979,11 +2979,11 @@ body.knowledge-page #mob-btn {
 .about-page .section {
   margin-top: 3rem;
 }
-.about-page ul {
+.about-page main ul {
   padding-left: 1.2rem;
   margin-top: 0.5rem;
 }
-.about-page li {
+.about-page main li {
   margin-bottom: 0.5rem;
 }
 .about-page .quote {
