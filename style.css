@@ -1663,6 +1663,14 @@ body.knowledge-page .site-header {
     padding: 36px 20px 22px;
     background: linear-gradient(160deg, #dff0df 0%, #cfe8cf 60%, #bfe0bf 100%);
     line-height: normal;
+    position: relative;
+    z-index: 100;
+    text-align: center;
+}
+body.knowledge-page .top-nav,
+body.knowledge-page nav.top-nav {
+    position: relative;
+    z-index: 100;
 }
 body.knowledge-page .site-header .wordmark {
     font-family: 'DM Serif Display', serif;
@@ -1809,16 +1817,16 @@ body.knowledge-page .site-top-header nav a:hover {
 
 body.knowledge-page #sidebar {
     position: fixed;
-    top: 70px;
+    top: 181px;
     left: 0;
     width: var(--dk-sidebar-w);
-    height: calc(100vh - 70px);
+    height: calc(100vh - 181px);
     background: var(--dk-bg2);
     border-right: 1px solid var(--dk-border);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    z-index: 200;
+    z-index: 50;
     transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 
