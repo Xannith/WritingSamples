@@ -1658,6 +1658,34 @@ body.knowledge-page {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Lock shared header/nav to identical rendering on knowledge page */
+body.knowledge-page .site-header {
+    padding: 36px 20px 22px;
+    background: linear-gradient(160deg, #dff0df 0%, #cfe8cf 60%, #bfe0bf 100%);
+    line-height: normal;
+}
+body.knowledge-page .site-header .wordmark {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 6px;
+    color: #1a1a1a;
+}
+body.knowledge-page .site-tagline {
+    font-family: 'DM Sans', Arial, sans-serif;
+    font-size: 1.05rem;
+    line-height: normal;
+    color: #2a3a2a;
+    margin: 0;
+}
+body.knowledge-page .top-nav a,
+body.knowledge-page nav.top-nav a {
+    font-family: 'DM Sans', Arial, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
 body.knowledge-page::before {
     content: '';
     position: fixed;
