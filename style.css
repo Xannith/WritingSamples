@@ -1682,14 +1682,20 @@ body.knowledge-page p strong {
     font-weight: 500;
 }
 
-body.knowledge-page ul,
-body.knowledge-page ol {
+body.knowledge-page #main ul,
+body.knowledge-page #main ol,
+body.knowledge-page #content ul,
+body.knowledge-page #content ol,
+body.knowledge-page .sec ul,
+body.knowledge-page .sec ol {
     padding-left: 1.4em;
     margin: 0 auto 16px;
     max-width: 900px;
 }
 
-body.knowledge-page li {
+body.knowledge-page #main li,
+body.knowledge-page #content li,
+body.knowledge-page .sec li {
     font-size: 0.95rem;
     color: var(--dk-text-dim);
     margin-bottom: 9px;
