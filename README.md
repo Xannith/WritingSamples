@@ -51,7 +51,7 @@ The owner dashboard (`/dashboard.html`) connects to the tools in
 
 The dashboard does **not** execute agents from the browser.
 It provides launch commands, dependency instructions, `.env` variable references,
-and GitHub links. All agents run locally on Kelix.
+and GitHub links. All agents run locally on Kelex.
 
 ---
 
@@ -99,21 +99,55 @@ N8N_API_KEY=your_n8n_key
 
 ---
 
-## Local development
+## Two-machine workflow
+
+| Machine | Role | Path |
+|---|---|---|
+| **Brainiac** (Linux) | Claude Code edits agent files here | `/home/jbechtel/ai-agents` |
+| **Kelex** (Windows) | You run and test agents here | `C:\Projects\ai-agents` |
+
+**Sync order:** Brainiac commits + pushes → GitHub → Kelex pulls.
+
+Brainiac cannot run Windows commands at `C:\Projects\ai-agents`.
+Kelex cannot run Claude Code edits.
+All agent testing happens on Kelex after a `git pull`.
+
+---
+
+## Local development (this site — WritingSamples)
 
 This is a static site — no build step, no Node, no framework.
 
 ```bash
-# Clone
-git clone https://github.com/Xannith/WritingSamples.git
-cd WritingSamples
-
-# Serve locally (Python built-in server)
+# On Brainiac
+cd /home/jbechtel/writing_samples
 python -m http.server 8080
 # → http://localhost:8080
 ```
 
-Alternatively, use VS Code Live Server or any other static file server.
+Or on Kelex after pulling:
+```powershell
+cd C:\Projects\WritingSamples
+python -m http.server 8080
+```
+
+Alternatively, use VS Code Live Server on either machine.
+
+---
+
+## Running agents on Kelex
+
+```powershell
+cd C:\Projects\ai-agents
+git pull
+.venv\Scripts\Activate.ps1
+pip install -r agents\content-type-classifier\requirements.txt
+pip install -r agents\pipeline-gui\requirements.txt
+python -m streamlit run agents\pipeline-gui\app.py
+# → http://localhost:8501
+```
+
+See the Launch Instructions page in the dashboard for the full step-by-step setup.
 
 ---
 
@@ -138,7 +172,7 @@ Real in-browser agent execution would require one of:
 - A **hosted Streamlit deployment** (Streamlit Community Cloud, Hugging Face Spaces)
   — note the Pipeline GUI has no auth, so keep it private or add auth before hosting.
 
-All of these are future work. For now, agents run locally on Kelix.
+All of these are future work. For now, agents run locally on Kelex.
 
 ---
 

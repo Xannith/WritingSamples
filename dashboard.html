@@ -98,7 +98,7 @@
             <h1 class="dash-section-title">HLS Agent Dashboard</h1>
             <p class="dash-section-desc">
                 All agents and tools from the <code>Xannith/ai-agents</code> repo.
-                Run them locally on Kelix — this dashboard is the reference and launch guide.
+                Run them locally on Kelex — this dashboard is the reference and launch guide.
             </p>
 
             <!-- Quick stats -->
@@ -190,7 +190,7 @@
             <hr class="dash-divider">
             <h3 style="font-family:'DM Serif Display',serif;color:var(--forest);font-size:1.1rem;margin-bottom:14px;">Quick actions</h3>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <button class="btn btn-primary" onclick="navigate('launch')" style="font-size:0.85rem;">⚡ Launch Instructions (Kelix)</button>
+                <button class="btn btn-primary" onclick="navigate('launch')" style="font-size:0.85rem;">⚡ Launch Instructions (Kelex)</button>
                 <button class="btn btn-secondary" onclick="navigate('credentials')" style="font-size:0.85rem;">🔑 Credentials Guide</button>
                 <a href="https://github.com/Xannith/ai-agents" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:0.85rem;">View ai-agents repo &rarr;</a>
             </div>
@@ -663,7 +663,7 @@
                 in the repo root. A template is included at <code>.env.example</code>.</p>
                 <p>Copy the template and fill in your real values:</p>
                 <div class="code-block">
-                    <span class="code-label">PowerShell (Kelix)</span>
+                    <span class="code-label">Kelex — PowerShell</span>
                     <pre><span class="code-comment"># From the ai-agents repo root</span>
 <span class="code-cmd">Copy-Item .env.example .env</span>
 <span class="code-comment"># Then open .env in VS Code and add your keys</span>
@@ -765,25 +765,56 @@
             <p class="dash-section-eyebrow">Settings</p>
             <h1 class="dash-section-title">Launch Instructions</h1>
             <p class="dash-section-desc">
-                Step-by-step setup for running the agents locally on <strong>Kelix</strong>
-                (your Windows workstation). Run these commands in PowerShell.
+                Two machines are involved. Claude Code runs on <strong>Brainiac</strong> (Linux).
+                You test and run agents on <strong>Kelex</strong> (Windows). Changes flow through GitHub.
             </p>
+
+            <!-- Two-machine workflow explanation -->
+            <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:20px 24px;margin-bottom:28px;">
+                <div class="detail-card-title" style="margin-bottom:12px;">Two-machine workflow</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div>
+                        <p style="font-size:0.78rem;font-weight:700;color:var(--forest);margin-bottom:6px;">BRAINIAC (this machine)</p>
+                        <p style="font-size:0.85rem;color:var(--slate);line-height:1.6;">
+                            Claude Code edits agent files here.<br>
+                            Path: <code>/home/jbechtel/ai-agents</code><br>
+                            Commits and pushes to GitHub.
+                        </p>
+                    </div>
+                    <div>
+                        <p style="font-size:0.78rem;font-weight:700;color:var(--forest);margin-bottom:6px;">KELEX (Windows workstation)</p>
+                        <p style="font-size:0.85rem;color:var(--slate);line-height:1.6;">
+                            You run and test agents here.<br>
+                            Path: <code>C:\Projects\ai-agents</code><br>
+                            Pull from GitHub to get latest changes.
+                        </p>
+                    </div>
+                </div>
+                <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--foam);">
+                    <p style="font-size:0.85rem;color:var(--slate);">
+                        Sync order: <strong>Brainiac pushes → GitHub → Kelex pulls</strong>
+                    </p>
+                </div>
+            </div>
 
             <ol class="launch-step-list">
 
                 <li class="launch-step">
                     <div class="launch-step-num">1</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Clone the ai-agents repo</div>
-                        <p>If you haven't already cloned the repo to Kelix:</p>
+                        <div class="launch-step-title">Get the latest code on Kelex</div>
+                        <p>After Claude Code makes changes on Brainiac and pushes to GitHub, pull them on Kelex:</p>
                         <div class="code-block">
-                            <pre><span class="code-cmd">git clone https://github.com/Xannith/ai-agents.git</span>
-<span class="code-cmd">cd ai-agents</span></pre>
-                        </div>
-                        <p>If the repo is already cloned, pull the latest:</p>
-                        <div class="code-block">
-                            <pre><span class="code-cmd">cd ai-agents</span>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-cmd">cd C:\Projects\ai-agents</span>
 <span class="code-cmd">git pull</span></pre>
+                        </div>
+                        <p>If the repo isn't cloned yet on Kelex, clone it first:</p>
+                        <div class="code-block">
+                            <span class="code-label">Kelex — PowerShell (first-time setup only)</span>
+                            <pre><span class="code-cmd">cd C:\Projects</span>
+<span class="code-cmd">git clone https://github.com/Xannith/ai-agents.git</span>
+<span class="code-cmd">cd ai-agents</span></pre>
                         </div>
                     </div>
                 </li>
@@ -791,10 +822,12 @@
                 <li class="launch-step">
                     <div class="launch-step-num">2</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Open PowerShell and navigate to the repo</div>
+                        <div class="launch-step-title">Create a Python virtual environment (first-time only)</div>
+                        <p>Do this once on Kelex. Isolates dependencies from your system Python.</p>
                         <div class="code-block">
-                            <pre><span class="code-comment"># Replace with your actual path</span>
-<span class="code-cmd">cd C:\Users\YourName\repos\ai-agents</span></pre>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-cmd">cd C:\Projects\ai-agents</span>
+<span class="code-cmd">python -m venv .venv</span></pre>
                         </div>
                     </div>
                 </li>
@@ -802,10 +835,15 @@
                 <li class="launch-step">
                     <div class="launch-step-num">3</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Create a Python virtual environment</div>
-                        <p>Do this once per machine. The venv isolates these dependencies from your system Python.</p>
+                        <div class="launch-step-title">Activate the virtual environment</div>
                         <div class="code-block">
-                            <pre><span class="code-cmd">python -m venv .venv</span></pre>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-cmd">.venv\Scripts\Activate.ps1</span></pre>
+                        </div>
+                        <p>Your prompt should show <code>(.venv)</code> when active. If PowerShell blocks the script, run this once first:</p>
+                        <div class="code-block">
+                            <span class="code-label">Kelex — PowerShell (one-time fix)</span>
+                            <pre><span class="code-cmd">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</span></pre>
                         </div>
                     </div>
                 </li>
@@ -813,77 +851,84 @@
                 <li class="launch-step">
                     <div class="launch-step-num">4</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Activate the virtual environment</div>
+                        <div class="launch-step-title">Install dependencies</div>
+                        <p>No root-level <code>requirements.txt</code> exists — install from the specific agent folders:</p>
                         <div class="code-block">
-                            <span class="code-label">PowerShell (Windows)</span>
-                            <pre><span class="code-cmd">.venv\Scripts\Activate.ps1</span></pre>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-cmd">python -m pip install --upgrade pip</span>
+
+<span class="code-comment"># Core agent dependencies (shared by all 4 CLI agents + Pipeline Runner)</span>
+<span class="code-cmd">pip install -r agents\content-type-classifier\requirements.txt</span>
+
+<span class="code-comment"># Streamlit GUI dependency</span>
+<span class="code-cmd">pip install -r agents\pipeline-gui\requirements.txt</span></pre>
                         </div>
-                        <p>Your prompt should change to show <code>(.venv)</code> when it's active. If PowerShell blocks the script, run this first:</p>
-                        <div class="code-block">
-                            <pre><span class="code-cmd">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</span></pre>
-                        </div>
+                        <p>Repeat the pip installs after a <code>git pull</code> if requirements files changed.</p>
                     </div>
                 </li>
 
                 <li class="launch-step">
                     <div class="launch-step-num">5</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Upgrade pip and install dependencies</div>
+                        <div class="launch-step-title">Set up your .env file (first-time only)</div>
                         <div class="code-block">
-                            <pre><span class="code-cmd">python -m pip install --upgrade pip</span>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-comment"># Copy the template (only needed once)</span>
+<span class="code-cmd">Copy-Item .env.example .env</span>
 
-<span class="code-comment"># Install agent dependencies</span>
-<span class="code-cmd">pip install -r agents/content-type-classifier/requirements.txt</span>
-
-<span class="code-comment"># Install Pipeline GUI dependencies (for Streamlit)</span>
-<span class="code-cmd">pip install -r agents/pipeline-gui/requirements.txt</span></pre>
+<span class="code-comment"># Open in VS Code and fill in your ANTHROPIC_API_KEY</span>
+<span class="code-cmd">code .env</span></pre>
                         </div>
+                        <p>The <code>.env</code> file stays on Kelex only — never committed to git. See the <a href="#" onclick="navigate('credentials');return false;">Credentials page</a> for the full variable list.</p>
                     </div>
                 </li>
 
                 <li class="launch-step">
                     <div class="launch-step-num">6</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Set up your .env file</div>
+                        <div class="launch-step-title">Launch the Pipeline GUI</div>
+                        <p>The Streamlit GUI is the easiest starting point — runs all 4 agents through a browser UI:</p>
                         <div class="code-block">
-                            <pre><span class="code-comment"># Copy the template</span>
-<span class="code-cmd">Copy-Item .env.example .env</span>
-
-<span class="code-comment"># Open in VS Code and add your ANTHROPIC_API_KEY</span>
-<span class="code-cmd">code .env</span></pre>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-cmd">cd C:\Projects\ai-agents</span>
+<span class="code-cmd">.venv\Scripts\Activate.ps1</span>
+<span class="code-cmd">python -m streamlit run agents\pipeline-gui\app.py</span></pre>
                         </div>
-                        <p>See the <a href="#" onclick="navigate('credentials');return false;">Credentials page</a> for the full variable list. Never commit <code>.env</code>.</p>
+                        <p>Open in your browser:</p>
+                        <div class="code-block">
+                            <pre><span class="code-value">http://localhost:8501</span></pre>
+                        </div>
+                        <p>Use <strong>dry-run mode</strong> in the GUI to test without API credits.</p>
                     </div>
                 </li>
 
                 <li class="launch-step">
                     <div class="launch-step-num">7</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Launch the Pipeline GUI (recommended starting point)</div>
-                        <p>The Streamlit GUI is the easiest way to run the full pipeline:</p>
+                        <div class="launch-step-title">Or run the Pipeline Runner from the CLI</div>
                         <div class="code-block">
-                            <pre><span class="code-cmd">streamlit run agents/pipeline-gui/app.py</span></pre>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-comment"># Dry run (no API credits — tests full pipeline structure)</span>
+<span class="code-cmd">python agents\pipeline-runner\src\run_pipeline.py</span> <span class="code-flag">`</span>
+  <span class="code-flag">--input</span>   <span class="code-value">agents\pipeline-runner\examples\sample-input.md</span> <span class="code-flag">`</span>
+  <span class="code-flag">--output</span>  <span class="code-value">agents\pipeline-runner\outputs\test</span> <span class="code-flag">`</span>
+  <span class="code-flag">--dry-run</span></pre>
                         </div>
-                        <p>Streamlit will print the local URL — open it in your browser:</p>
-                        <div class="code-block">
-                            <pre><span class="code-value">  Local URL:  http://localhost:8501</span>
-<span class="code-value">  Network URL: http://192.168.x.x:8501</span></pre>
-                        </div>
-                        <p>Use <strong>dry-run mode</strong> in the GUI first to test without using API credits.</p>
+                        <p>Note: Windows PowerShell uses backtick <code>`</code> for line continuation, not backslash.</p>
                     </div>
                 </li>
 
                 <li class="launch-step">
                     <div class="launch-step-num">8</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Or run the Pipeline Runner from the CLI</div>
-                        <p>If you prefer the command line or want to script runs:</p>
+                        <div class="launch-step-title">Stop the GUI and deactivate the venv</div>
                         <div class="code-block">
-                            <pre><span class="code-comment"># Dry run first (no API credits)</span>
-<span class="code-cmd">python3 agents/pipeline-runner/src/run_pipeline.py</span> <span class="code-flag">\</span>
-  <span class="code-flag">--input</span>   <span class="code-value">agents/pipeline-runner/examples/sample-input.md</span> <span class="code-flag">\</span>
-  <span class="code-flag">--output</span>  <span class="code-value">agents/pipeline-runner/outputs/test</span> <span class="code-flag">\</span>
-  <span class="code-flag">--dry-run</span></pre>
+                            <span class="code-label">Kelex — PowerShell</span>
+                            <pre><span class="code-comment"># Stop Streamlit</span>
+<span class="code-cmd">Ctrl + C</span>
+
+<span class="code-comment"># Deactivate the virtual environment</span>
+<span class="code-cmd">deactivate</span></pre>
                         </div>
                     </div>
                 </li>
@@ -891,21 +936,20 @@
                 <li class="launch-step">
                     <div class="launch-step-num">9</div>
                     <div class="launch-step-body">
-                        <div class="launch-step-title">Run individual agents as needed</div>
-                        <p>Each agent can also run standalone. See the individual agent pages in this dashboard for exact commands. All agents support <code>--dry-run</code> for testing without API calls.</p>
-                    </div>
-                </li>
-
-                <li class="launch-step">
-                    <div class="launch-step-num">10</div>
-                    <div class="launch-step-body">
-                        <div class="launch-step-title">Stop the GUI when done</div>
+                        <div class="launch-step-title">Typical sync workflow (ongoing)</div>
                         <div class="code-block">
-                            <pre><span class="code-comment"># In the PowerShell window running Streamlit</span>
-<span class="code-cmd">Ctrl + C</span>
-
-<span class="code-comment"># Deactivate the venv</span>
-<span class="code-cmd">deactivate</span></pre>
+                            <span class="code-label">Brainiac — after Claude Code makes changes</span>
+                            <pre><span class="code-comment"># Claude Code commits and pushes from:</span>
+<span class="code-value">/home/jbechtel/ai-agents</span></pre>
+                        </div>
+                        <div class="code-block">
+                            <span class="code-label">Kelex — to test the changes</span>
+                            <pre><span class="code-cmd">cd C:\Projects\ai-agents</span>
+<span class="code-cmd">git pull</span>
+<span class="code-cmd">.venv\Scripts\Activate.ps1</span>
+<span class="code-comment"># Re-install deps if requirements files changed</span>
+<span class="code-cmd">pip install -r agents\content-type-classifier\requirements.txt</span>
+<span class="code-cmd">python -m streamlit run agents\pipeline-gui\app.py</span></pre>
                         </div>
                     </div>
                 </li>
