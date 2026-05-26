@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Login | JoshWritingSamples</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body class="login-body">
+
+<!--
+  ⚠️  SECURITY NOTICE — READ BEFORE DEPLOYING
+  ─────────────────────────────────────────────────────────────────────
+  This is a FRONTEND-ONLY, UI-FLOW gate. It is NOT real authentication.
+
+  What this does:
+    • Checks a password entered in the browser against a value in this file.
+    • If it matches, sets a flag in sessionStorage and redirects to dashboard.html.
+    • sessionStorage clears when the browser tab is closed.
+
+  What this does NOT do:
+    • It does not protect any server resources.
+    • It does not prevent anyone from navigating directly to /dashboard.html.
+    • It does not prevent anyone from reading the password by viewing page source.
+    • It is not suitable for protecting sensitive data, real credentials, or
+      anything that must remain private.
+
+  How to set your password:
+    • In the <script> block below, change the DASHBOARD_PASSWORD value.
+    • Do not use a password you use anywhere important.
+    • This password is visible in page source to anyone who looks.
+
+  For real authentication on a static site, consider:
+    • Netlify Identity (free tier available)
+    • Cloudflare Access (zero-trust, free for personal use)
+    • Supabase Auth
+    • Firebase Authentication
+    • Moving the dashboard to a server-rendered route with session management
+
+  This placeholder is intentional. See README.md for the upgrade path.
+  ─────────────────────────────────────────────────────────────────────
+-->
+
+<div class="login-shell">
+    <div class="login-card">
+        <div class="login-logo">
+            <span class="login-logo-mark">◈</span>
+            <span class="login-logo-text">HLS Dashboard</span>
+        </div>
+        <p class="login-subtitle">Owner access only</p>
+
+        <form id="loginForm" class="login-form" novalidate>
+            <div class="login-field">
+                <label for="passwordInput" class="login-label">Dashboard password</label>
+                <input
+                    type="password"
+                    id="passwordInput"
+                    class="login-input"
+                    placeholder="Enter password"
+                    autocomplete="current-password"
+                    autofocus
+                >
+            </div>
+            <div class="login-error" id="loginError" role="alert" aria-live="polite"></div>
+            <button type="submit" class="btn btn-primary login-submit">Enter Dashboard</button>
+        </form>
+
+        <div class="login-notice">
+            <p>⚠️ UI-only gate. Not real security. See <a href="https://github.com/Xannith/WritingSamples/blob/main/README.md" target="_blank" rel="noopener">README</a> for real auth options.</p>
+        </div>
+
+        <div class="login-back">
+            <a href="/index.html">&larr; Back to public site</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+//  UI-ONLY AUTHENTICATION — NOT REAL SECURITY
+//  See the HTML comment above for full explanation.
+// ============================================================
+
+// TODO: Change this to a password of your choosing.
+// This value is visible in page source — do not reuse a real password.
+var DASHBOARD_PASSWORD = 'changeme';
+
+var form    = document.getElementById('loginForm');
+var input   = document.getElementById('passwordInput');
+var errDiv  = document.getElementById('loginError');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    errDiv.textContent = '';
+
+    if (input.value === DASHBOARD_PASSWORD) {
+        // Set a UI-only session flag. Clears on tab close.
+        // ⚠️ Anyone can set this manually in DevTools. This is intentional.
+        sessionStorage.setItem('hls-dashboard', '1');
+        window.location.href = '/dashboard.html';
+    } else {
+        errDiv.textContent = 'Incorrect password. Try again.';
+        input.value = '';
+        input.focus();
+    }
+});
+</script>
+
+</body>
+</html>

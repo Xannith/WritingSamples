@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard | JoshWritingSamples</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body class="dashboard-body">
+
+<!--
+  ⚠️  SECURITY NOTICE
+  This dashboard is gated by a frontend-only session check (sessionStorage).
+  It is NOT protected by real authentication. Anyone who navigates directly to
+  this URL can access it. See README.md and login.html for details.
+
+  Real authentication options: Netlify Identity, Cloudflare Access, Supabase Auth.
+-->
+
+<!-- Mobile overlay -->
+<div class="dash-overlay" id="dashOverlay"></div>
+
+<!-- ── LEFT SIDEBAR ───────────────────────────────────────── -->
+<aside class="dash-sidebar" id="dashSidebar">
+
+    <div class="dash-sidebar-header">
+        <a href="/index.html" class="dash-site-name">JoshWritingSamples</a>
+        <span class="dash-site-sub">Owner Dashboard &nbsp;·&nbsp; HLS Agent Tools</span>
+    </div>
+
+    <nav class="dash-nav" id="dashNav">
+        <div class="dash-nav-group">Overview</div>
+        <a class="dash-nav-item active" data-section="overview">
+            <span class="nav-icon">◈</span> Dashboard
+        </a>
+
+        <div class="dash-nav-group">Agents &amp; Tools</div>
+        <a class="dash-nav-item" data-section="pipeline-gui">
+            <span class="nav-icon">⬡</span> Pipeline GUI
+        </a>
+        <a class="dash-nav-item" data-section="pipeline-runner">
+            <span class="nav-icon">▶</span> Pipeline Runner
+        </a>
+        <a class="dash-nav-item" data-section="classifier">
+            <span class="nav-icon">◦</span> Content Classifier
+        </a>
+        <a class="dash-nav-item" data-section="gap-scout">
+            <span class="nav-icon">◦</span> Gap Scout
+        </a>
+        <a class="dash-nav-item" data-section="cwr-assessor">
+            <span class="nav-icon">◦</span> CWR Assessor
+        </a>
+        <a class="dash-nav-item" data-section="metadata-gen">
+            <span class="nav-icon">◦</span> Metadata Generator
+        </a>
+
+        <div class="dash-nav-group">Settings</div>
+        <a class="dash-nav-item" data-section="credentials">
+            <span class="nav-icon">🔑</span> Credentials
+        </a>
+        <a class="dash-nav-item" data-section="launch">
+            <span class="nav-icon">⚡</span> Launch Instructions
+        </a>
+        <a class="dash-nav-item" data-section="notes">
+            <span class="nav-icon">✎</span> Notes
+        </a>
+    </nav>
+
+    <div class="dash-sidebar-footer">
+        <button class="dash-logout-btn" id="logoutBtn">Log out</button>
+    </div>
+
+</aside>
+
+<!-- ── MAIN CONTENT ───────────────────────────────────────── -->
+<main class="dash-main">
+
+    <div class="dash-topbar">
+        <button class="dash-hamburger" id="dashHamburger" aria-label="Toggle navigation">&#9776;</button>
+        <span class="dash-topbar-title" id="dashPageTitle">Dashboard</span>
+        <span class="dash-topbar-right">
+            <a href="https://github.com/Xannith/ai-agents" target="_blank" rel="noopener" style="color:var(--sage);text-decoration:none;font-size:0.78rem;">
+                ai-agents repo &rarr;
+            </a>
+        </span>
+    </div>
+
+    <div class="dash-content">
+
+        <!-- ══════════════════════════════════════════════════════
+             OVERVIEW / DASHBOARD
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-overview" class="dash-section active">
+
+            <p class="dash-section-eyebrow">Command Center</p>
+            <h1 class="dash-section-title">HLS Agent Dashboard</h1>
+            <p class="dash-section-desc">
+                All agents and tools from the <code>Xannith/ai-agents</code> repo.
+                Run them locally on Kelix — this dashboard is the reference and launch guide.
+            </p>
+
+            <!-- Quick stats -->
+            <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px;">
+                <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:14px 22px;text-align:center;min-width:110px;">
+                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">6</div>
+                    <div style="font-size:0.72rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.08em;">Agents / Tools</div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:14px 22px;text-align:center;min-width:110px;">
+                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">1</div>
+                    <div style="font-size:0.72rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.08em;">Streamlit GUI</div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:14px 22px;text-align:center;min-width:110px;">
+                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">4</div>
+                    <div style="font-size:0.72rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.08em;">CLI Agents</div>
+                </div>
+                <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:14px 22px;text-align:center;min-width:110px;">
+                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">1</div>
+                    <div style="font-size:0.72rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.08em;">Coordinator</div>
+                </div>
+            </div>
+
+            <!-- Agent cards -->
+            <div class="agent-overview-grid">
+
+                <div class="agent-card" onclick="navigate('pipeline-gui')">
+                    <div class="agent-card-top">
+                        <div class="agent-card-name">Pipeline GUI</div>
+                        <span class="agent-badge badge-streamlit">Streamlit</span>
+                    </div>
+                    <p class="agent-card-desc">Web UI for the full content review pipeline. Upload a doc, run all 4 agents, review and download results in the browser.</p>
+                    <p class="agent-card-meta">agents/pipeline-gui/app.py &rarr; localhost:8501</p>
+                    <button class="agent-card-open" onclick="navigate('pipeline-gui');event.stopPropagation()">Open details &rarr;</button>
+                </div>
+
+                <div class="agent-card" onclick="navigate('pipeline-runner')">
+                    <div class="agent-card-top">
+                        <div class="agent-card-name">Pipeline Runner</div>
+                        <span class="agent-badge badge-coordinator">Coordinator</span>
+                    </div>
+                    <p class="agent-card-desc">CLI coordinator that runs all 4 analysis agents in sequence from one command. Use this when you don't need the browser UI.</p>
+                    <p class="agent-card-meta">agents/pipeline-runner/src/run_pipeline.py</p>
+                    <button class="agent-card-open" onclick="navigate('pipeline-runner');event.stopPropagation()">Open details &rarr;</button>
+                </div>
+
+                <div class="agent-card" onclick="navigate('classifier')">
+                    <div class="agent-card-top">
+                        <div class="agent-card-name">Content Type Classifier</div>
+                        <span class="agent-badge badge-cli">Python CLI</span>
+                    </div>
+                    <p class="agent-card-desc">Classifies document chunks by information type: Policy, Process, Procedure, Reference, Learning, Definition, Governance, and more.</p>
+                    <p class="agent-card-meta">agents/content-type-classifier/src/classify.py</p>
+                    <button class="agent-card-open" onclick="navigate('classifier');event.stopPropagation()">Open details &rarr;</button>
+                </div>
+
+                <div class="agent-card" onclick="navigate('cwr-assessor')">
+                    <div class="agent-card-top">
+                        <div class="agent-card-name">Crawl/Walk/Run Assessor</div>
+                        <span class="agent-badge badge-cli">Python CLI</span>
+                    </div>
+                    <p class="agent-card-desc">Evaluates each content chunk and assigns a readiness tier: Crawl (intro), Walk (guided), or Run (expert/system-level). Agent #2.</p>
+                    <p class="agent-card-meta">agents/crawl-walk-run-assessor/src/assess.py</p>
+                    <button class="agent-card-open" onclick="navigate('cwr-assessor');event.stopPropagation()">Open details &rarr;</button>
+                </div>
+
+                <div class="agent-card" onclick="navigate('gap-scout')">
+                    <div class="agent-card-top">
+                        <div class="agent-card-name">Content Gap Scout</div>
+                        <span class="agent-badge badge-cli">Python CLI</span>
+                    </div>
+                    <p class="agent-card-desc">Identifies missing information, structural weaknesses, unclear ownership, and gaps that reduce content usability for humans and AI. Agent #3.</p>
+                    <p class="agent-card-meta">agents/content-gap-scout/src/scout.py</p>
+                    <button class="agent-card-open" onclick="navigate('gap-scout');event.stopPropagation()">Open details &rarr;</button>
+                </div>
+
+                <div class="agent-card" onclick="navigate('metadata-gen')">
+                    <div class="agent-card-top">
+                        <div class="agent-card-name">Metadata Generator</div>
+                        <span class="agent-badge badge-cli">Python CLI</span>
+                    </div>
+                    <p class="agent-card-desc">Generates structured metadata for content chunks — enabling reliable retrieval, governance assignment, and AI-ready tagging. Agent #4.</p>
+                    <p class="agent-card-meta">agents/metadata-generator/src/generate_metadata.py</p>
+                    <button class="agent-card-open" onclick="navigate('metadata-gen');event.stopPropagation()">Open details &rarr;</button>
+                </div>
+
+            </div>
+
+            <!-- Quick actions -->
+            <hr class="dash-divider">
+            <h3 style="font-family:'DM Serif Display',serif;color:var(--forest);font-size:1.1rem;margin-bottom:14px;">Quick actions</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="navigate('launch')" style="font-size:0.85rem;">⚡ Launch Instructions (Kelix)</button>
+                <button class="btn btn-secondary" onclick="navigate('credentials')" style="font-size:0.85rem;">🔑 Credentials Guide</button>
+                <a href="https://github.com/Xannith/ai-agents" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:0.85rem;">View ai-agents repo &rarr;</a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             PIPELINE GUI
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-pipeline-gui" class="dash-section">
+
+            <p class="dash-section-eyebrow">Agents &amp; Tools</p>
+            <div class="agent-detail-header">
+                <div class="agent-detail-top">
+                    <h1 class="agent-detail-name">Pipeline GUI</h1>
+                    <span class="agent-badge badge-streamlit">Streamlit Web App</span>
+                </div>
+                <p class="agent-detail-desc">
+                    A local Streamlit browser interface that wraps the full Document Review Pipeline.
+                    Upload a <code>.md</code>, <code>.txt</code>, <code>.html</code>, or <code>.htm</code> file,
+                    choose dry-run or live mode, click Run, and review the results from all four agents
+                    in one place — with one-click downloads for every output file.
+                </p>
+            </div>
+
+            <div class="agent-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-card-title">Repo location</div>
+                    <p><code>agents/pipeline-gui/app.py</code><br>
+                    Requirements: <code>agents/pipeline-gui/requirements.txt</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Runtime type</div>
+                    <p>Streamlit web app<br>Runs locally in your browser<br>Default: <strong>http://localhost:8501</strong></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Dependencies</div>
+                    <p><code>streamlit</code> (from pipeline-gui/requirements.txt)<br>
+                    Plus: <code>anthropic</code>, <code>python-dotenv</code> from the classifier requirements</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Required env variables</div>
+                    <p><code>ANTHROPIC_API_KEY</code> — required for live runs<br>
+                    Not required for dry-run mode</p>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">Launch command</div>
+                <div class="code-block">
+                    <span class="code-label">PowerShell — from repo root</span>
+                    <pre><span class="code-comment"># Install dependencies (first time)</span>
+<span class="code-cmd">pip install -r agents/pipeline-gui/requirements.txt</span>
+<span class="code-cmd">pip install -r agents/content-type-classifier/requirements.txt</span>
+
+<span class="code-comment"># Launch the GUI</span>
+<span class="code-cmd">streamlit run agents/pipeline-gui/app.py</span>
+
+<span class="code-comment"># Then open in browser:</span>
+<span class="code-value">http://localhost:8501</span></pre>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">User flow</div>
+                <p>1. Upload a <code>.md</code>, <code>.txt</code>, <code>.html</code>, or <code>.htm</code> file<br>
+                2. Choose <em>dry-run</em> (no API, for testing) or <em>live run</em> (calls Claude)<br>
+                3. Optionally pick a model and name the output folder<br>
+                4. Click <strong>▶ Run Pipeline</strong><br>
+                5. Review agent status, final summary, and merged report<br>
+                6. Download individual files or a ZIP of all outputs</p>
+            </div>
+
+            <div class="agent-links-row">
+                <a href="https://github.com/Xannith/ai-agents/tree/main/agents/pipeline-gui" target="_blank" rel="noopener" class="agent-gh-link">
+                    ↗ Open in GitHub
+                </a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/pipeline-gui/README.md" target="_blank" rel="noopener" class="agent-gh-link">
+                    📄 Full README
+                </a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             PIPELINE RUNNER
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-pipeline-runner" class="dash-section">
+
+            <p class="dash-section-eyebrow">Agents &amp; Tools</p>
+            <div class="agent-detail-header">
+                <div class="agent-detail-top">
+                    <h1 class="agent-detail-name">Pipeline Runner</h1>
+                    <span class="agent-badge badge-coordinator">CLI Coordinator</span>
+                </div>
+                <p class="agent-detail-desc">
+                    Runs all four content analysis agents in sequence from a single command.
+                    Not an analysis agent itself — it takes one input file and orchestrates:
+                    Classify → Assess → Scout Gaps → Generate Metadata → Build Summary.
+                    Use this when you want command-line output without the browser UI.
+                </p>
+            </div>
+
+            <div class="agent-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-card-title">Repo location</div>
+                    <p><code>agents/pipeline-runner/src/run_pipeline.py</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Runtime type</div>
+                    <p>Python CLI<br>Run from terminal / PowerShell</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Dependencies</div>
+                    <p><code>pip install -r agents/content-type-classifier/requirements.txt</code><br>
+                    (The pipeline runner shares the classifier's dependencies)</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Required env variables</div>
+                    <p><code>ANTHROPIC_API_KEY</code> — for live runs<br>
+                    Use <code>--dry-run</code> flag to skip API calls</p>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">Launch command</div>
+                <div class="code-block">
+                    <span class="code-label">PowerShell — from repo root</span>
+                    <pre><span class="code-comment"># Live run</span>
+<span class="code-cmd">python3 agents/pipeline-runner/src/run_pipeline.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">agents/pipeline-runner/examples/sample-input.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">agents/pipeline-runner/outputs/my-review</span>
+
+<span class="code-comment"># Dry run (no API key needed — tests full pipeline)</span>
+<span class="code-cmd">python3 agents/pipeline-runner/src/run_pipeline.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">agents/pipeline-runner/examples/sample-input.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">agents/pipeline-runner/outputs/dry-run-test</span> <span class="code-flag">\</span>
+  <span class="code-flag">--dry-run</span></pre>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">Output structure</div>
+                <div class="code-block">
+                    <pre><span class="code-value">outputs/my-review/</span>
+  <span class="code-comment">01-classification.json / .md</span>
+  <span class="code-comment">02-readiness.json / .md</span>
+  <span class="code-comment">03-gaps.json / .md</span>
+  <span class="code-comment">04-metadata.json / .md</span>
+  <span class="code-cmd">final-review-summary.md</span>
+  <span class="code-cmd">pipeline-merged-report.json</span>
+  <span class="code-cmd">pipeline-run-log.json</span></pre>
+                </div>
+            </div>
+
+            <div class="agent-links-row">
+                <a href="https://github.com/Xannith/ai-agents/tree/main/agents/pipeline-runner" target="_blank" rel="noopener" class="agent-gh-link">↗ Open in GitHub</a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/pipeline-runner/README.md" target="_blank" rel="noopener" class="agent-gh-link">📄 Full README</a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             CONTENT TYPE CLASSIFIER
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-classifier" class="dash-section">
+
+            <p class="dash-section-eyebrow">Agents &amp; Tools · Agent #1</p>
+            <div class="agent-detail-header">
+                <div class="agent-detail-top">
+                    <h1 class="agent-detail-name">Content Type Classifier</h1>
+                    <span class="agent-badge badge-cli">Python CLI</span>
+                </div>
+                <p class="agent-detail-desc">
+                    Classifies document content chunk-by-chunk by information type.
+                    Foundational to stateless content architecture: content cannot be modularized,
+                    governed, or reused intelligently until you know what <em>kind</em> of content each piece is.
+                    Supports 10 types: Policy, Process, Procedure, Reference, Learning, Definition,
+                    Governance, Image, Code, Video.
+                </p>
+            </div>
+
+            <div class="agent-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-card-title">Repo location</div>
+                    <p><code>agents/content-type-classifier/src/classify.py</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Dependencies</div>
+                    <p><code>pip install -r agents/content-type-classifier/requirements.txt</code><br>
+                    Includes: <code>anthropic</code>, <code>python-dotenv</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Required env variables</div>
+                    <p><code>ANTHROPIC_API_KEY</code><br>
+                    Use <code>--dry-run</code> to skip the API call</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Supported input formats</div>
+                    <p><code>.md</code> — split on headings<br>
+                    <code>.txt</code> — split on double newlines<br>
+                    <code>.html</code> / <code>.htm</code> — strip tags, then split</p>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">Launch command</div>
+                <div class="code-block">
+                    <span class="code-label">PowerShell — from repo root</span>
+                    <pre><span class="code-cmd">python agents/content-type-classifier/src/classify.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">agents/content-type-classifier/examples/sample-policy.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">agents/content-type-classifier/outputs/policy-report</span>
+
+<span class="code-comment"># Dry run</span>
+<span class="code-cmd">python agents/content-type-classifier/src/classify.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">examples/sample-policy.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">outputs/test</span> <span class="code-flag">--dry-run</span>
+
+<span class="code-comment"># Use a different model</span>
+<span class="code-cmd">python agents/content-type-classifier/src/classify.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">examples/sample-sop.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">outputs/sop-opus</span> <span class="code-flag">\</span>
+  <span class="code-flag">--model</span>  <span class="code-value">claude-opus-4-7</span></pre>
+                </div>
+            </div>
+
+            <div class="agent-links-row">
+                <a href="https://github.com/Xannith/ai-agents/tree/main/agents/content-type-classifier" target="_blank" rel="noopener" class="agent-gh-link">↗ Open in GitHub</a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/content-type-classifier/README.md" target="_blank" rel="noopener" class="agent-gh-link">📄 Full README</a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             CRAWL/WALK/RUN ASSESSOR
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-cwr-assessor" class="dash-section">
+
+            <p class="dash-section-eyebrow">Agents &amp; Tools · Agent #2</p>
+            <div class="agent-detail-header">
+                <div class="agent-detail-top">
+                    <h1 class="agent-detail-name">Crawl/Walk/Run Assessor</h1>
+                    <span class="agent-badge badge-cli">Python CLI</span>
+                </div>
+                <p class="agent-detail-desc">
+                    Evaluates each content chunk and assigns a readiness tier.
+                    <strong>Crawl</strong> (0.00–0.33): introductory content, anyone new to the topic.
+                    <strong>Walk</strong> (0.34–0.66): guided content, users with basic context.
+                    <strong>Run</strong> (0.67–1.00): expert-level content for experienced users and systems.
+                    Runs after the Content Type Classifier (Agent #1).
+                </p>
+            </div>
+
+            <div class="agent-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-card-title">Repo location</div>
+                    <p><code>agents/crawl-walk-run-assessor/src/assess.py</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Dependencies</div>
+                    <p><code>pip install -r agents/content-type-classifier/requirements.txt</code><br>
+                    (Shares classifier dependencies)</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Required env variables</div>
+                    <p><code>ANTHROPIC_API_KEY</code><br>
+                    Use <code>--dry-run</code> to skip the API call</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Pipeline position</div>
+                    <p>Agent #2 — runs after Content Type Classifier.<br>
+                    Can accept classifier output JSON as input, or run standalone on raw content.</p>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">Launch command</div>
+                <div class="code-block">
+                    <span class="code-label">PowerShell — from repo root</span>
+                    <pre><span class="code-cmd">python agents/crawl-walk-run-assessor/src/assess.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">agents/crawl-walk-run-assessor/examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">agents/crawl-walk-run-assessor/outputs/my-assessment</span>
+
+<span class="code-comment"># With classifier output as context (recommended)</span>
+<span class="code-cmd">python agents/crawl-walk-run-assessor/src/assess.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>       <span class="code-value">examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--classifier</span>  <span class="code-value">examples/sample-classifier-output.json</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span>      <span class="code-value">outputs/assessment-with-context</span>
+
+<span class="code-comment"># Dry run</span>
+<span class="code-cmd">python agents/crawl-walk-run-assessor/src/assess.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span> <span class="code-value">examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">outputs/test</span> <span class="code-flag">--dry-run</span></pre>
+                </div>
+            </div>
+
+            <div class="agent-links-row">
+                <a href="https://github.com/Xannith/ai-agents/tree/main/agents/crawl-walk-run-assessor" target="_blank" rel="noopener" class="agent-gh-link">↗ Open in GitHub</a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/crawl-walk-run-assessor/README.md" target="_blank" rel="noopener" class="agent-gh-link">📄 Full README</a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             CONTENT GAP SCOUT
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-gap-scout" class="dash-section">
+
+            <p class="dash-section-eyebrow">Agents &amp; Tools · Agent #3</p>
+            <div class="agent-detail-header">
+                <div class="agent-detail-top">
+                    <h1 class="agent-detail-name">Content Gap Scout</h1>
+                    <span class="agent-badge badge-cli">Python CLI</span>
+                </div>
+                <p class="agent-detail-desc">
+                    Identifies missing information, structural weaknesses, unclear ownership, and
+                    other gaps that make content harder for humans or AI systems to use correctly.
+                    Exposes <em>epistemic debt</em> — the gap between what the content says and what it
+                    needs to say to be useful, reusable, and AI-ready. Gap severity: Critical, High,
+                    Medium, Low (20 gap types). Runs after Agents #1 and #2.
+                </p>
+            </div>
+
+            <div class="agent-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-card-title">Repo location</div>
+                    <p><code>agents/content-gap-scout/src/scout.py</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Dependencies</div>
+                    <p><code>pip install -r agents/content-type-classifier/requirements.txt</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Required env variables</div>
+                    <p><code>ANTHROPIC_API_KEY</code><br>
+                    Use <code>--dry-run</code> to skip the API call</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Pipeline position</div>
+                    <p>Agent #3 — runs after Content Classifier + CWR Assessor.<br>
+                    Accepts prior agent outputs as context for richer gap analysis.</p>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">Launch command</div>
+                <div class="code-block">
+                    <span class="code-label">PowerShell — from repo root</span>
+                    <pre><span class="code-cmd">python agents/content-gap-scout/src/scout.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">agents/content-gap-scout/examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">agents/content-gap-scout/outputs/gap-report</span>
+
+<span class="code-comment"># With prior agent context (recommended)</span>
+<span class="code-cmd">python agents/content-gap-scout/src/scout.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>       <span class="code-value">examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--classifier</span>  <span class="code-value">examples/sample-classification-report.json</span> <span class="code-flag">\</span>
+  <span class="code-flag">--readiness</span>   <span class="code-value">examples/sample-readiness-report.json</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span>      <span class="code-value">outputs/gap-report-full</span>
+
+<span class="code-comment"># Dry run</span>
+<span class="code-cmd">python agents/content-gap-scout/src/scout.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span> <span class="code-value">examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">outputs/test</span> <span class="code-flag">--dry-run</span></pre>
+                </div>
+            </div>
+
+            <div class="agent-links-row">
+                <a href="https://github.com/Xannith/ai-agents/tree/main/agents/content-gap-scout" target="_blank" rel="noopener" class="agent-gh-link">↗ Open in GitHub</a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/content-gap-scout/README.md" target="_blank" rel="noopener" class="agent-gh-link">📄 Full README</a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             METADATA GENERATOR
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-metadata-gen" class="dash-section">
+
+            <p class="dash-section-eyebrow">Agents &amp; Tools · Agent #4</p>
+            <div class="agent-detail-header">
+                <div class="agent-detail-top">
+                    <h1 class="agent-detail-name">Metadata Generator</h1>
+                    <span class="agent-badge badge-cli">Python CLI</span>
+                </div>
+                <p class="agent-detail-desc">
+                    Generates structured metadata for content chunks — enabling reliable retrieval,
+                    governance assignment, lifecycle tracking, and AI-ready tagging.
+                    The final analysis agent in the pipeline: it uses classification, readiness,
+                    and gap outputs to produce the richest possible metadata per chunk.
+                </p>
+            </div>
+
+            <div class="agent-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-card-title">Repo location</div>
+                    <p><code>agents/metadata-generator/src/generate_metadata.py</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Dependencies</div>
+                    <p><code>pip install -r agents/content-type-classifier/requirements.txt</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Required env variables</div>
+                    <p><code>ANTHROPIC_API_KEY</code><br>
+                    Use <code>--dry-run</code> to skip the API call</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Pipeline position</div>
+                    <p>Agent #4 — the final analysis step.<br>
+                    Accepts all three prior agent outputs as context for maximum metadata quality.</p>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">Launch command</div>
+                <div class="code-block">
+                    <span class="code-label">PowerShell — from repo root</span>
+                    <pre><span class="code-cmd">python agents/metadata-generator/src/generate_metadata.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>  <span class="code-value">agents/metadata-generator/examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">agents/metadata-generator/outputs/metadata-report</span>
+
+<span class="code-comment"># With all prior agent context (recommended for best results)</span>
+<span class="code-cmd">python agents/metadata-generator/src/generate_metadata.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>      <span class="code-value">examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--classifier</span> <span class="code-value">examples/sample-classification-report.json</span> <span class="code-flag">\</span>
+  <span class="code-flag">--readiness</span>  <span class="code-value">examples/sample-readiness-report.json</span> <span class="code-flag">\</span>
+  <span class="code-flag">--gaps</span>       <span class="code-value">examples/sample-gap-report.json</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span>     <span class="code-value">outputs/metadata-full</span>
+
+<span class="code-comment"># Dry run</span>
+<span class="code-cmd">python agents/metadata-generator/src/generate_metadata.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span> <span class="code-value">examples/sample-raw-content.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span> <span class="code-value">outputs/test</span> <span class="code-flag">--dry-run</span></pre>
+                </div>
+            </div>
+
+            <div class="agent-links-row">
+                <a href="https://github.com/Xannith/ai-agents/tree/main/agents/metadata-generator" target="_blank" rel="noopener" class="agent-gh-link">↗ Open in GitHub</a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/metadata-generator/README.md" target="_blank" rel="noopener" class="agent-gh-link">📄 Full README</a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             CREDENTIALS / SETTINGS
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-credentials" class="dash-section">
+
+            <p class="dash-section-eyebrow">Settings</p>
+            <h1 class="dash-section-title">Credentials &amp; Settings</h1>
+            <p class="dash-section-desc">Where secrets live — and where they must never appear.</p>
+
+            <div class="credentials-warning">
+                <strong>⚠️ This page never stores or collects real credentials.</strong>
+                <p>No API keys, tokens, or passwords belong in any static HTML file, JavaScript file,
+                or anywhere in this repo. All secrets live in local <code>.env</code> files on your machine
+                (never committed to git) or in secure server-side environment variables.</p>
+            </div>
+
+            <div class="cred-section">
+                <div class="cred-section-title">Local agents — .env file</div>
+                <p>All agents in <code>Xannith/ai-agents</code> load credentials from a <code>.env</code> file
+                in the repo root. A template is included at <code>.env.example</code>.</p>
+                <p>Copy the template and fill in your real values:</p>
+                <div class="code-block">
+                    <span class="code-label">PowerShell (Kelix)</span>
+                    <pre><span class="code-comment"># From the ai-agents repo root</span>
+<span class="code-cmd">Copy-Item .env.example .env</span>
+<span class="code-comment"># Then open .env in VS Code and add your keys</span>
+<span class="code-cmd">code .env</span></pre>
+                </div>
+                <p>The <code>.env</code> file is already listed in <code>.gitignore</code>. Never commit it.</p>
+            </div>
+
+            <div class="cred-section">
+                <div class="cred-section-title">Known required variables (from .env.example)</div>
+                <table class="env-table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Used by</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ANTHROPIC_API_KEY</td>
+                            <td>All 4 agents, Pipeline Runner, Pipeline GUI</td>
+                            <td>Required for live runs. Get from console.anthropic.com</td>
+                        </tr>
+                        <tr>
+                            <td>OPENAI_API_KEY</td>
+                            <td>OpenAI-based agents (if added)</td>
+                            <td>Not used by current agents — placeholder for future use</td>
+                        </tr>
+                        <tr>
+                            <td>GOOGLE_API_KEY</td>
+                            <td>Gemini-based agents (if added)</td>
+                            <td>Not used by current agents — placeholder</td>
+                        </tr>
+                        <tr>
+                            <td>HA_URL</td>
+                            <td>Brainiac / Home Assistant integration</td>
+                            <td>e.g. <code>http://192.168.1.x:8123</code></td>
+                        </tr>
+                        <tr>
+                            <td>HA_TOKEN</td>
+                            <td>Brainiac / Home Assistant integration</td>
+                            <td>Long-lived access token from HA profile</td>
+                        </tr>
+                        <tr>
+                            <td>N8N_URL</td>
+                            <td>n8n automation integration</td>
+                            <td>e.g. <code>http://192.168.1.x:5678</code></td>
+                        </tr>
+                        <tr>
+                            <td>N8N_API_KEY</td>
+                            <td>n8n automation integration</td>
+                            <td>From n8n Settings → API</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cred-section">
+                <div class="cred-section-title">This dashboard's login password</div>
+                <p>The dashboard password is set directly in <code>login.html</code> as a plain JavaScript variable.
+                It is visible to anyone who views page source.</p>
+                <p>To change it: open <code>/login.html</code> in an editor and update the <code>DASHBOARD_PASSWORD</code>
+                variable near the bottom of the file. Then commit and deploy.</p>
+                <p>For real protection, replace this static login with one of the options below.</p>
+                <div class="code-block">
+                    <span class="code-label">login.html — find and change this line</span>
+                    <pre><span class="code-comment">// TODO: Change this to a password of your choosing.</span>
+<span class="code-cmd">var DASHBOARD_PASSWORD = </span><span class="code-value">'changeme'</span><span class="code-cmd">;</span></pre>
+                </div>
+            </div>
+
+            <div class="cred-section">
+                <div class="cred-section-title">Real authentication options (TODO)</div>
+                <p>The current login is a UI-only gate. When you're ready to protect this dashboard properly:</p>
+                <p>
+                    <strong>Netlify Identity</strong> — free tier, integrates with GitHub Pages/Netlify deploys,
+                    no server required.<br><br>
+                    <strong>Cloudflare Access</strong> — zero-trust auth, free for personal use, works with any
+                    static site served through Cloudflare.<br><br>
+                    <strong>Supabase Auth</strong> — open-source backend-as-a-service with free tier. Add a
+                    lightweight serverless function to verify tokens.<br><br>
+                    <strong>GitHub Actions + private repo</strong> — if this site is in a private repo,
+                    only people with repo access can see the source; combine with Netlify Identity for
+                    runtime auth.<br><br>
+                    <strong>Basic Auth via reverse proxy</strong> — if you host this on your own server
+                    (e.g., nginx), HTTP basic auth is a simple first layer before adding proper auth.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             LAUNCH INSTRUCTIONS (KELIX)
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-launch" class="dash-section">
+
+            <p class="dash-section-eyebrow">Settings</p>
+            <h1 class="dash-section-title">Launch Instructions</h1>
+            <p class="dash-section-desc">
+                Step-by-step setup for running the agents locally on <strong>Kelix</strong>
+                (your Windows workstation). Run these commands in PowerShell.
+            </p>
+
+            <ol class="launch-step-list">
+
+                <li class="launch-step">
+                    <div class="launch-step-num">1</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Clone the ai-agents repo</div>
+                        <p>If you haven't already cloned the repo to Kelix:</p>
+                        <div class="code-block">
+                            <pre><span class="code-cmd">git clone https://github.com/Xannith/ai-agents.git</span>
+<span class="code-cmd">cd ai-agents</span></pre>
+                        </div>
+                        <p>If the repo is already cloned, pull the latest:</p>
+                        <div class="code-block">
+                            <pre><span class="code-cmd">cd ai-agents</span>
+<span class="code-cmd">git pull</span></pre>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">2</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Open PowerShell and navigate to the repo</div>
+                        <div class="code-block">
+                            <pre><span class="code-comment"># Replace with your actual path</span>
+<span class="code-cmd">cd C:\Users\YourName\repos\ai-agents</span></pre>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">3</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Create a Python virtual environment</div>
+                        <p>Do this once per machine. The venv isolates these dependencies from your system Python.</p>
+                        <div class="code-block">
+                            <pre><span class="code-cmd">python -m venv .venv</span></pre>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">4</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Activate the virtual environment</div>
+                        <div class="code-block">
+                            <span class="code-label">PowerShell (Windows)</span>
+                            <pre><span class="code-cmd">.venv\Scripts\Activate.ps1</span></pre>
+                        </div>
+                        <p>Your prompt should change to show <code>(.venv)</code> when it's active. If PowerShell blocks the script, run this first:</p>
+                        <div class="code-block">
+                            <pre><span class="code-cmd">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</span></pre>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">5</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Upgrade pip and install dependencies</div>
+                        <div class="code-block">
+                            <pre><span class="code-cmd">python -m pip install --upgrade pip</span>
+
+<span class="code-comment"># Install agent dependencies</span>
+<span class="code-cmd">pip install -r agents/content-type-classifier/requirements.txt</span>
+
+<span class="code-comment"># Install Pipeline GUI dependencies (for Streamlit)</span>
+<span class="code-cmd">pip install -r agents/pipeline-gui/requirements.txt</span></pre>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">6</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Set up your .env file</div>
+                        <div class="code-block">
+                            <pre><span class="code-comment"># Copy the template</span>
+<span class="code-cmd">Copy-Item .env.example .env</span>
+
+<span class="code-comment"># Open in VS Code and add your ANTHROPIC_API_KEY</span>
+<span class="code-cmd">code .env</span></pre>
+                        </div>
+                        <p>See the <a href="#" onclick="navigate('credentials');return false;">Credentials page</a> for the full variable list. Never commit <code>.env</code>.</p>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">7</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Launch the Pipeline GUI (recommended starting point)</div>
+                        <p>The Streamlit GUI is the easiest way to run the full pipeline:</p>
+                        <div class="code-block">
+                            <pre><span class="code-cmd">streamlit run agents/pipeline-gui/app.py</span></pre>
+                        </div>
+                        <p>Streamlit will print the local URL — open it in your browser:</p>
+                        <div class="code-block">
+                            <pre><span class="code-value">  Local URL:  http://localhost:8501</span>
+<span class="code-value">  Network URL: http://192.168.x.x:8501</span></pre>
+                        </div>
+                        <p>Use <strong>dry-run mode</strong> in the GUI first to test without using API credits.</p>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">8</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Or run the Pipeline Runner from the CLI</div>
+                        <p>If you prefer the command line or want to script runs:</p>
+                        <div class="code-block">
+                            <pre><span class="code-comment"># Dry run first (no API credits)</span>
+<span class="code-cmd">python3 agents/pipeline-runner/src/run_pipeline.py</span> <span class="code-flag">\</span>
+  <span class="code-flag">--input</span>   <span class="code-value">agents/pipeline-runner/examples/sample-input.md</span> <span class="code-flag">\</span>
+  <span class="code-flag">--output</span>  <span class="code-value">agents/pipeline-runner/outputs/test</span> <span class="code-flag">\</span>
+  <span class="code-flag">--dry-run</span></pre>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">9</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Run individual agents as needed</div>
+                        <p>Each agent can also run standalone. See the individual agent pages in this dashboard for exact commands. All agents support <code>--dry-run</code> for testing without API calls.</p>
+                    </div>
+                </li>
+
+                <li class="launch-step">
+                    <div class="launch-step-num">10</div>
+                    <div class="launch-step-body">
+                        <div class="launch-step-title">Stop the GUI when done</div>
+                        <div class="code-block">
+                            <pre><span class="code-comment"># In the PowerShell window running Streamlit</span>
+<span class="code-cmd">Ctrl + C</span>
+
+<span class="code-comment"># Deactivate the venv</span>
+<span class="code-cmd">deactivate</span></pre>
+                        </div>
+                    </div>
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
+             NOTES
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-notes" class="dash-section">
+
+            <p class="dash-section-eyebrow">Settings</p>
+            <h1 class="dash-section-title">Notes</h1>
+            <p class="dash-section-desc">
+                Scratch notes, run logs, and working memory. Saved to browser localStorage — persists
+                across sessions on this device. Not synced anywhere.
+            </p>
+
+            <textarea
+                class="notes-area"
+                id="notesArea"
+                placeholder="Add notes here — run results, ideas, TODOs, observations..."
+                spellcheck="true"
+            ></textarea>
+
+            <div class="notes-save-row">
+                <button class="btn btn-primary" id="saveNotesBtn" style="font-size:0.85rem;">Save Notes</button>
+                <span class="notes-save-status" id="notesSaveStatus"></span>
+            </div>
+
+            <div class="notes-storage-note">
+                ⚠️ Notes are stored in <strong>localStorage</strong> on this browser/device only.
+                They are not encrypted, not synced, and will be lost if you clear browser storage.
+                Do not store API keys, passwords, or sensitive information here.
+            </div>
+
+        </section>
+
+    </div><!-- /.dash-content -->
+</main>
+
+<script>
+// ============================================================
+//  DASHBOARD — auth check + navigation
+//  ⚠️ The session check is UI-only. See login.html and README.
+// ============================================================
+
+// Auth gate — redirect to login if session flag not set
+(function() {
+    if (sessionStorage.getItem('hls-dashboard') !== '1') {
+        window.location.href = '/login.html';
+    }
+})();
+
+// Section titles for the topbar
+var SECTION_TITLES = {
+    'overview':        'Dashboard',
+    'pipeline-gui':    'Pipeline GUI',
+    'pipeline-runner': 'Pipeline Runner',
+    'classifier':      'Content Type Classifier',
+    'cwr-assessor':    'Crawl/Walk/Run Assessor',
+    'gap-scout':       'Content Gap Scout',
+    'metadata-gen':    'Metadata Generator',
+    'credentials':     'Credentials & Settings',
+    'launch':          'Launch Instructions',
+    'notes':           'Notes',
+};
+
+// Navigate to a section
+function navigate(sectionId) {
+    // Deactivate all
+    document.querySelectorAll('.dash-section').forEach(function(s) {
+        s.classList.remove('active');
+    });
+    document.querySelectorAll('.dash-nav-item').forEach(function(a) {
+        a.classList.remove('active');
+    });
+
+    // Activate target
+    var section = document.getElementById('section-' + sectionId);
+    if (section) section.classList.add('active');
+
+    var navItem = document.querySelector('[data-section="' + sectionId + '"]');
+    if (navItem) navItem.classList.add('active');
+
+    // Update topbar title
+    document.getElementById('dashPageTitle').textContent = SECTION_TITLES[sectionId] || sectionId;
+
+    // Close mobile sidebar
+    closeSidebar();
+
+    // Scroll to top
+    window.scrollTo(0, 0);
+}
+
+// Nav click binding
+document.querySelectorAll('.dash-nav-item[data-section]').forEach(function(item) {
+    item.addEventListener('click', function() {
+        navigate(this.dataset.section);
+    });
+});
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', function() {
+    sessionStorage.removeItem('hls-dashboard');
+    window.location.href = '/login.html';
+});
+
+// Mobile sidebar toggle
+var sidebar  = document.getElementById('dashSidebar');
+var overlay  = document.getElementById('dashOverlay');
+var hamburger = document.getElementById('dashHamburger');
+
+function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+}
+
+function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+}
+
+hamburger.addEventListener('click', function() {
+    if (sidebar.classList.contains('open')) { closeSidebar(); }
+    else { openSidebar(); }
+});
+
+overlay.addEventListener('click', closeSidebar);
+
+// Notes — load from localStorage
+(function() {
+    var saved = localStorage.getItem('hls-dashboard-notes');
+    if (saved) document.getElementById('notesArea').value = saved;
+
+    document.getElementById('saveNotesBtn').addEventListener('click', function() {
+        var val = document.getElementById('notesArea').value;
+        localStorage.setItem('hls-dashboard-notes', val);
+        var status = document.getElementById('notesSaveStatus');
+        status.textContent = 'Saved.';
+        setTimeout(function() { status.textContent = ''; }, 2000);
+    });
+
+    // Auto-save on input (debounced)
+    var autoSaveTimer;
+    document.getElementById('notesArea').addEventListener('input', function() {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(function() {
+            localStorage.setItem('hls-dashboard-notes', document.getElementById('notesArea').value);
+            document.getElementById('notesSaveStatus').textContent = 'Auto-saved.';
+            setTimeout(function() { document.getElementById('notesSaveStatus').textContent = ''; }, 1500);
+        }, 1500);
+    });
+})();
+</script>
+
+</body>
+</html>

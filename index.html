@@ -1,107 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Joshua Bechtel | AI Knowledge Strategy and Information Architecture</title>
-  <meta name="description" content="Joshua Bechtel — content architect, technical writer, and knowledge strategist helping organizations transform scattered documentation into structured, AI-ready systems.">
-  <meta property="og:title" content="Joshua Bechtel | AI Knowledge Strategy">
-  <meta property="og:description" content="Content architecture, technical writing, and enterprise knowledge strategy. See the writing samples and SKA framework.">
-  <meta property="og:url" content="https://joshwritingsamples.com">
-  <meta property="og:type" content="website">
-  <link rel="stylesheet" href="style.css">
-  <script src="nav.js"></script>
-  <script src="footer.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshua Bechtel | JoshWritingSamples.com</title>
+    <meta name="description" content="Joshua Bechtel's professional home has moved to JoshuaBechtel.com — AI enablement, knowledge architecture, and content systems.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Cover page overrides ──────────────────────────────── */
+        body {
+            background: var(--parchment);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .cover-shell {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px 80px;
+            text-align: center;
+        }
+        .cover-eyebrow {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 16px;
+        }
+        .cover-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            color: var(--forest);
+            line-height: 1.15;
+            margin-bottom: 8px;
+        }
+        .cover-tagline {
+            font-size: 0.95rem;
+            color: var(--slate);
+            margin-bottom: 40px;
+            letter-spacing: 0.02em;
+        }
+        .cover-tagline span { margin: 0 8px; opacity: 0.4; }
+        .cover-message {
+            max-width: 560px;
+            margin: 0 auto 48px;
+        }
+        .cover-message p {
+            font-size: 1.05rem;
+            color: var(--slate);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .cover-message p:last-child { margin-bottom: 0; }
+        .cover-ctas {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 72px;
+        }
+        .cover-divider {
+            width: 48px;
+            height: 2px;
+            background: var(--foam);
+            margin: 0 auto 40px;
+        }
+        .cover-secondary-note {
+            font-size: 0.82rem;
+            color: var(--sage);
+            opacity: 0.8;
+        }
+        .cover-secondary-note a {
+            color: var(--sage);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.15s;
+        }
+        .cover-secondary-note a:hover { border-bottom-color: var(--sage); }
+
+        /* Owner login — intentionally small and unobtrusive */
+        .owner-login-area {
+            position: fixed;
+            bottom: 20px;
+            right: 24px;
+            z-index: 10;
+        }
+        .owner-login-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.72rem;
+            color: var(--slate);
+            opacity: 0.45;
+            text-decoration: none;
+            padding: 6px 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: opacity 0.2s, border-color 0.2s;
+        }
+        .owner-login-link:hover {
+            opacity: 0.8;
+            border-color: var(--foam);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .cover-ctas { flex-direction: column; align-items: center; }
+            .cover-ctas a { width: 100%; max-width: 280px; text-align: center; }
+        }
+    </style>
 </head>
 <body>
 
-<script>loadHeader('home')</script>
+<main class="cover-shell">
 
-<section class="hero">
-  <div class="hero-text">
-    <h1>Buried in legacy documentation, scattered knowledge, and systems nobody can untangle anymore?</h1>
+    <p class="cover-eyebrow">Professional site has moved</p>
 
-    <p>
-      Are you trying to modernize a knowledge base, rescue decades of archived information,
-      or turn disconnected documentation into something structured, searchable, and actually useful?
+    <h1 class="cover-name">Joshua Bechtel</h1>
+    <p class="cover-tagline">
+        AI Enablement <span>&middot;</span> Knowledge Architecture <span>&middot;</span> Content Systems
     </p>
 
-    <p>
-      Are you staring at fifty years of policy, process, procedure, videos, notes, and tribal knowledge
-      wondering how any of it becomes a modern content system in 2026?
+    <div class="cover-message">
+        <p>
+            This writing samples portfolio has been folded into my full professional site at
+            <strong>JoshuaBechtel.com</strong> — where you'll find the resume, portfolio case studies,
+            writing samples, philosophies, and a direct path to my consulting practice.
+        </p>
+        <p>
+            Everything that was here is now better organized and more complete there.
+        </p>
+    </div>
+
+    <div class="cover-ctas">
+        <a href="https://joshuabechtel.com" class="btn btn-primary" target="_blank" rel="noopener">
+            Go to JoshuaBechtel.com
+        </a>
+        <a href="https://joshuabechtel.com/resume.html" class="btn btn-secondary" target="_blank" rel="noopener">
+            View Resume
+        </a>
+    </div>
+
+    <div class="cover-divider"></div>
+
+    <p class="cover-secondary-note">
+        Looking for something specific?
+        <a href="https://joshuabechtel.com/writing-samples.html" target="_blank" rel="noopener">Writing samples</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://joshuabechtel.com/portfolio.html" target="_blank" rel="noopener">Portfolio</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://joshuabechtel.com/knowledge.html" target="_blank" rel="noopener">SKA Framework</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://humanlayersystems.com" target="_blank" rel="noopener">Human Layer Systems</a>
     </p>
 
-    <p>
-      You are in the right place. This site showcases the writing, frameworks, and architecture thinking
-      Josh brings to knowledge transformation, stateless content design, and enterprise-scale documentation strategy.
-    </p>
+</main>
 
-    <div class="hero-buttons">
-      <a class="btn btn-primary" href="samples/index.html">Explore the Writing Samples</a>
-      <a class="btn btn-secondary" href="knowledge.html">See the Knowledge Architecture</a>
-    </div>
-  </div>
-
-  <div class="hero-image">
-    <figure class="speaker-photo">
-      <img src="img/JBechtel_lecture1.png"
-           alt="Joshua Bechtel presenting knowledge architecture concepts">
-      <figcaption>Sharing knowledge architecture concepts</figcaption>
-    </figure>
-  </div>
-</section>
-
-<section class="section">
-  <h2>What this site is built to show</h2>
-  <p>
-    This is not just a portfolio. It is a demonstration of how serious knowledge work can be transformed
-    into scalable systems, sharper writing, and more intelligent enterprise content.
-  </p>
-
-  <div class="pitch-grid">
-    <div class="card">
-      <h3>Legacy to Modern</h3>
-      <p>
-        See how old archives, outdated documentation, and scattered knowledge can be rethought into modern,
-        structured, stateless content systems.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Writing with Architecture</h3>
-      <p>
-        Explore writing samples that do more than explain. They organize, connect, and elevate information
-        so people can actually use it when it matters.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Knowledge that Lives</h3>
-      <p>
-        Static documentation dies. Living knowledge systems evolve, adapt, and reveal what people need,
-        what they ignore, and what the business should improve next.
-      </p>
-    </div>
-  </div>
-
-  <div class="closing-callout">
-    <h2>Documentation heaven might be a stretch. Clarity, structure, and usable knowledge are not.</h2>
-    <p>
-      Dive into this site to explore writing samples, knowledge management models, and architecture concepts
-      designed to help organizations move from documentation chaos to information systems that actually scale.
-    </p>
-    <p>
-      If your team needs help with content architecture, knowledge transformation, technical writing strategy,
-      or modernizing legacy information, start here.
-    </p>
-    <div class="hero-buttons">
-      <a class="btn btn-primary" href="contact.html">Contact Josh</a>
-      <a class="btn btn-secondary" href="about.html">Learn More About Josh</a>
-    </div>
-  </div>
-</section>
-
-<script>loadFooter()</script>
+<!-- Owner login — unobtrusive, bottom-right corner -->
+<div class="owner-login-area">
+    <a href="/login.html" class="owner-login-link" aria-label="Owner login">Owner login</a>
+</div>
 
 </body>
 </html>
