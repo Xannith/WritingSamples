@@ -55,6 +55,9 @@
         <a class="dash-nav-item" data-section="metadata-gen">
             <span class="nav-icon">◦</span> Metadata Generator
         </a>
+        <a class="dash-nav-item" data-section="prompt-builder">
+            <span class="nav-icon">◈</span> Prompt Builder
+        </a>
 
         <div class="dash-nav-group">Settings</div>
         <a class="dash-nav-item" data-section="credentials">
@@ -104,12 +107,12 @@
             <!-- Quick stats -->
             <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px;">
                 <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:14px 22px;text-align:center;min-width:110px;">
-                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">6</div>
+                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">7</div>
                     <div style="font-size:0.72rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.08em;">Agents / Tools</div>
                 </div>
                 <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:14px 22px;text-align:center;min-width:110px;">
-                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">1</div>
-                    <div style="font-size:0.72rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.08em;">Streamlit GUI</div>
+                    <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">2</div>
+                    <div style="font-size:0.72rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.08em;">Browser GUIs</div>
                 </div>
                 <div style="background:var(--white);border:1px solid var(--foam);border-radius:8px;padding:14px 22px;text-align:center;min-width:110px;">
                     <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--forest);">4</div>
@@ -182,6 +185,16 @@
                     <p class="agent-card-desc">Generates structured metadata for content chunks — enabling reliable retrieval, governance assignment, and AI-ready tagging. Agent #4.</p>
                     <p class="agent-card-meta">agents/metadata-generator/src/generate_metadata.py</p>
                     <button class="agent-card-open" onclick="navigate('metadata-gen');event.stopPropagation()">Open details &rarr;</button>
+                </div>
+
+                <div class="agent-card" onclick="navigate('prompt-builder')">
+                    <div class="agent-card-top">
+                        <div class="agent-card-name">Prompt Builder</div>
+                        <span class="agent-badge badge-browser">Browser Tool</span>
+                    </div>
+                    <p class="agent-card-desc">Three-agent pipeline that turns a rough idea into a structured five-part prompt. Runs entirely in the browser — no install, no server, no Python required.</p>
+                    <p class="agent-card-meta">agents/prompt-builder/index.html &rarr; open in browser</p>
+                    <button class="agent-card-open" onclick="navigate('prompt-builder');event.stopPropagation()">Open details &rarr;</button>
                 </div>
 
             </div>
@@ -642,6 +655,103 @@
 
 
         <!-- ══════════════════════════════════════════════════════
+             PROMPT BUILDER
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-prompt-builder" class="dash-section">
+
+            <p class="dash-section-eyebrow">Agents &amp; Tools · Prompt Tool</p>
+            <div class="agent-detail-header">
+                <div class="agent-detail-top">
+                    <h1 class="agent-detail-name">Prompt Builder</h1>
+                    <span class="agent-badge badge-browser">Browser Tool</span>
+                </div>
+                <p class="agent-detail-desc">
+                    A three-agent pipeline that turns a rough idea into a structured, production-ready
+                    AI prompt. Runs entirely in the browser from a single HTML file — no Python, no
+                    server, no install required. The agents run in sequence: Intake diagnoses what is
+                    present or missing, Build constructs the finished five-part prompt, and Quality
+                    scores the result and explains what makes it work.
+                </p>
+            </div>
+
+            <div class="agent-detail-grid">
+                <div class="detail-card">
+                    <div class="detail-card-title">Repo location</div>
+                    <p><code>agents/prompt-builder/index.html</code><br>
+                    Module version: <code>agents/prompt-builder/agents.js</code></p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Runtime type</div>
+                    <p>Standalone browser tool<br>
+                    Open <code>index.html</code> directly in Chrome or Firefox<br>
+                    No server or local port required</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">API key requirement</div>
+                    <p><code>ANTHROPIC_API_KEY</code> — entered in the browser UI<br>
+                    Stored in session memory only<br>
+                    Never written to disk or storage</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-card-title">Dependencies</div>
+                    <p>None. No pip install. No npm.<br>
+                    Uses <code>fetch</code> to call the Anthropic API directly.<br>
+                    Requires an internet connection.</p>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">How to open</div>
+                <div class="code-block">
+                    <span class="code-label">Kelex — any method</span>
+                    <pre><span class="code-comment"># Windows Explorer — double-click to open in default browser</span>
+<span class="code-value">agents\prompt-builder\index.html</span>
+
+<span class="code-comment"># Chrome from PowerShell</span>
+<span class="code-cmd">start chrome agents\prompt-builder\index.html</span></pre>
+                </div>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">User flow</div>
+                <p>1. Open <code>index.html</code> in Chrome or Firefox<br>
+                2. Enter your Anthropic API key — the field collapses after entry<br>
+                3. Paste a rough prompt or idea into the text area<br>
+                4. Click <strong>Build Prompt</strong><br>
+                5. If Agent 1 needs more information, answer the clarifying questions and click <strong>Continue</strong><br>
+                6. Review the finished five-part prompt in the output panel<br>
+                7. Click <strong>Copy</strong> to copy the prompt to clipboard<br>
+                8. Review the confidence score and "Why this works" explanation below the prompt</p>
+            </div>
+
+            <div class="detail-card" style="margin-bottom:18px;">
+                <div class="detail-card-title">The three sub-agents</div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:10px;">
+                    <div style="border:1px solid var(--foam);border-radius:6px;padding:14px;">
+                        <div style="font-size:0.78rem;font-weight:700;color:var(--sage);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Agent 1 — Intake</div>
+                        <p style="font-size:0.85rem;color:var(--ink);margin:0;">Reads the raw input and classifies each of four framework parts (Role, Context, Task, Format) as present, partial, or missing. Passes a diagnosis forward or returns focused clarifying questions if there is not enough signal.</p>
+                    </div>
+                    <div style="border:1px solid var(--foam);border-radius:6px;padding:14px;">
+                        <div style="font-size:0.78rem;font-weight:700;color:var(--sage);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Agent 2 — Build</div>
+                        <p style="font-size:0.85rem;color:var(--ink);margin:0;">Takes the diagnosis and constructs the finished five-part prompt: Role, Context, Task, Format, Constraints. Applies consistent style rules — active voice, no dashes, no marketing language, concrete and direct.</p>
+                    </div>
+                    <div style="border:1px solid var(--foam);border-radius:6px;padding:14px;">
+                        <div style="font-size:0.78rem;font-weight:700;color:var(--sage);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Agent 3 — Quality</div>
+                        <p style="font-size:0.85rem;color:var(--ink);margin:0;">Scores the finished prompt 0.0 to 1.0 based on how much came from explicit input versus assumptions. Writes a short explanation of what makes it effective and flags any assumptions the user should review.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agent-links-row">
+                <a href="https://github.com/Xannith/ai-agents/tree/main/agents/prompt-builder" target="_blank" rel="noopener" class="agent-gh-link">↗ Open in GitHub</a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/prompt-builder/README.md" target="_blank" rel="noopener" class="agent-gh-link">📄 Full README</a>
+                <a href="https://github.com/Xannith/ai-agents/blob/main/agents/prompt-builder/agent-card.md" target="_blank" rel="noopener" class="agent-gh-link">🃏 Agent Card</a>
+            </div>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
              CREDENTIALS / SETTINGS
         ══════════════════════════════════════════════════════ -->
         <section id="section-credentials" class="dash-section">
@@ -1016,6 +1126,7 @@ var SECTION_TITLES = {
     'cwr-assessor':    'Crawl/Walk/Run Assessor',
     'gap-scout':       'Content Gap Scout',
     'metadata-gen':    'Metadata Generator',
+    'prompt-builder':  'Prompt Builder',
     'credentials':     'Credentials & Settings',
     'launch':          'Launch Instructions',
     'notes':           'Notes',

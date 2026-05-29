@@ -375,6 +375,7 @@
 .badge-streamlit { background: #e8f4ff; color: #1a6bb0; }
 .badge-cli       { background: #e8f5e9; color: #2d5a2d; }
 .badge-coordinator { background: #fff3e0; color: #8a5400; }
+.badge-browser   { background: #f0ebe8; color: #6b3a2a; }
 
 .agent-card-desc {
     font-size: 0.84rem;
