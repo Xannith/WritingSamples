@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>GRID RIDERS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080b12;
+    --panel:rgba(255,255,255,0.04);
+    --panel-line:rgba(255,255,255,0.09);
+    --arena-bg:#0a0d16;
+    --text:#eaf2f8;
+    --muted:#8a93a8;
+    --p1:#38e0f0;
+    --p2:#ff9d3c;
+    --display:"Chakra Petch", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(1000px 560px at 50% -12%, #10182a 0%, rgba(16,24,42,0) 62%),
+      var(--bg);
+    color:var(--text);
+    min-height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;padding:16px;
+    -webkit-user-select:none;user-select:none;
+    touch-action:manipulation;
+    overflow-x:hidden;
+  }
+  header{text-align:center;}
+  header h1{
+    font-family:var(--display);font-weight:700;
+    font-size:28px;letter-spacing:9px;color:var(--text);
+    text-shadow:0 0 24px rgba(56,224,240,0.28);
+  }
+  header p{
+    font-family:var(--display);font-weight:500;
+    font-size:11px;letter-spacing:3px;color:var(--muted);
+    margin-top:4px;text-transform:uppercase;
+  }
+
+  .scoreboard{display:flex;align-items:center;gap:18px;font-family:var(--display);}
+  .team{display:flex;align-items:center;gap:9px;}
+  .team .dot{width:12px;height:12px;border-radius:50%;}
+  .team.p1 .dot{background:var(--p1);box-shadow:0 0 12px var(--p1);}
+  .team.p2 .dot{background:var(--p2);box-shadow:0 0 12px var(--p2);}
+  .team .pname{font-size:12px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .team b{font-size:26px;font-variant-numeric:tabular-nums;line-height:1;}
+  .team.p1 b{color:var(--p1);}
+  .team.p2 b{color:var(--p2);}
+  .vs{font-size:10px;letter-spacing:2px;color:#5b6678;text-transform:uppercase;}
+
+  .arena-wrap{
+    position:relative;border-radius:14px;padding:8px;
+    background:var(--panel);border:1px solid var(--panel-line);
+    box-shadow:0 0 70px rgba(56,224,240,0.05), 0 24px 70px rgba(0,0,0,0.6);
+  }
+  #arena{
+    display:block;width:min(560px,92vw);height:auto;aspect-ratio:1 / 1;
+    border-radius:8px;background:var(--arena-bg);
+  }
+
+  .overlay{
+    position:absolute;inset:8px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .overlay.dim{
+    background:rgba(8,11,18,0.9);
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  }
+  .ov-card{padding:22px;max-width:94%;}
+  .ov-card h2{
+    font-family:var(--display);font-weight:700;
+    font-size:26px;letter-spacing:3px;margin-bottom:8px;
+  }
+  .ov-card > p{font-size:13px;color:#aab4c4;line-height:1.6;margin-bottom:8px;}
+  .ov-score{
+    font-family:var(--display);font-size:15px;color:var(--muted);
+    letter-spacing:2px;margin:10px 0;text-transform:uppercase;
+    font-variant-numeric:tabular-nums;
+  }
+  .opts{display:flex;flex-direction:column;gap:8px;margin:10px 0 6px;}
+  .opt-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .opt{
+    font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:1px;
+    padding:9px 13px;border-radius:9px;border:1px solid var(--panel-line);
+    background:rgba(255,255,255,0.04);color:#cfd8e6;cursor:pointer;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .opt:hover{border-color:rgba(56,224,240,0.4);}
+  .opt.active{
+    border-color:var(--p1);color:#eaf2f8;background:rgba(56,224,240,0.12);
+    box-shadow:0 0 14px rgba(56,224,240,0.15);
+  }
+  .swatch-label{
+    font-family:var(--display);font-size:10px;letter-spacing:2px;
+    color:var(--muted);text-transform:uppercase;margin-top:6px;
+  }
+  .swatches{margin-top:2px;}
+  .swatch{
+    width:30px;height:30px;border-radius:50%;padding:0;cursor:pointer;
+    background:var(--sw);border:2px solid rgba(255,255,255,0.18);
+    box-shadow:0 0 10px var(--sw);
+    transition:transform .1s ease, border-color .1s ease;
+  }
+  .swatch:hover{transform:scale(1.08);}
+  .swatch.active{
+    border-color:#ffffff;transform:scale(1.12);
+    box-shadow:0 0 0 2px rgba(255,255,255,0.25), 0 0 16px var(--sw);
+  }
+  .controls-list{font-size:12px;color:#9aa4b6;line-height:2;margin-top:8px;}
+  .controls-list kbd{
+    font-family:var(--display);font-size:11px;
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+    border-radius:5px;padding:1px 6px;color:#e6ebf3;
+  }
+  .btn{
+    font-family:var(--display);font-weight:700;letter-spacing:1px;
+    margin-top:14px;padding:11px 22px;border:none;border-radius:10px;
+    background:linear-gradient(180deg,#38e0f0,#17b4c6);color:#04222a;
+    font-size:14px;cursor:pointer;transition:transform .08s ease, filter .15s ease;
+  }
+  .btn:hover{filter:brightness(1.08);}
+  .btn:active{transform:translateY(1px);}
+
+  .cd{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .cd-sub{
+    font-family:var(--display);font-size:14px;letter-spacing:2px;
+    color:var(--muted);text-transform:uppercase;
+  }
+  .cd-num{
+    font-family:var(--display);font-weight:700;font-size:92px;line-height:1;
+    color:#eaf2f8;text-shadow:0 0 34px rgba(56,224,240,0.5);
+  }
+  .cd-num.go{color:var(--p1);}
+
+  .dpad{
+    display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,56px);
+    gap:6px;justify-content:center;
+  }
+  .dpad button{
+    border-radius:12px;border:1px solid rgba(255,255,255,0.11);
+    background:rgba(255,255,255,0.05);color:#e6ebf3;font-size:18px;
+  }
+  .dpad button:active{background:rgba(56,224,240,0.2);}
+  .dpad .up{grid-column:2;grid-row:1;}
+  .dpad .left{grid-column:1;grid-row:2;}
+  .dpad .right{grid-column:3;grid-row:2;}
+  .dpad .down{grid-column:2;grid-row:3;}
+
+  .help{
+    font-size:12px;color:#6b7688;text-align:center;
+    max-width:560px;line-height:1.8;
+  }
+
+  @media (min-width:760px){ .dpad{display:none;} }
+  @media (max-width:759px){ .help{display:none;} }
+
+  @media (prefers-reduced-motion:no-preference){
+    header,.scoreboard,.arena-wrap{animation:rise .5s ease both;}
+    @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>GRID RIDERS</h1>
+    <p>Two light cycles, one grid, wall the other rider in</p>
+  </header>
+
+  <div class="scoreboard">
+    <div class="team p1"><span class="dot" id="dot1"></span><span class="pname">P1</span><b id="s1">0</b></div>
+    <div class="vs">first to 5</div>
+    <div class="team p2"><b id="s2">0</b><span class="pname" id="p2name">CPU</span><span class="dot" id="dot2"></span></div>
+  </div>
+
+  <div class="arena-wrap">
+    <canvas id="arena"></canvas>
+    <div class="overlay" id="overlay"></div>
+  </div>
+
+  <div class="dpad">
+    <button class="up" id="d-up">&#9650;</button>
+    <button class="left" id="d-left">&#9668;</button>
+    <button class="right" id="d-right">&#9658;</button>
+    <button class="down" id="d-down">&#9660;</button>
+  </div>
+
+  <div class="help">
+    Player 1 steers with <b>W A S D</b>. In two-player mode, Player 2 uses the <b>Arrow keys</b>. You cannot turn back into your own trail. Press <b>P</b> to pause.
+  </div>
+
+<script>
+"use strict";
+
+/* ---------- Constants ---------- */
+const COLS = 50, ROWS = 50, CELL = 12;
+const AW = COLS * CELL, AH = ROWS * CELL;   // 600 x 600 logical
+
+const SLOW = 110, NORMAL = 80, FAST = 55;   // ms per movement tick
+const WIN_TARGET = 5;
+const SCORE_DELAY = 250;                     // ms after crash before score ticks
+const ROUNDEND_TIME = 950;                   // ms the crash burst holds before next round
+const BURST_TIME = 480;                      // ms the crash burst animates
+const AI_LOOKAHEAD = 120;                    // flood-fill cap for the AI
+
+const P1_COLORS = [
+  { name:"Chartreuse", hex:"#b6ff3c" },
+  { name:"Cyan",       hex:"#38e0f0" },
+  { name:"Magenta",    hex:"#ff5bd0" },
+  { name:"Violet",     hex:"#a97bff" },
+  { name:"Ice",        hex:"#eaf2f8" }
+];
+let p1Color = "#b6ff3c";          // Player 1 rider color, chartreuse by default
+const p2Color = "#ff9d3c";        // opponent stays orange for contrast
+
+const UP = {x:0,y:-1}, DOWN = {x:0,y:1}, LEFT = {x:-1,y:0}, RIGHT = {x:1,y:0};
+
+/* ---------- State ---------- */
+let grid;                 // 0 empty, 1 = P1 trail, 2 = P2 trail
+let players = [];         // { id, x, y, dir, nextDir, color, alive, isAI }
+let scores = [0, 0];
+let mode = "cpu";         // "cpu" | "2p"
+let speed = NORMAL;
+let tickInterval = NORMAL, tickAcc = 0, lastTime = 0;
+let state = "menu";       // menu | countdown | playing | roundEnd | paused | matchEnd
+let countdownTimer = 0, lastCdLabel = null;
+let roundTimer = 0, roundResult = null, scoreApplied = false;
+let crashCells = [];
+
+/* ---------- Canvas setup ---------- */
+const arenaEl = document.getElementById("arena");
+const trailCanvas = document.createElement("canvas");
+let ctx, trailCtx;
+
+function setupCanvas(cv, w, h){
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = w * dpr;
+  cv.height = h * dpr;
+  const c = cv.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return c;
+}
+
+/* ---------- DOM refs ---------- */
+const overlay = document.getElementById("overlay");
+const s1El = document.getElementById("s1");
+const s2El = document.getElementById("s2");
+const p2NameEl = document.getElementById("p2name");
+const dot1El = document.getElementById("dot1");
+const dot2El = document.getElementById("dot2");
+
+/* ---------- Overlay helpers ---------- */
+function setOverlay(html, dim){
+  overlay.innerHTML = html;
+  overlay.style.display = "flex";
+  overlay.classList.toggle("dim", !!dim);
+}
+function clearOverlay(){ overlay.style.display = "none"; }
+
+function menuHTML(){
+  const p1keys = mode === "2p"
+    ? '<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &nbsp; vs &nbsp; P2 <kbd>Arrows</kbd>'
+    : '<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrows</kbd>';
+  const swatches = P1_COLORS.map(c =>
+    `<button class="swatch ${p1Color===c.hex?'active':''}" style="--sw:${c.hex}" ` +
+    `onclick="selectColor('${c.hex}')" title="${c.name}" aria-label="${c.name}"></button>`
+  ).join("");
+  return `
+  <div class="ov-card">
+    <h2>GRID RIDERS</h2>
+    <p>A Tron-style light cycle duel.</p>
+    <div class="opts">
+      <div class="opt-row">
+        <button class="opt ${mode==='cpu'?'active':''}" onclick="selectMode('cpu')">1 Player vs CPU</button>
+        <button class="opt ${mode==='2p'?'active':''}" onclick="selectMode('2p')">2 Players</button>
+      </div>
+      <div class="opt-row">
+        <button class="opt ${speed===SLOW?'active':''}" onclick="selectSpeed('slow')">Slow</button>
+        <button class="opt ${speed===NORMAL?'active':''}" onclick="selectSpeed('normal')">Normal</button>
+        <button class="opt ${speed===FAST?'active':''}" onclick="selectSpeed('fast')">Fast</button>
+      </div>
+      <div class="swatch-label">Your rider color</div>
+      <div class="opt-row swatches">${swatches}</div>
+    </div>
+    <div class="controls-list">${p1keys}</div>
+    <button class="btn" onclick="startMatch()">Start (Enter)</button>
+  </div>`;
+}
+function showMenu(){ setOverlay(menuHTML(), true); }
+
+function selectMode(m){ mode = m; updateScoreboard(); setOverlay(menuHTML(), true); }
+function selectSpeed(s){
+  speed = s === "slow" ? SLOW : s === "fast" ? FAST : NORMAL;
+  setOverlay(menuHTML(), true);
+}
+function selectColor(hex){
+  p1Color = hex;
+  updateScoreboard();
+  setOverlay(menuHTML(), true);
+}
+
+/* ---------- Scoreboard ---------- */
+function updateScoreboard(){
+  s1El.textContent = scores[0];
+  s2El.textContent = scores[1];
+  p2NameEl.textContent = mode === "cpu" ? "CPU" : "P2";
+  s1El.style.color = p1Color;
+  s2El.style.color = p2Color;
+  dot1El.style.background = p1Color;
+  dot1El.style.boxShadow = "0 0 12px " + p1Color;
+  dot2El.style.background = p2Color;
+  dot2El.style.boxShadow = "0 0 12px " + p2Color;
+}
+
+/* ---------- Grid helpers ---------- */
+function emptyGrid(){ return Array.from({length:ROWS}, () => new Array(COLS).fill(0)); }
+
+/* ---------- Rendering ---------- */
+function paintTrail(c, cx, cy, color){
+  const x = cx * CELL, y = cy * CELL;
+  c.fillStyle = color;
+  c.fillRect(x, y, CELL, CELL);
+  c.fillStyle = "rgba(255,255,255,0.14)";
+  c.fillRect(x + 2, y + 2, CELL - 4, CELL - 4);
+}
+
+function drawGrid(){
+  ctx.fillStyle = "#0a0d16";
+  ctx.fillRect(0, 0, AW, AH);
+  ctx.strokeStyle = "rgba(56,224,240,0.06)"; ctx.lineWidth = 1;
+  for(let x = 0; x <= COLS; x++){
+    ctx.beginPath(); ctx.moveTo(x*CELL+0.5, 0); ctx.lineTo(x*CELL+0.5, AH); ctx.stroke();
+  }
+  for(let y = 0; y <= ROWS; y++){
+    ctx.beginPath(); ctx.moveTo(0, y*CELL+0.5); ctx.lineTo(AW, y*CELL+0.5); ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(56,224,240,0.22)"; ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, AW - 2, AH - 2);
+}
+
+function drawHead(p){
+  const x = p.x * CELL, y = p.y * CELL;
+  ctx.save();
+  ctx.shadowColor = p.color; ctx.shadowBlur = 14;
+  ctx.fillStyle = p.color;
+  ctx.fillRect(x, y, CELL, CELL);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(x + CELL*0.3, y + CELL*0.3, CELL*0.4, CELL*0.4);
+  ctx.restore();
+}
+
+function drawBurst(){
+  const t = Math.min(roundTimer / BURST_TIME, 1);
+  for(const cc of crashCells){
+    const cx = cc.x*CELL + CELL/2, cy = cc.y*CELL + CELL/2;
+    const r = t * CELL * 4.2;
+    ctx.save();
+    ctx.globalAlpha = 1 - t;
+    ctx.strokeStyle = cc.color; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+    ctx.globalAlpha = (1 - t) * 0.85;
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath(); ctx.arc(cx, cy, r * 0.4, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+}
+
+function draw(){
+  drawGrid();
+  ctx.drawImage(trailCanvas, 0, 0, AW, AH);
+  if(state === "playing" || state === "countdown" || state === "paused"){
+    for(const p of players) if(p.alive) drawHead(p);
+  } else if(state === "roundEnd"){
+    for(const p of players) drawHead(p);
+    drawBurst();
+  }
+}
+
+/* ---------- AI ---------- */
+function openSpace(sx, sy, cap){
+  if(sx<0 || sx>=COLS || sy<0 || sy>=ROWS || grid[sy][sx] !== 0) return 0;
+  const seen = new Set([sy*COLS + sx]);
+  const stack = [[sx, sy]];
+  let count = 0;
+  while(stack.length && count < cap){
+    const cell = stack.pop();
+    count++;
+    const nb = [[cell[0]+1,cell[1]],[cell[0]-1,cell[1]],[cell[0],cell[1]+1],[cell[0],cell[1]-1]];
+    for(const n of nb){
+      const nx = n[0], ny = n[1];
+      if(nx<0 || nx>=COLS || ny<0 || ny>=ROWS) continue;
+      if(grid[ny][nx] !== 0) continue;
+      const key = ny*COLS + nx;
+      if(seen.has(key)) continue;
+      seen.add(key); stack.push([nx, ny]);
+    }
+  }
+  return count;
+}
+
+function aiChoose(p){
+  const opp = {x:-p.dir.x, y:-p.dir.y};
+  const dirs = [UP, DOWN, LEFT, RIGHT].filter(d => !(d.x===opp.x && d.y===opp.y));
+  const safe = [];
+  for(const d of dirs){
+    const nx = p.x + d.x, ny = p.y + d.y;
+    if(nx<0 || nx>=COLS || ny<0 || ny>=ROWS) continue;
+    if(grid[ny][nx] !== 0) continue;
+    safe.push({ d, score: openSpace(nx, ny, AI_LOOKAHEAD) + Math.random()*2 });
+  }
+  if(safe.length === 0){ p.nextDir = p.dir; return; }        // no escape, ride on
+  if(Math.random() < 0.12){                                   // a little imperfection
+    p.nextDir = safe[Math.floor(Math.random()*safe.length)].d;
+    return;
+  }
+  let best = safe[0];
+  for(const s of safe) if(s.score > best.score) best = s;
+  p.nextDir = best.d;
+}
+
+/* ---------- Movement tick ---------- */
+function setDir(p, d){
+  if(!p || !p.alive) return;
+  if(d.x === -p.dir.x && d.y === -p.dir.y) return;           // block instant reversal
+  p.nextDir = d;
+}
+
+function tick(){
+  for(const p of players) if(p.isAI && p.alive) aiChoose(p);
+  for(const p of players) if(p.alive) p.dir = p.nextDir;
+
+  const nexts = players.map(p => p.alive ? {x:p.x+p.dir.x, y:p.y+p.dir.y} : null);
+  const crash = players.map(() => false);
+
+  for(let i = 0; i < players.length; i++){
+    if(!players[i].alive) continue;
+    const n = nexts[i];
+    if(n.x<0 || n.x>=COLS || n.y<0 || n.y>=ROWS) crash[i] = true;
+    else if(grid[n.y][n.x] !== 0) crash[i] = true;
+  }
+  if(players[0].alive && players[1].alive && !crash[0] && !crash[1]
+     && nexts[0].x === nexts[1].x && nexts[0].y === nexts[1].y){
+    crash[0] = crash[1] = true;                              // head-on
+  }
+
+  crashCells = [];
+  for(let i = 0; i < players.length; i++){
+    const p = players[i];
+    if(!p.alive) continue;
+    if(crash[i]){
+      p.alive = false;
+      crashCells.push({ x:p.x, y:p.y, color:p.color });
+    } else {
+      const n = nexts[i];
+      grid[n.y][n.x] = p.id;
+      paintTrail(trailCtx, n.x, n.y, p.color);
+      p.x = n.x; p.y = n.y;
+    }
+  }
+
+  const aliveIdx = players.map((p, i) => p.alive ? i : -1).filter(i => i >= 0);
+  if(aliveIdx.length <= 1){
+    roundResult = aliveIdx.length === 1 ? (aliveIdx[0] === 0 ? "p1" : "p2") : "draw";
+    state = "roundEnd"; roundTimer = 0; scoreApplied = false;
+  }
+}
+
+/* ---------- Round and match flow ---------- */
+function startRound(){
+  grid = emptyGrid();
+  trailCtx.clearRect(0, 0, AW, AH);
+  const midY = Math.floor(ROWS / 2);
+  const x1 = Math.floor(COLS * 0.25), x2 = Math.floor(COLS * 0.75);
+  players = [
+    { id:1, x:x1, y:midY, dir:RIGHT, nextDir:RIGHT, color:p1Color, alive:true, isAI:false },
+    { id:2, x:x2, y:midY, dir:LEFT,  nextDir:LEFT,  color:p2Color, alive:true, isAI:(mode==="cpu") }
+  ];
+  for(const p of players){ grid[p.y][p.x] = p.id; paintTrail(trailCtx, p.x, p.y, p.color); }
+  crashCells = [];
+  scoreApplied = false;
+  countdownTimer = 0; lastCdLabel = null;
+  state = "countdown";
+}
+
+function startMatch(){
+  scores = [0, 0];
+  roundResult = null;
+  tickInterval = speed;
+  updateScoreboard();
+  startRound();
+}
+
+function roundResultText(){
+  if(!roundResult) return "";
+  if(roundResult === "draw") return "Round draw";
+  if(roundResult === "p1") return "Player 1 takes the round";
+  return (mode === "cpu" ? "CPU" : "Player 2") + " takes the round";
+}
+
+function applyScore(){
+  if(roundResult === "p1") scores[0]++;
+  else if(roundResult === "p2") scores[1]++;
+  updateScoreboard();
+}
+
+function endMatch(){
+  state = "matchEnd";
+  const winner = scores[0] > scores[1] ? 1 : 2;
+  const wtext = winner === 1 ? "Player 1" : (mode === "cpu" ? "CPU" : "Player 2");
+  setOverlay(`
+    <div class="ov-card">
+      <h2>${wtext} wins</h2>
+      <div class="ov-score">Final ${scores[0]} to ${scores[1]}</div>
+      <button class="btn" onclick="startMatch()">Rematch (Enter)</button>
+      <br>
+      <button class="opt" style="margin-top:14px;" onclick="toMenu()">Back to menu</button>
+    </div>`, true);
+}
+
+function toMenu(){
+  state = "menu";
+  scores = [0, 0];
+  roundResult = null;
+  players = [];
+  grid = emptyGrid();
+  trailCtx.clearRect(0, 0, AW, AH);
+  crashCells = [];
+  updateScoreboard();
+  showMenu();
+}
+
+function togglePause(){
+  if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
+  else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }
+}
+
+/* ---------- Countdown ---------- */
+function handleCountdown(delta){
+  countdownTimer += delta;
+  if(countdownTimer >= 3*700 + 350){
+    state = "playing"; clearOverlay(); lastCdLabel = null;
+    tickAcc = 0; lastTime = performance.now();
+    return;
+  }
+  const step = Math.floor(countdownTimer / 700);
+  const label = step >= 3 ? "GO" : String(3 - step);
+  if(label !== lastCdLabel){
+    lastCdLabel = label;
+    const sub = roundResultText();
+    setOverlay(
+      `<div class="cd">${sub ? `<div class="cd-sub">${sub}</div>` : ""}` +
+      `<div class="cd-num ${label==="GO"?"go":""}">${label}</div></div>`, false);
+  }
+}
+
+/* ---------- Main loop ---------- */
+function loop(time){
+  const delta = Math.min(time - lastTime, 100);
+  lastTime = time;
+
+  if(state === "playing"){
+    tickAcc += delta;
+    while(tickAcc >= tickInterval){
+      tick();
+      tickAcc -= tickInterval;
+      if(state !== "playing") break;
+    }
+  } else if(state === "countdown"){
+    handleCountdown(delta);
+  } else if(state === "roundEnd"){
+    roundTimer += delta;
+    if(!scoreApplied && roundTimer > SCORE_DELAY){ applyScore(); scoreApplied = true; }
+    if(roundTimer > ROUNDEND_TIME){
+      if(scores[0] >= WIN_TARGET || scores[1] >= WIN_TARGET) endMatch();
+      else startRound();
+    }
+  }
+
+  draw();
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Keyboard ---------- */
+document.addEventListener("keydown", e => {
+  if(state === "menu"){ if(e.key === "Enter"){ startMatch(); e.preventDefault(); } return; }
+  if(state === "matchEnd"){ if(e.key === "Enter"){ startMatch(); e.preventDefault(); } return; }
+  if(e.key === "p" || e.key === "P" || e.key === "Escape"){ togglePause(); e.preventDefault(); return; }
+  if(state !== "playing") return;
+
+  const p1 = players[0], p2 = players[1];
+  switch(e.key){
+    case "w": case "W": setDir(p1, UP); break;
+    case "s": case "S": setDir(p1, DOWN); break;
+    case "a": case "A": setDir(p1, LEFT); break;
+    case "d": case "D": setDir(p1, RIGHT); break;
+  }
+  const arrowTarget = mode === "cpu" ? p1 : p2;
+  switch(e.key){
+    case "ArrowUp":    setDir(arrowTarget, UP);    e.preventDefault(); break;
+    case "ArrowDown":  setDir(arrowTarget, DOWN);  e.preventDefault(); break;
+    case "ArrowLeft":  setDir(arrowTarget, LEFT);  e.preventDefault(); break;
+    case "ArrowRight": setDir(arrowTarget, RIGHT); e.preventDefault(); break;
+  }
+}, { passive:false });
+
+/* ---------- Touch (drives Player 1) ---------- */
+function bindDpad(id, d){
+  document.getElementById(id).addEventListener("pointerdown", e => {
+    e.preventDefault();
+    if(state === "playing") setDir(players[0], d);
+  });
+}
+bindDpad("d-up", UP);
+bindDpad("d-down", DOWN);
+bindDpad("d-left", LEFT);
+bindDpad("d-right", RIGHT);
+
+/* ---------- Init ---------- */
+function init(){
+  ctx = setupCanvas(arenaEl, AW, AH);
+  trailCtx = setupCanvas(trailCanvas, AW, AH);
+  grid = emptyGrid();
+  trailCtx.clearRect(0, 0, AW, AH);
+  updateScoreboard();
+  showMenu();
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+init();
+</script>
+</body>
+</html>
