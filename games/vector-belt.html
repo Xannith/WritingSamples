@@ -183,6 +183,7 @@
     Turn with <b>Left / Right</b> or <b>A / D</b>, thrust with <b>Up</b> or <b>W</b>, fire with <b>Space</b>, teleport with <b>Shift</b>. Clear a wave to pick an upgrade. <b>P</b> pauses.
   </div>
 
+<script src="/games/arcade-audio.js"></script>
 <script>
 "use strict";
 
@@ -350,6 +351,7 @@ function spawnWave(){
   }
 }
 function destroyRock(r){
+  if(window.ArcadeSFX) ArcadeSFX.play('hit');
   score += r.tier === 0 ? 20 : r.tier === 1 ? 50 : 100;
   spawnDebris(r.x, r.y, r.tier);
   if(r.tier < 2){ rocks.push(makeRock(r.x, r.y, r.tier + 1)); rocks.push(makeRock(r.x, r.y, r.tier + 1)); }
@@ -380,6 +382,7 @@ function explodeShip(){
 
 /* ---------- Actions ---------- */
 function shoot(){
+  if(window.ArcadeSFX) ArcadeSFX.play('shoot');
   const n = 1 + up.spread;
   const arc = Math.min(1.0, (n - 1) * 0.16);
   const bs = bulletSpeed(), bl = bulletLife(), pc = up.pierce;
@@ -413,6 +416,7 @@ function shipHit(r){
     ship.vx += Math.cos(ang)*160; ship.vy += Math.sin(ang)*160;
     spawnRing(ship.x, ship.y, "#43e0ff", 44, 0.4);
   } else {
+    if(window.ArcadeSFX) ArcadeSFX.play('crash');
     lives--; explodeShip(); shake(16, 0.55);
     if(lives <= 0){ updateHud(); gameOver(); return; }
     resetShip(); invuln = INVULN_SPAWN;
@@ -587,6 +591,7 @@ function startWave(){
   waveBannerTimer = 1.6;
 }
 function endWave(){
+  if(window.ArcadeSFX) ArcadeSFX.play('levelup');
   state = "upgrade";
   buildOffers();
   setOverlay(upgradeHTML(), true);
@@ -595,6 +600,7 @@ function pickUpgrade(i){
   if(state !== "upgrade") return;
   const o = offered[i];
   if(!o) return;
+  if(window.ArcadeSFX) ArcadeSFX.play('coin');
   if(o.fallback){ score += 3000; }
   else {
     up[o.key]++;
@@ -609,6 +615,7 @@ function pickUpgrade(i){
   lastTime = performance.now();
 }
 function startGame(){
+  if(window.ArcadeSFX) ArcadeSFX.play('start');
   up = { rapid:0, spread:0, engine:0, gyro:0, velocity:0, pierce:0, phase:0, shield:0, life:0 };
   score = 0; lives = START_LIVES; wave = 1;
   bullets = []; particles = []; rings = [];
@@ -621,7 +628,7 @@ function startGame(){
   updateHud(); updateLoadout();
   lastTime = performance.now();
 }
-function gameOver(){ state = "gameover"; setOverlay(gameoverHTML(), true); }
+function gameOver(){ if(window.ArcadeSFX) ArcadeSFX.play('gameover'); state = "gameover"; setOverlay(gameoverHTML(), true); }
 function togglePause(){
   if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
   else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }

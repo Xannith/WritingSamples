@@ -119,6 +119,8 @@
 <div class="game-wrap">
     <div class="game-head">
         <span class="game-title">🎯 Color Catch</span>
+        <!-- Shared arcade sound helper (mute button auto-injected). -->
+        <script src="/games/arcade-audio.js"></script>
         <!-- Root-relative link back to the Arcade. Works locally and when deployed. -->
         <a class="back-link" href="/games/index.html">&larr; Arcade</a>
     </div>
@@ -189,6 +191,7 @@
         scoreEl.textContent = '0';
         overlay.classList.add('hidden');
         state.last = 0;
+        if (window.ArcadeSFX) ArcadeSFX.play('start');
         requestAnimationFrame(loop);
     }
 
@@ -208,6 +211,7 @@
 
     function gameOver() {
         state.playing = false;
+        if (window.ArcadeSFX) ArcadeSFX.play('gameover');
         oTitle.textContent = 'Game Over';
         oText.textContent = 'Final score: ' + state.score + '. Nice run!';
         startBtn.textContent = 'Play again';
@@ -247,7 +251,12 @@
                     scoreEl.textContent = state.score;
                     state.speed += 4;
                     state.tiles.splice(i, 1);
+                    if (window.ArcadeSFX) {
+                        // Milestone jingle every 10 catches, otherwise a catch blip.
+                        ArcadeSFX.play(state.score % 10 === 0 ? 'levelup' : 'catch');
+                    }
                 } else {
+                    if (window.ArcadeSFX) ArcadeSFX.play('wrong');
                     gameOver();
                     return;
                 }

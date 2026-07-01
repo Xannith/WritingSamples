@@ -187,6 +187,7 @@
     Left / Right to move, Up or X to rotate, Z to rotate the other way, Down to soft drop, Space to hard drop, C to hold, P to pause.
   </div>
 
+<script src="/games/arcade-audio.js"></script>
 <script>
 "use strict";
 
@@ -344,7 +345,7 @@ function naturalSpawn(){ spawn(); canHold = true; }
 function move(dx){
   if(state !== "playing" || !current) return false;
   const test = { shape: current.shape, x: current.x + dx, y: current.y };
-  if(!collide(test)){ current.x += dx; return true; }
+  if(!collide(test)){ current.x += dx; if(window.ArcadeSFX) ArcadeSFX.play('move'); return true; }
   return false;
 }
 function rotatePiece(dir){
@@ -352,7 +353,7 @@ function rotatePiece(dir){
   const rotated = rotateMatrix(current.shape, dir);
   for(const k of [0, -1, 1, -2, 2]){
     const test = { shape: rotated, x: current.x + k, y: current.y };
-    if(!collide(test)){ current.shape = rotated; current.x += k; return true; }
+    if(!collide(test)){ current.shape = rotated; current.x += k; if(window.ArcadeSFX) ArcadeSFX.play('rotate'); return true; }
   }
   return false;
 }
@@ -387,6 +388,7 @@ function pieceMoved(){
 
 /* ---------- Locking and line clears ---------- */
 function lockDown(){
+  if(window.ArcadeSFX) ArcadeSFX.play('drop');
   const s = current.shape, px = current.x, py = current.y, color = current.color;
   for(let y = 0; y < s.length; y++)
     for(let x = 0; x < s[y].length; x++)
@@ -412,10 +414,11 @@ function applyClear(rows){
     board.unshift(new Array(COLS).fill(0));
   }
   const n = rows.length;
+  if(window.ArcadeSFX) ArcadeSFX.play(n >= 4 ? 'levelup' : 'clear');
   score += [0, 100, 300, 500, 800][n] * level;
   lines += n;
   const newLevel = Math.floor(lines / 10) + 1;
-  if(newLevel !== level){ level = newLevel; dropInterval = speedForLevel(level); }
+  if(newLevel !== level){ level = newLevel; dropInterval = speedForLevel(level); if(window.ArcadeSFX) ArcadeSFX.play('levelup'); }
   updateStats();
 }
 
@@ -566,6 +569,7 @@ function startGame(){
   lockTimer = 0; lockResets = 0; grounded = false;
   refillQueue();
   state = "playing";
+  if(window.ArcadeSFX) ArcadeSFX.play('start');
   hideOverlay();
   drawHold(); drawNext();
   naturalSpawn();
@@ -580,6 +584,7 @@ function togglePause(){
 
 function gameOver(){
   state = "over";
+  if(window.ArcadeSFX) ArcadeSFX.play('gameover');
   if(score > highScore) highScore = score;
   showOverlay("over");
 }

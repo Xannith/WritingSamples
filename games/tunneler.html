@@ -96,6 +96,7 @@
     Dig with the arrow keys or <b>W A S D</b>. Fire and pump the harpoon with <b>Space</b>: mash it to inflate an enemy until it pops. Dig under a rock to drop it and crush enemies. Watch for enemies that turn into eyes and float through the dirt. <b>P</b> pauses.
   </div>
 
+<script src="/games/arcade-audio.js"></script>
 <script>
 "use strict";
 
@@ -300,6 +301,7 @@ function fireHarpoon(){
   }
   player.harpoon = { dir, reach, enemy: hooked, life: hooked ? 999 : HARPOON_LIFE };
   if(hooked){ hooked.hooked = true; hooked.inflate = 1; hooked.inflateIdle = 0; }
+  if(window.ArcadeSFX) ArcadeSFX.play('shoot');
 }
 function pumpEnemy(){
   const h = player.harpoon;
@@ -314,6 +316,7 @@ function popEnemy(e){
   score += pts; updateHud(); checkExtra();
   addPop(e.px, e.py, e.type === "fygar" ? "#39c24a" : "#e33b3b");
   addFloat(e.px, e.py - 6, "+" + pts, "#ffe08a");
+  if(window.ArcadeSFX) ArcadeSFX.play('hit');
   e.dead = true;
   if(player.harpoon && player.harpoon.enemy === e) player.harpoon = null;
 }
@@ -362,7 +365,7 @@ function updatePlayer(dt){
       player.dir = want;
       const [dx, dy] = dirVec(want);
       const nx = player.cx + dx, ny = player.cy + dy;
-      if(playerCanEnter(nx, ny)){ player.tx = nx; player.ty = ny; player.moving = true; player.prog = 0; grid[ny][nx] = EMPTY; }
+      if(playerCanEnter(nx, ny)){ player.tx = nx; player.ty = ny; player.moving = true; player.prog = 0; grid[ny][nx] = EMPTY; if(window.ArcadeSFX) ArcadeSFX.play('move'); }
     }
   }
   grid[player.cy][player.cx] = EMPTY;
@@ -431,6 +434,7 @@ function crushEnemy(e, r){
   score += pts; updateHud(); checkExtra();
   addFloat(e.px, e.py - 6, "+" + pts, "#ffd24a");
   addPop(e.px, e.py, "#c9a24a");
+  if(window.ArcadeSFX) ArcadeSFX.play('hit');
   e.dead = true;
   if(player.harpoon && player.harpoon.enemy === e) player.harpoon = null;
 }
@@ -468,6 +472,7 @@ function killPlayer(){
   if(!player.alive || player.invuln > 0) return;
   if(player.harpoon){ if(player.harpoon.enemy) player.harpoon.enemy.hooked = false; player.harpoon = null; }
   player.alive = false;
+  if(window.ArcadeSFX) ArcadeSFX.play('crash');
   addPop(player.px, player.py, "#f2f4f8"); shake(11, 0.4);
   lives--; updateHud();
   if(lives <= 0){ gameOver(); return; }
@@ -490,17 +495,18 @@ function checkPlayerDeath(){
     if(e.type === "fygar" && e.firing){ for(const c of e.fireCells){ if(player.cx === c[0] && player.cy === c[1]){ killPlayer(); return; } } }
   }
 }
-function nextLevel(){ level++; updateHud(); bannerText = "LEVEL " + level; bannerT = 1.8; buildLevel(level); }
+function nextLevel(){ if(window.ArcadeSFX) ArcadeSFX.play('levelup'); level++; updateHud(); bannerText = "LEVEL " + level; bannerT = 1.8; buildLevel(level); }
 function startGame(){
   score = 0; lives = 3; level = 1; nextExtra = 20000;
   dirStack = []; fireHeld = false; fireCd2 = 0;
   buildLevel(1);
   bannerText = "LEVEL 1"; bannerT = 1.8;
   state = "playing"; clearOverlay(); updateHud();
+  if(window.ArcadeSFX) ArcadeSFX.play('start');
   try { stageEl.focus(); } catch(e){}
   lastTime = performance.now();
 }
-function gameOver(){ if(score > high) high = score; updateHud(); state = "gameover"; setOverlay(gameoverHTML(), true); }
+function gameOver(){ if(score > high) high = score; updateHud(); state = "gameover"; if(window.ArcadeSFX) ArcadeSFX.play('gameover'); setOverlay(gameoverHTML(), true); }
 function togglePause(){
   if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
   else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }

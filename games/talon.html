@@ -125,6 +125,7 @@
     Move with <b>Left / Right</b> or <b>A / D</b>, and tap <b>Space</b> or <b>Up</b> to flap. Ride higher than your foe to unseat them, then grab the egg before it hatches. Watch the lava. <b>P</b> pauses.
   </div>
 
+<script src="/games/arcade-audio.js"></script>
 <script>
 "use strict";
 
@@ -419,6 +420,7 @@ function defeatEnemy(e){
   floatText(e.x, e.y - 24, "+" + TIERS[e.type].points, "#ffe08a");
   eggs.push({ x:e.x, y:e.y, vx:(Math.random() - 0.5) * 140, vy:-190, r:12, onGround:false, hatchT:HATCH_TIME, tier:e.type, prevFeet:e.y + 10, phase:Math.random() * 6, dead:false });
   e.dead = true; shake(7, 0.25);
+  if (window.ArcadeSFX) ArcadeSFX.play('hit');
 }
 function resolveJoust(e){
   if(e.invuln > 0 || e.spawnFlash > 0 || e.delay > 0) return;
@@ -443,10 +445,12 @@ function collectEgg(egg){
   score += pts; updateHud(); checkExtra();
   floatText(egg.x, egg.y - 16, "+" + pts, "#b6ff3c");
   egg.dead = true;
+  if (window.ArcadeSFX) ArcadeSFX.play('coin');
 }
 function playerHit(){
   if(player.invuln > 0) return;
   lives--; updateHud();
+  if (window.ArcadeSFX) ArcadeSFX.play('crash');
   floatText(player.x, player.y - 30, "OUCH", "#ff6a5a"); shake(14, 0.5);
   for(let i = 0; i < 12; i++) embers.push({ x:player.x, y:player.y, vx:(Math.random() - 0.5) * 220, vy:-120 - Math.random() * 160, life:0.5 + Math.random() * 0.4, max:0.9, size:2 + Math.random() * 2 });
   if(lives <= 0){ gameOver(); return; }
@@ -536,7 +540,7 @@ function update(dt){
   if(waveBannerT > 0) waveBannerT -= dt;
   if(shakeTime > 0) shakeTime -= dt;
 
-  if(enemies.length === 0 && eggs.length === 0){ ptero = null; wave++; startWave(wave); }
+  if(enemies.length === 0 && eggs.length === 0){ ptero = null; wave++; if(window.ArcadeSFX) ArcadeSFX.play('levelup'); startWave(wave); }
 }
 function updateEmbers(dt){
   if(Math.random() < dt * 22){
@@ -717,12 +721,13 @@ function startGame(){
   input.left = false; input.right = false;
   resetPlayer();
   state = "playing"; clearOverlay();
+  if (window.ArcadeSFX) ArcadeSFX.play('start');
   startWave(1);
   updateHud();
   try { stageEl.focus(); } catch(e){}
   lastTime = performance.now();
 }
-function gameOver(){ state = "gameover"; setOverlay(gameoverHTML(), true); }
+function gameOver(){ state = "gameover"; if(window.ArcadeSFX) ArcadeSFX.play('gameover'); setOverlay(gameoverHTML(), true); }
 function togglePause(){
   if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
   else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }
@@ -746,7 +751,7 @@ document.addEventListener("keydown", e => {
   switch(e.key){
     case "ArrowLeft": case "a": case "A": input.left = true; e.preventDefault(); break;
     case "ArrowRight": case "d": case "D": input.right = true; e.preventDefault(); break;
-    case " ": case "ArrowUp": case "w": case "W": if(!e.repeat) flap(player, FLAP_IMPULSE); e.preventDefault(); break;
+    case " ": case "ArrowUp": case "w": case "W": if(!e.repeat){ flap(player, FLAP_IMPULSE); if(window.ArcadeSFX) ArcadeSFX.play('move'); } e.preventDefault(); break;
   }
 }, { passive:false });
 document.addEventListener("keyup", e => {
@@ -766,7 +771,7 @@ function holdBtn(id, on){
 }
 holdBtn("t-left", v => input.left = v);
 holdBtn("t-right", v => input.right = v);
-document.getElementById("t-flap").addEventListener("pointerdown", e => { e.preventDefault(); if(state === "playing") flap(player, FLAP_IMPULSE); });
+document.getElementById("t-flap").addEventListener("pointerdown", e => { e.preventDefault(); if(state === "playing"){ flap(player, FLAP_IMPULSE); if(window.ArcadeSFX) ArcadeSFX.play('move'); } });
 
 /* ---------- Init ---------- */
 function init(){

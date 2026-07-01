@@ -197,6 +197,7 @@
     Player 1 steers with <b>W A S D</b>. In two-player mode, Player 2 uses the <b>Arrow keys</b>. You cannot turn back into your own trail. Press <b>P</b> to pause.
   </div>
 
+<script src="/games/arcade-audio.js"></script>
 <script>
 "use strict";
 
@@ -430,6 +431,9 @@ function aiChoose(p){
 function setDir(p, d){
   if(!p || !p.alive) return;
   if(d.x === -p.dir.x && d.y === -p.dir.y) return;           // block instant reversal
+  if(d.x !== p.dir.x || d.y !== p.dir.y){                     // only on a real direction change
+    if(window.ArcadeSFX) ArcadeSFX.play('turn');
+  }
   p.nextDir = d;
 }
 
@@ -466,6 +470,8 @@ function tick(){
     }
   }
 
+  if(crashCells.length && window.ArcadeSFX) ArcadeSFX.play('crash');
+
   const aliveIdx = players.map((p, i) => p.alive ? i : -1).filter(i => i >= 0);
   if(aliveIdx.length <= 1){
     roundResult = aliveIdx.length === 1 ? (aliveIdx[0] === 0 ? "p1" : "p2") : "draw";
@@ -488,6 +494,7 @@ function startRound(){
   scoreApplied = false;
   countdownTimer = 0; lastCdLabel = null;
   state = "countdown";
+  if(window.ArcadeSFX) ArcadeSFX.play('start');
 }
 
 function startMatch(){
@@ -514,6 +521,10 @@ function applyScore(){
 function endMatch(){
   state = "matchEnd";
   const winner = scores[0] > scores[1] ? 1 : 2;
+  if(window.ArcadeSFX){
+    // In CPU mode the human is P1: losing to the CPU is a game over, otherwise a win.
+    ArcadeSFX.play(mode === "cpu" && winner === 2 ? 'gameover' : 'win');
+  }
   const wtext = winner === 1 ? "Player 1" : (mode === "cpu" ? "CPU" : "Player 2");
   setOverlay(`
     <div class="ov-card">

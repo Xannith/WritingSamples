@@ -93,6 +93,7 @@
     Move with <b>Left / Right</b> or <b>A / D</b>, and fire with <b>Space</b>. Clear the swarm to advance. Beware the green boss tractor beam: if it captures your fighter, destroy that boss to win it back as a twin ship. <b>P</b> pauses.
   </div>
 
+<script src="/games/arcade-audio.js"></script>
 <script>
 "use strict";
 
@@ -260,6 +261,7 @@ function enemyFire(e){
 /* ---------- Capture / rescue ---------- */
 function captureBy(e){
   if(player.invuln > 0 || !player.alive || player.dual) return;
+  if(window.ArcadeSFX) ArcadeSFX.play('crash');
   capturedBoss = e; e.hasCaptive = true;
   e.state = "returning"; e.beamActive = false; e.path = makeReturnPath(e); e.t = 0; e.dur = 1.3;
   lives--; updateHud();
@@ -272,6 +274,7 @@ function captureBy(e){
 function rescue(e){
   score += 1000; updateHud(); checkExtra();
   floatText(e.x, e.y - 18, "RESCUE +1000", "#b6ff3c");
+  if(window.ArcadeSFX) ArcadeSFX.play('coin');
   e.hasCaptive = false; capturedBoss = null;
   freedFighter = { x:e.x, y:e.y, phase:"down" };
 }
@@ -334,7 +337,9 @@ function tryFire(){
   const cap = player.dual ? 4 : 2;
   if(pbullets.length >= cap || fireCd > 0) return;
   const ships = player.dual ? [player.x - 14, player.x + 14] : [player.x];
-  for(const sx of ships){ if(pbullets.length < cap) pbullets.push({ x:sx, y:PLAYER_Y - 14, vy:-BULLET_SPEED }); }
+  let fired = false;
+  for(const sx of ships){ if(pbullets.length < cap){ pbullets.push({ x:sx, y:PLAYER_Y - 14, vy:-BULLET_SPEED }); fired = true; } }
+  if(fired && window.ArcadeSFX) ArcadeSFX.play('shoot');
   fireCd = BULLET_CD;
 }
 function updatePlayer(dt){
@@ -351,6 +356,7 @@ function updatePlayer(dt){
 }
 function playerHit(){
   if(player.invuln > 0 || !player.alive) return;
+  if(window.ArcadeSFX) ArcadeSFX.play('crash');
   if(player.dual){ player.dual = false; player.invuln = 1.6; explode(player.x + 14, PLAYER_Y, "#ff8a3c"); floatText(player.x, PLAYER_Y - 22, "SHIP LOST", "#ff8a3c"); shake(6, 0.25); return; }
   lives--; updateHud(); explode(player.x, PLAYER_Y, "#ff8a3c"); shake(11, 0.4);
   if(lives <= 0){ player.alive = false; gameOver(); return; }
@@ -363,6 +369,7 @@ function destroyEnemy(e){
   updateHud(); checkExtra();
   explode(e.x, e.y, cfg.explode);
   floatText(e.x, e.y, "+" + (diving ? cfg.diveScore : cfg.score), "#ffe08a");
+  if(window.ArcadeSFX) ArcadeSFX.play('hit');
   if(e === capturedBoss) rescue(e);
   e.dead = true; shake(4, 0.14);
 }
@@ -556,6 +563,7 @@ function render(){
 /* ---------- Flow ---------- */
 function stageClear(){
   stage++; updateHud();
+  if(window.ArcadeSFX) ArcadeSFX.play('levelup');
   bannerText = "STAGE " + stage; bannerT = 1.8;
   ebullets = []; capturedBoss = null;
   player.invuln = Math.max(player.invuln, 1.0);
@@ -570,12 +578,13 @@ function startGame(){
   input.left = false; input.right = false; fireHeld = false; fireCd = 0;
   diveTimer = 2.0; bannerText = "STAGE 1"; bannerT = 1.8;
   state = "playing"; clearOverlay();
+  if(window.ArcadeSFX) ArcadeSFX.play('start');
   spawnFormation();
   updateHud();
   try { stageEl.focus(); } catch(e){}
   lastTime = performance.now();
 }
-function gameOver(){ if(score > high) high = score; updateHud(); state = "gameover"; setOverlay(gameoverHTML(), true); }
+function gameOver(){ if(score > high) high = score; updateHud(); state = "gameover"; if(window.ArcadeSFX) ArcadeSFX.play('gameover'); setOverlay(gameoverHTML(), true); }
 function togglePause(){
   if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
   else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }
