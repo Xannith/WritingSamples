@@ -40,6 +40,23 @@ window.DASHBOARD_GAMES = [
         emoji: "🎯"
     },
 
+    // These two were uploaded to the lowercase /games folder (flat HTML files).
+    // Registered here so they show on the dashboard. Edit the descriptions anytime.
+    {
+        title: "Blocks",
+        path: "games/blocks.html",
+        description: "Block-stacking arcade game.",
+        badge: "Arcade",
+        emoji: "🟦"
+    },
+    {
+        title: "Grid Riders",
+        path: "games/grid-riders.html",
+        description: "Grid-based action game.",
+        badge: "Arcade",
+        emoji: "🏁"
+    },
+
     // ── ADD NEW GAMES BELOW THIS LINE ──────────────────────────
     // Copy this template, uncomment it, and fill it in:
     //
