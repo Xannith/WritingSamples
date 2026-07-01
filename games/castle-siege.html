@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Castle Siege</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#f2ead9; --dim:#b9ad8f; --line:rgba(255,240,200,0.16); --panel:rgba(28,20,14,0.82);
+    --gold:#ffd166; --p:#8fe06a; --e:#ff6b6b; --disp:"Chakra Petch",system-ui,sans-serif; --mono:"Share Tech Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:var(--disp);background:#100a07;color:var(--ink);min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;-webkit-user-select:none;user-select:none;overflow-x:hidden;}
+  header{text-align:center;}
+  header h1{font-weight:700;font-size:22px;letter-spacing:6px;text-shadow:0 0 20px rgba(255,209,102,0.25);}
+  header p{font-size:9px;letter-spacing:3px;color:var(--dim);margin-top:2px;text-transform:uppercase;}
+  .stage-wrap{position:relative;border-radius:12px;padding:6px;background:rgba(20,14,10,0.6);border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+  #stage{display:block;width:min(960px,96vw);height:auto;aspect-ratio:960 / 600;border-radius:8px;background:#0b1020;cursor:crosshair;touch-action:none;}
+  #stage:focus{outline:none;}
+
+  .overlay{position:absolute;inset:6px;border-radius:8px;display:none;align-items:center;justify-content:center;text-align:center;background:rgba(10,7,4,0.86);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);pointer-events:auto;}
+  .overlay.show{display:flex;}
+  .card{padding:22px 24px;max-width:88%;}
+  .card h2{font-size:24px;letter-spacing:2px;margin-bottom:8px;}
+  .card h2.win{color:var(--gold);} .card h2.lose{color:var(--e);}
+  .card p{font-size:12.5px;color:#d8ccb0;line-height:1.6;margin-bottom:6px;}
+  .keys{font-family:var(--mono);font-size:11px;color:#cbbf9f;line-height:1.9;margin:10px auto;max-width:460px;text-align:left;}
+  .keys b{color:var(--gold);}
+  .btn{font-family:var(--disp);font-weight:700;letter-spacing:1px;margin-top:14px;padding:11px 24px;border:none;border-radius:9px;background:linear-gradient(180deg,#ffd166,#e0a52b);color:#3a2606;font-size:15px;cursor:pointer;}
+  .btn:active{transform:translateY(1px);}
+
+  #mute-btn{position:absolute;top:10px;right:10px;pointer-events:auto;font-family:var(--mono);font-size:10px;letter-spacing:1px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:6px 9px;cursor:pointer;display:none;}
+  #mute-btn.show{display:block;} #mute-btn.off{color:var(--e);border-color:rgba(255,107,107,0.4);}
+
+  .foot{font-family:var(--mono);font-size:10.5px;color:#8a7d61;text-align:center;max-width:900px;line-height:1.7;}
+  @media (max-width:720px){ .foot{display:none;} }
+</style>
+</head>
+<body>
+  <header>
+    <h1>CASTLE SIEGE</h1>
+    <p>Lob your shots over the mountain &middot; level up, gain missiles, watch them multiply</p>
+  </header>
+
+  <div class="stage-wrap">
+    <canvas id="stage" tabindex="0"></canvas>
+    <button id="mute-btn" type="button">SOUND: ON</button>
+
+    <div class="overlay show" id="menu">
+      <div class="card">
+        <h2>CASTLE SIEGE</h2>
+        <p>Two castles, one mountain between them. You cannot fire straight, so arc your shots over the peak and bring the enemy keep down before they wreck yours.</p>
+        <div class="keys">
+          <b>Drag</b> from anywhere and release to fire (pull back like a slingshot)<br>
+          <b>Left / Right</b> aim angle &nbsp; <b>Up / Down</b> power &nbsp; <b>Space</b> fire<br>
+          Mind the <b>wind</b> at the top. Each level cleared gives you another missile,<br>
+          and from level 3 your missiles <b>split at the top of their arc</b>.
+        </div>
+        <button class="btn" onclick="Game.start()">Begin Siege (Enter)</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="roundover"><div class="card" id="ro-card"></div></div>
+  </div>
+
+  <div class="foot">Drag to aim and release to fire &middot; Left/Right angle &middot; Up/Down power &middot; Space fire &middot; arc over the mountain</div>
+
+<script>
+"use strict";
+/* =====================================================================
+   CASTLE SIEGE - single-file artillery duel
+   Sections: config | sound | terrain | state | input | physics | ai | turns | render | boot
+   ===================================================================== */
+
+/* ============================== config ============================== */
+const CONFIG = {
+  w: 960, h: 600,
+  gravity: 540,          // px/s^2
+  maxSpeed: 900,         // launch speed at full power
+  maxWind: 90,           // horizontal accel from wind
+  blast: 44,             // explosion radius
+  damage: 22,            // damage per direct missile hit (splash falls off)
+  maxProjectiles: 30,
+  playerHP: 100,
+  enemyBaseHP: 80, enemyHPPerLevel: 30,
+  missileCap: 5,
+  splitFromLevel: 3,
+  castle: { halfW: 32, height: 64, barrel: 30 }
+};
+
+/* ============================== sound.js ============================== */
+const Sound = {
+  ctx:null, master:null, muted:false,
+  init(){ if(this.ctx) return; try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    this.ctx=new AC(); this.master=this.ctx.createGain(); this.master.gain.value=0.32; this.master.connect(this.ctx.destination);
+  }catch(e){ this.ctx=null; } },
+  resume(){ try{ if(this.ctx&&this.ctx.state==="suspended") this.ctx.resume(); }catch(e){} },
+  tone(f,d,t,v,slide){ if(!this.ctx||this.muted) return; const c=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
+    o.type=t||"square"; o.frequency.setValueAtTime(f,c); if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(1,slide),c+d);
+    g.gain.setValueAtTime(v||0.2,c); g.gain.exponentialRampToValueAtTime(0.0001,c+d); o.connect(g); g.connect(this.master); o.start(c); o.stop(c+d+0.02); },
+  noise(d,v,ff){ if(!this.ctx||this.muted) return; const c=this.ctx.currentTime,len=Math.max(1,Math.floor(this.ctx.sampleRate*d));
+    const b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),da=b.getChannelData(0); for(let i=0;i<len;i++) da[i]=Math.random()*2-1;
+    const n=this.ctx.createBufferSource(); n.buffer=b; const g=this.ctx.createGain(); g.gain.setValueAtTime(v||0.2,c); g.gain.exponentialRampToValueAtTime(0.0001,c+d);
+    const f=this.ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=ff||1200; n.connect(f); f.connect(g); g.connect(this.master); n.start(c); n.stop(c+d+0.02); },
+  seq(a,step,d,t,v){ a.forEach((f,i)=>setTimeout(()=>this.tone(f,d||0.14,t||"triangle",v||0.16),i*(step||90))); },
+  fire(){ this.noise(0.22,0.12,1400); this.tone(300,0.2,"sawtooth",0.1,700); },
+  explosion(){ this.noise(0.4,0.26,650); this.tone(90,0.38,"sine",0.12,38); },
+  hit(){ this.noise(0.3,0.2,420); this.tone(140,0.22,"square",0.14,60); },
+  win(){ this.seq([392,523,659,784,1046],120,0.2,"triangle",0.17); },
+  lose(){ this.seq([440,349,262,196],150,0.26,"sawtooth",0.14); },
+  click(){ this.tone(440,0.05,"square",0.08); },
+  toggle(){ this.muted=!this.muted; if(!this.muted){ this.init(); this.resume(); this.click(); } Game.refreshMute(); return !this.muted; }
+};
+
+/* ============================== helpers ============================== */
+const TAU=Math.PI*2;
+function clamp(v,a,b){ return v<a?a:v>b?b:v; }
+function dist(ax,ay,bx,by){ return Math.hypot(ax-bx,ay-by); }
+let terrain=null; // Float32Array of surface-y per x column
+
+/* ============================== state ============================== */
+const state = {
+  phase:"menu",           // menu | aim | flight | enemythink | over
+  level:1, turn:"player",
+  wind:0, settleT:0, thinkT:0,
+  player:{ x:0, hp:0, maxHp:0, missiles:1 },
+  enemy:{ x:0, hp:0, maxHp:0, aim:-2.35 },
+  aimAngle:-0.85, aimPower:0.68,
+  dragging:false, dsx:0, dsy:0, dcx:0, dcy:0,
+  projectiles:[], particles:[], shots:0
+};
+
+/* ============================== terrain.js ============================== */
+function buildTerrain(){
+  const W=CONFIG.w, H=CONFIG.h; terrain=new Float32Array(W+1);
+  const base=H*0.82;
+  const peakX=W*0.5 + (Math.random()*80-40);
+  const mtnRise=H*0.5 + Math.random()*H*0.05;        // how tall the central mountain is
+  const spread=W*0.13;
+  for(let x=0;x<=W;x++){
+    const g=Math.exp(-Math.pow((x-peakX)/spread,2))*mtnRise;   // central gaussian mountain
+    let surf=base-g;
+    surf-=Math.sin(x*0.008+2)*9 + Math.sin(x*0.02)*5;          // gentle undulation
+    terrain[x]=surf;
+  }
+  state.player.x=Math.round(W*0.115);
+  state.enemy.x=Math.round(W*0.885);
+  flattenPad(state.player.x, 74);
+  flattenPad(state.enemy.x, 74);
+}
+function flattenPad(cx,halfw){
+  const y=terrain[clamp(cx,0,CONFIG.w)];
+  for(let x=cx-halfw;x<=cx+halfw;x++){ if(x<0||x>CONFIG.w) continue; terrain[x]=y; }
+}
+function terrainAt(x){ const xi=clamp(Math.round(x),0,CONFIG.w); return terrain[xi]; }
+function baseY(c){ return terrainAt(c.x); }
+
+/* ============================== physics ============================== */
+function cannonPivot(c){ return { x:c.x, y:baseY(c)-CONFIG.castle.height+6 }; }
+function cannonTip(c, angle){ const p=cannonPivot(c); return { x:p.x+Math.cos(angle)*CONFIG.castle.barrel, y:p.y+Math.sin(angle)*CONFIG.castle.barrel }; }
+
+function spawnProjectile(x,y,vx,vy,owner,canSplit){
+  if(state.projectiles.length>=CONFIG.maxProjectiles) return;
+  state.projectiles.push({ x,y,vx,vy,owner,canSplit:!!canSplit,didSplit:false,r:5,trail:[] });
+}
+function firePlayer(){
+  const c=state.player, tip=cannonTip(c,state.aimAngle);
+  const n=c.missiles, sp=state.aimPower*CONFIG.maxSpeed, split=state.level>=CONFIG.splitFromLevel;
+  for(let i=0;i<n;i++){ const off=(n>1?(i/(n-1)-0.5):0)*0.13; const a=state.aimAngle+off;
+    spawnProjectile(tip.x,tip.y,Math.cos(a)*sp,Math.sin(a)*sp,"player",split); }
+  state.turn="player"; state.phase="flight"; state.settleT=0.5; state.shots++; Sound.fire();
+}
+function fireEnemy(vx,vy){
+  const c=state.enemy, p=cannonPivot(c);
+  spawnProjectile(p.x-14,p.y-6,vx,vy,"enemy",false);
+  state.turn="enemy"; state.phase="flight"; state.settleT=0.5; Sound.fire();
+}
+
+function explode(ex,ey,owner){
+  const R=CONFIG.blast;
+  // crater the terrain (carve a bowl)
+  for(let x=Math.floor(ex-R);x<=Math.ceil(ex+R);x++){ if(x<0||x>CONFIG.w) continue;
+    const dx=x-ex, h2=R*R-dx*dx; if(h2<=0) continue; const h=Math.sqrt(h2);
+    if(ey-h <= terrain[x]) terrain[x]=Math.min(CONFIG.h, Math.max(terrain[x], ey+h)); }
+  // particles
+  for(let i=0;i<18;i++){ const a=Math.random()*TAU, s=40+Math.random()*180;
+    state.particles.push({ x:ex, y:ey, vx:Math.cos(a)*s, vy:Math.sin(a)*s-40, life:0.35+Math.random()*0.4, c:i%3?"#ffb454":"#ff6b3c" }); }
+  Sound.explosion();
+  // splash damage to castles
+  let hitCastle=false;
+  for(const c of [state.player, state.enemy]){
+    const cy=baseY(c)-CONFIG.castle.height*0.5;
+    const d=dist(ex,ey,c.x,cy), reach=R+CONFIG.castle.halfW;
+    if(d<reach){ const dmg=Math.max(CONFIG.damage*0.22, CONFIG.damage*(1-d/reach)); c.hp=Math.max(0,c.hp-dmg); hitCastle=true; }
+  }
+  if(hitCastle) Sound.hit();
+}
+
+function stepProjectiles(dt){
+  const keep=[];
+  for(const p of state.projectiles){
+    p.trail.push({x:p.x,y:p.y}); if(p.trail.length>10) p.trail.shift();
+    p.vy+=CONFIG.gravity*dt; p.vx+=state.wind*dt;
+    p.x+=p.vx*dt; p.y+=p.vy*dt;
+    // multiply: split once at the top of the arc
+    if(p.canSplit && !p.didSplit && p.vy>=0 && state.projectiles.length<CONFIG.maxProjectiles-2){
+      p.didSplit=true; const sp=Math.hypot(p.vx,p.vy)*0.92, base=Math.atan2(p.vy,p.vx);
+      for(const off of [-0.2,0.2]) spawnProjectile(p.x,p.y,Math.cos(base+off)*sp,Math.sin(base+off)*sp,"player",false);
+    }
+    let dead=false;
+    if(p.x<-60||p.x>CONFIG.w+60){ dead=true; }               // flew off the sides = miss
+    else {
+      // castle hit?
+      for(const c of [state.player, state.enemy]){
+        if(Math.abs(p.x-c.x)<=CONFIG.castle.halfW){ const top=baseY(c)-CONFIG.castle.height;
+          if(p.y>=top && p.y<=baseY(c)+2){ explode(p.x,p.y,p.owner); dead=true; break; } }
+      }
+      if(!dead && p.y>=terrainAt(p.x)){ explode(p.x, terrainAt(p.x), p.owner); dead=true; }  // ground hit
+    }
+    if(!dead) keep.push(p);
+  }
+  state.projectiles=keep;
+  for(const pt of state.particles){ pt.vy+=CONFIG.gravity*0.5*dt; pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.life-=dt; }
+  state.particles=state.particles.filter(p=>p.life>0);
+}
+
+// simulate a shot for AI / preview -> returns landing point and what it hit
+function simShot(x0,y0,vx,vy){
+  let x=x0,y=y0,steps=0; const dt=1/60;
+  while(steps++<600){
+    vy+=CONFIG.gravity*dt; vx+=state.wind*dt; x+=vx*dt; y+=vy*dt;
+    if(x<-60||x>CONFIG.w+60) return { x, y, hit:"off" };
+    for(const c of [state.player, state.enemy]){ if(Math.abs(x-c.x)<=CONFIG.castle.halfW){ const top=baseY(c)-CONFIG.castle.height;
+      if(y>=top && y<=baseY(c)+2) return { x, y, hit:c===state.enemy?"enemy":"player" }; } }
+    if(y>=terrainAt(x)) return { x, y:terrainAt(x), hit:"ground" };
+  }
+  return { x, y, hit:"none" };
+}
+
+/* ============================== ai ============================== */
+function enemyShot(){
+  const tip={ x:cannonPivot(state.enemy).x-14, y:cannonPivot(state.enemy).y-6 };
+  const targetX=state.player.x; let best=null;
+  for(let ei=0;ei<7;ei++){ const theta=0.35+ei*0.16;            // elevation
+    for(let si=0;si<7;si++){ const s=(0.55+si*0.06)*CONFIG.maxSpeed;
+      const vx=-Math.cos(theta)*s, vy=-Math.sin(theta)*s;       // enemy fires left
+      const r=simShot(tip.x,tip.y,vx,vy);
+      const score=Math.abs(r.x-targetX) - (r.hit==="player"?400:0);
+      if(!best||score<best.score) best={score,theta,s};
+    }
+  }
+  // accuracy improves with level
+  const eJit=Math.max(0.02, 0.26-state.level*0.03), sJit=Math.max(0.02, 0.16-state.level*0.02);
+  const theta=best.theta+(Math.random()*2-1)*eJit, s=best.s*(1+(Math.random()*2-1)*sJit);
+  state.enemy.aim=Math.PI-theta;  // for drawing the barrel (up-left)
+  fireEnemy(-Math.cos(theta)*s, -Math.sin(theta)*s);
+}
+
+/* ============================== turns ============================== */
+function newWind(){ state.wind=(Math.random()*2-1)*CONFIG.maxWind; }
+function resolveTurn(){
+  if(state.enemy.hp<=0) return roundOver(true);
+  if(state.player.hp<=0) return roundOver(false);
+  if(state.turn==="player"){ state.turn="enemy"; state.phase="enemythink"; state.thinkT=0.9; newWind(); }
+  else { state.turn="player"; state.phase="aim"; newWind(); }
+}
+function roundOver(win){
+  state.phase="over";
+  if(win) Sound.win(); else Sound.lose();
+  const card=document.getElementById("ro-card");
+  if(win){ card.innerHTML='<h2 class="win">CASTLE FELLED</h2><p>Level '+state.level+' cleared. Next level: +1 missile'+
+    (state.level+1>=CONFIG.splitFromLevel?", and your missiles split at the arc\'s peak":"")+'.</p>'+
+    '<p style="color:var(--gold)">Reach the highest level you can.</p>'+
+    '<button class="btn" onclick="Game.nextLevel()">Advance (Enter)</button>'; }
+  else { card.innerHTML='<h2 class="lose">YOUR CASTLE HAS FALLEN</h2><p>The enemy broke through on level '+state.level+'.</p>'+
+    '<button class="btn" onclick="Game.retry()">Rebuild &amp; Retry (Enter)</button>'; }
+  document.getElementById("roundover").classList.add("show");
+}
+
+/* ============================== game ============================== */
+const Game = {
+  init(){
+    this.canvas=document.getElementById("stage");
+    this.ctx=setupCanvas(this.canvas,CONFIG.w,CONFIG.h);
+    buildTerrain();
+    state.player.maxHp=CONFIG.playerHP; state.player.hp=CONFIG.playerHP;
+    state.enemy.maxHp=CONFIG.enemyBaseHP+CONFIG.enemyHPPerLevel; state.enemy.hp=state.enemy.maxHp;
+    this.bindInput(); this.lastT=now(); requestAnimationFrame(this.loop.bind(this));
+  },
+  setupLevel(){
+    buildTerrain();
+    state.player.maxHp=CONFIG.playerHP; state.player.hp=CONFIG.playerHP;
+    state.player.missiles=clamp(state.level,1,CONFIG.missileCap);
+    state.enemy.maxHp=CONFIG.enemyBaseHP+CONFIG.enemyHPPerLevel*state.level; state.enemy.hp=state.enemy.maxHp;
+    state.enemy.aim=-2.35;
+    state.projectiles=[]; state.particles=[]; state.turn="player"; state.phase="aim"; state.shots=0;
+    state.aimAngle=-0.85; state.aimPower=0.68; newWind();
+  },
+  start(){ Sound.init(); Sound.resume(); Sound.click();
+    document.getElementById("menu").classList.remove("show"); document.getElementById("roundover").classList.remove("show");
+    document.getElementById("mute-btn").classList.add("show");
+    state.level=1; this.setupLevel(); try{ this.canvas.focus(); }catch(e){} },
+  nextLevel(){ Sound.click(); document.getElementById("roundover").classList.remove("show"); state.level++; this.setupLevel(); try{ this.canvas.focus(); }catch(e){} },
+  retry(){ Sound.click(); document.getElementById("roundover").classList.remove("show"); this.setupLevel(); try{ this.canvas.focus(); }catch(e){} },
+
+  /* ---------- input ---------- */
+  bindInput(){
+    const unlock=()=>{ Sound.init(); Sound.resume(); };
+    const cv=this.canvas;
+    const pos=(e)=>{ const r=cv.getBoundingClientRect(); return { x:(e.clientX-r.left)/r.width*CONFIG.w, y:(e.clientY-r.top)/r.height*CONFIG.h }; };
+    cv.addEventListener("pointerdown",(e)=>{ unlock(); try{ cv.focus(); }catch(err){}
+      if(state.phase!=="aim") return; const p=pos(e); state.dragging=true; state.dsx=p.x; state.dsy=p.y; state.dcx=p.x; state.dcy=p.y; e.preventDefault(); });
+    cv.addEventListener("pointermove",(e)=>{ if(!state.dragging) return; const p=pos(e); state.dcx=p.x; state.dcy=p.y; this.applyDrag(); e.preventDefault(); });
+    const release=(e)=>{ if(!state.dragging) return; state.dragging=false; if(state.phase==="aim"){ this.applyDrag(); firePlayer(); } };
+    cv.addEventListener("pointerup",release); cv.addEventListener("pointercancel",release); cv.addEventListener("pointerleave",release);
+
+    window.addEventListener("keydown",(e)=>{ unlock();
+      if((state.phase==="menu") && e.key==="Enter"){ this.start(); e.preventDefault(); return; }
+      if(state.phase==="over" && e.key==="Enter"){ if(state.enemy.hp<=0) this.nextLevel(); else this.retry(); e.preventDefault(); return; }
+      if(state.phase!=="aim") return;
+      const k=e.key.toLowerCase();
+      if(k==="arrowleft"){ state.aimAngle=clamp(state.aimAngle-0.03,-1.5,-0.05); e.preventDefault(); }
+      else if(k==="arrowright"){ state.aimAngle=clamp(state.aimAngle+0.03,-1.5,-0.05); e.preventDefault(); }
+      else if(k==="arrowup"){ state.aimPower=clamp(state.aimPower+0.03,0.05,1); e.preventDefault(); }
+      else if(k==="arrowdown"){ state.aimPower=clamp(state.aimPower-0.03,0.05,1); e.preventDefault(); }
+      else if(k===" "||k==="spacebar"){ firePlayer(); e.preventDefault(); }
+    });
+    const mb=document.getElementById("mute-btn"); if(mb) mb.addEventListener("click",(e)=>{ e.preventDefault(); Sound.toggle(); });
+    this.refreshMute();
+  },
+  applyDrag(){
+    const dx=state.dsx-state.dcx, dy=state.dsy-state.dcy;   // pull-back vector = launch direction
+    const len=Math.hypot(dx,dy); if(len<4) return;
+    let ang=Math.atan2(dy,dx); ang=clamp(ang,-1.5,-0.05);   // player fires up-right
+    state.aimAngle=ang; state.aimPower=clamp(len/260,0.06,1);
+  },
+  refreshMute(){ const mb=document.getElementById("mute-btn"); if(!mb) return; mb.textContent=Sound.muted?"SOUND: OFF":"SOUND: ON"; mb.classList.toggle("off",Sound.muted); },
+
+  /* ---------- loop ---------- */
+  loop(t){ const dt=Math.min((t-this.lastT)/1000,0.033); this.lastT=t;
+    this.update(dt); this.render(); requestAnimationFrame(this.loop.bind(this)); },
+  update(dt){
+    if(state.phase==="flight"){
+      stepProjectiles(dt);
+      if(state.projectiles.length===0){ state.settleT-=dt; if(state.settleT<=0) resolveTurn(); }
+      else state.settleT=0.4;
+    } else if(state.phase==="enemythink"){
+      state.thinkT-=dt; if(state.thinkT<=0) enemyShot();
+    } else if(state.phase==="aim"){
+      // keep particles animating even at rest
+      for(const pt of state.particles){ pt.vy+=CONFIG.gravity*0.5*dt; pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.life-=dt; }
+      state.particles=state.particles.filter(p=>p.life>0);
+    }
+  },
+
+  /* ---------- render ---------- */
+  render(){
+    const ctx=this.ctx, W=CONFIG.w, H=CONFIG.h;
+    // sky
+    const sky=ctx.createLinearGradient(0,0,0,H); sky.addColorStop(0,"#243b6b"); sky.addColorStop(0.6,"#4a5a86"); sky.addColorStop(1,"#8a6f7a");
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    // distant clouds
+    ctx.fillStyle="rgba(255,240,220,0.06)"; for(let i=0;i<5;i++){ const cx=(i*220+80), cy=70+((i*53)%60); ctx.beginPath(); ctx.ellipse(cx,cy,70,20,0,0,TAU); ctx.fill(); }
+    // terrain
+    if(terrain){ ctx.beginPath(); ctx.moveTo(0,terrain[0]); for(let x=1;x<=W;x++) ctx.lineTo(x,terrain[x]); ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath();
+      const gnd=ctx.createLinearGradient(0,H*0.3,0,H); gnd.addColorStop(0,"#4b6b3a"); gnd.addColorStop(0.5,"#3a5230"); gnd.addColorStop(1,"#2a1e16"); ctx.fillStyle=gnd; ctx.fill();
+      ctx.strokeStyle="#6fa04a"; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(0,terrain[0]); for(let x=1;x<=W;x++) ctx.lineTo(x,terrain[x]); ctx.stroke();
+    }
+    // castles
+    this.drawCastle(ctx,state.player,"player");
+    this.drawCastle(ctx,state.enemy,"enemy");
+    // aim preview
+    if(state.phase==="aim") this.drawAim(ctx);
+    // projectiles
+    for(const p of state.projectiles){
+      ctx.strokeStyle=p.owner==="player"?"rgba(143,224,106,0.5)":"rgba(255,107,107,0.5)"; ctx.lineWidth=2; ctx.beginPath();
+      for(let i=0;i<p.trail.length;i++){ const t=p.trail[i]; if(i===0) ctx.moveTo(t.x,t.y); else ctx.lineTo(t.x,t.y); } ctx.stroke();
+      ctx.fillStyle=p.owner==="player"?"#d6ffb0":"#ffd0d0"; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill();
+      ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,TAU); ctx.fill();
+    }
+    // particles
+    for(const pt of state.particles){ ctx.globalAlpha=clamp(pt.life*2.2,0,1); ctx.fillStyle=pt.c; ctx.fillRect(pt.x-2,pt.y-2,4,4); }
+    ctx.globalAlpha=1;
+    this.drawHUD(ctx);
+  },
+  drawCastle(ctx,c,side){
+    const bx=c.x, by=baseY(c), hw=CONFIG.castle.halfW, hh=CONFIG.castle.height;
+    const frac=clamp(c.hp/c.maxHp,0,1);
+    ctx.save();
+    ctx.fillStyle=side==="player"?"#7d8aa0":"#8a7d86"; ctx.strokeStyle="#2a2620"; ctx.lineWidth=2;
+    // keep body
+    ctx.beginPath(); ctx.rect(bx-hw,by-hh,hw*2,hh); ctx.fill(); ctx.stroke();
+    // battlements
+    for(let i=-2;i<=2;i++){ ctx.fillRect(bx+i*13-4,by-hh-8,9,10); }
+    // door
+    ctx.fillStyle="#3a2c1e"; ctx.beginPath(); ctx.rect(bx-8,by-20,16,20); ctx.fill();
+    // damage cracks as hp drops
+    if(frac<0.75){ ctx.strokeStyle="rgba(20,15,10,0.7)"; ctx.lineWidth=2; ctx.beginPath();
+      ctx.moveTo(bx-hw+8,by-hh+6); ctx.lineTo(bx-6,by-hh*0.5); ctx.lineTo(bx+10,by-hh*0.2);
+      if(frac<0.4){ ctx.moveTo(bx+hw-8,by-hh+10); ctx.lineTo(bx+4,by-hh*0.6); } ctx.stroke(); }
+    // flag
+    ctx.fillStyle=side==="player"?"#8fe06a":"#ff6b6b"; ctx.fillRect(bx-1,by-hh-24,2,16); ctx.beginPath(); ctx.moveTo(bx+1,by-hh-24); ctx.lineTo(bx+16,by-hh-19); ctx.lineTo(bx+1,by-hh-14); ctx.closePath(); ctx.fill();
+    // cannon barrel
+    const ang=side==="player"?state.aimAngle:state.enemy.aim; const p=cannonPivot(c);
+    ctx.strokeStyle="#2b2b2b"; ctx.lineWidth=7; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+Math.cos(ang)*CONFIG.castle.barrel,p.y+Math.sin(ang)*CONFIG.castle.barrel); ctx.stroke();
+    ctx.fillStyle="#1e1e1e"; ctx.beginPath(); ctx.arc(p.x,p.y,6,0,TAU); ctx.fill();
+    ctx.restore();
+  },
+  drawAim(ctx){
+    const c=state.player, tip=cannonTip(c,state.aimAngle), sp=state.aimPower*CONFIG.maxSpeed;
+    let x=tip.x,y=tip.y,vx=Math.cos(state.aimAngle)*sp,vy=Math.sin(state.aimAngle)*sp; const dt=1/60;
+    ctx.fillStyle="rgba(255,255,255,0.5)";
+    for(let i=0;i<70;i++){ vy+=CONFIG.gravity*dt; x+=vx*dt; y+=vy*dt; if(y>=terrainAt(x)||x<0||x>CONFIG.w) break; if(i%3===0){ ctx.beginPath(); ctx.arc(x,y,2,0,TAU); ctx.fill(); } }
+    // power meter
+    const p=cannonPivot(c);
+    ctx.fillStyle="rgba(0,0,0,0.4)"; ctx.fillRect(p.x-24,p.y-52,48,7);
+    ctx.fillStyle="#ffd166"; ctx.fillRect(p.x-24,p.y-52,48*state.aimPower,7);
+  },
+  drawHUD(ctx){
+    const W=CONFIG.w;
+    // player HP (left)
+    this.hpBar(ctx,18,16,200,"YOUR CASTLE","#8fe06a",state.player.hp,state.player.maxHp,false);
+    // enemy HP (right)
+    this.hpBar(ctx,W-218,16,200,"ENEMY CASTLE","#ff6b6b",state.enemy.hp,state.enemy.maxHp,true);
+    // center: level, wind, missiles
+    ctx.textAlign="center"; ctx.fillStyle="#f2ead9"; ctx.font="700 15px 'Chakra Petch'";
+    ctx.fillText("LEVEL "+state.level, W/2, 26);
+    ctx.font="11px 'Share Tech Mono'"; ctx.fillStyle="#d8ccb0";
+    ctx.fillText("MISSILES x"+state.player.missiles+(state.level>=CONFIG.splitFromLevel?"  (split)":""), W/2, 44);
+    // wind arrow
+    const wx=W/2, wy=60, mag=Math.abs(state.wind)/CONFIG.maxWind;
+    ctx.fillStyle="#b9ad8f"; ctx.font="10px 'Share Tech Mono'"; ctx.fillText("WIND", wx, wy+2);
+    if(mag>0.02){ const dir=state.wind>0?1:-1, len=14+mag*40; ctx.strokeStyle="#9fd0ff"; ctx.lineWidth=3; ctx.beginPath();
+      ctx.moveTo(wx+30*dir,wy-2); ctx.lineTo(wx+(30+len)*dir,wy-2); ctx.lineTo(wx+(30+len-8)*dir,wy-7); ctx.moveTo(wx+(30+len)*dir,wy-2); ctx.lineTo(wx+(30+len-8)*dir,wy+3); ctx.stroke(); }
+    // phase hint
+    ctx.textAlign="center"; ctx.font="12px 'Share Tech Mono'";
+    if(state.phase==="aim"){ ctx.fillStyle="rgba(255,255,255,0.75)"; ctx.fillText("Drag to aim, release to fire  (or arrows + Space)", W/2, CONFIG.h-16); }
+    else if(state.phase==="enemythink"){ ctx.fillStyle="#ffb0b0"; ctx.fillText("Enemy is taking aim...", W/2, CONFIG.h-16); }
+    ctx.textAlign="left";
+  },
+  hpBar(ctx,x,y,w,label,color,hp,maxHp,right){
+    ctx.textAlign=right?"right":"left"; ctx.fillStyle="#e8dcc0"; ctx.font="700 11px 'Chakra Petch'";
+    ctx.fillText(label, right?x+w:x, y+2);
+    ctx.fillStyle="rgba(0,0,0,0.4)"; ctx.fillRect(x,y+8,w,10);
+    ctx.fillStyle=color; ctx.fillRect(x,y+8,w*clamp(hp/maxHp,0,1),10);
+    ctx.strokeStyle="rgba(255,255,255,0.2)"; ctx.lineWidth=1; ctx.strokeRect(x,y+8,w,10);
+    ctx.textAlign="left";
+  }
+};
+
+/* ============================== boot ============================== */
+function setupCanvas(cv,w,h){ const dpr=window.devicePixelRatio||1; cv.width=w*dpr; cv.height=h*dpr; const c=cv.getContext("2d"); c.setTransform(dpr,0,0,dpr,0,0); return c; }
+function now(){ return (typeof performance!=="undefined"&&performance.now)?performance.now():Date.now(); }
+Game.init();
+</script>
+</body>
+</html>
