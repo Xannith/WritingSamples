@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>TUNNELER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0710;
+    --panel:rgba(255,255,255,0.04);
+    --panel-line:rgba(255,255,255,0.09);
+    --text:#f1e9df;
+    --muted:#9a8d7e;
+    --accent:#ffb454;
+    --display:"Chakra Petch", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(1000px 620px at 50% -12%, #1a1220 0%, rgba(26,18,32,0) 62%),
+      var(--bg);
+    color:var(--text);
+    min-height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;padding:14px;
+    -webkit-user-select:none;user-select:none;touch-action:manipulation;overflow-x:hidden;
+  }
+  header{text-align:center;}
+  header h1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:9px;text-shadow:0 0 24px rgba(255,180,84,0.3);}
+  header p{font-family:var(--display);font-weight:500;font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:3px;text-transform:uppercase;}
+  .hud{display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap;font-family:var(--display);}
+  .hud .item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .hud .item span{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .hud .item b{font-size:19px;font-variant-numeric:tabular-nums;color:var(--text);}
+  .arena-wrap{position:relative;border-radius:14px;padding:8px;background:var(--panel);border:1px solid var(--panel-line);box-shadow:0 0 70px rgba(255,180,84,0.05), 0 24px 70px rgba(0,0,0,0.6);}
+  #stage{display:block;width:min(476px,94vw);height:auto;aspect-ratio:476 / 544;border-radius:8px;background:#0b0b16;}
+  #stage:focus{outline:none;}
+  .overlay{position:absolute;inset:8px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;}
+  .overlay.dim{background:rgba(10,7,16,0.9);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);}
+  .ov-card{padding:22px;max-width:94%;}
+  .ov-card h2{font-family:var(--display);font-weight:700;font-size:23px;letter-spacing:2px;margin-bottom:8px;}
+  .ov-card > p{font-size:12.5px;color:#c3b7a8;line-height:1.6;margin-bottom:6px;}
+  .ov-score{font-family:var(--display);font-size:14px;color:var(--muted);letter-spacing:2px;margin:10px 0;text-transform:uppercase;font-variant-numeric:tabular-nums;}
+  .controls-list{font-size:12px;color:#bdb1a2;line-height:1.9;margin-top:8px;max-width:420px;}
+  .controls-list kbd{font-family:var(--display);font-size:11px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:5px;padding:1px 6px;color:#f1e9df;}
+  .btn{font-family:var(--display);font-weight:700;letter-spacing:1px;margin-top:16px;padding:11px 24px;border:none;border-radius:10px;background:linear-gradient(180deg,#ffb454,#e8912f);color:#2a1705;font-size:14px;cursor:pointer;transition:transform .08s ease, filter .15s ease;}
+  .btn:hover{filter:brightness(1.07);}
+  .btn:active{transform:translateY(1px);}
+  .pad-row{display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;width:min(520px,96vw);}
+  .pad{display:grid;grid-template-columns:repeat(3,50px);grid-template-rows:repeat(3,44px);gap:6px;}
+  .pad button, .fire-btn{font-family:var(--display);font-weight:600;font-size:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.11);background:rgba(255,255,255,0.05);color:#f1e9df;}
+  .pad button:active, .fire-btn:active{background:rgba(255,180,84,0.24);}
+  #p-up{grid-column:2;grid-row:1;} #p-left{grid-column:1;grid-row:2;} #p-right{grid-column:3;grid-row:2;} #p-down{grid-column:2;grid-row:3;}
+  .fire-btn{min-width:110px;min-height:100px;background:rgba(255,180,84,0.14);letter-spacing:1px;text-transform:uppercase;font-size:14px;}
+  .help{font-size:12px;color:#7d7263;text-align:center;max-width:560px;line-height:1.8;}
+  @media (max-width:819px){ .help{display:none;} }
+  @media (prefers-reduced-motion:no-preference){
+    header,.hud,.arena-wrap{animation:rise .5s ease both;}
+    @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>TUNNELER</h1>
+    <p>A Dig Dug-style digging game</p>
+  </header>
+
+  <div class="hud">
+    <div class="item"><span>Score</span><b id="hud-score">0</b></div>
+    <div class="item"><span>High</span><b id="hud-high">20000</b></div>
+    <div class="item"><span>Level</span><b id="hud-level">1</b></div>
+  </div>
+
+  <div class="arena-wrap">
+    <canvas id="stage" tabindex="0"></canvas>
+    <div class="overlay" id="overlay"></div>
+  </div>
+
+  <div class="pad-row">
+    <div class="pad">
+      <button id="p-up">&#9650;</button>
+      <button id="p-left">&#9664;</button>
+      <button id="p-right">&#9654;</button>
+      <button id="p-down">&#9660;</button>
+    </div>
+    <button id="p-fire" class="fire-btn">Pump</button>
+  </div>
+
+  <div class="help">
+    Dig with the arrow keys or <b>W A S D</b>. Fire and pump the harpoon with <b>Space</b>: mash it to inflate an enemy until it pops. Dig under a rock to drop it and crush enemies. Watch for enemies that turn into eyes and float through the dirt. <b>P</b> pauses.
+  </div>
+
+<script>
+"use strict";
+
+/* ---------- Constants ---------- */
+const COLS = 14, ROWS = 16, CELL = 34;
+const W = COLS * CELL, H = ROWS * CELL;
+const DIRT = 1, EMPTY = 0;
+const PLAYER_SPEED = 5.2, ENEMY_SPEED = 3.0, GHOST_SPEED = 95, ROCK_FALL_SPEED = 360;
+const PUMP_CD = 0.22, HARPOON_RANGE = 2, HARPOON_LIFE = 0.35, INFLATE_DEFLATE = 0.9, POP_AT = 4;
+const FIRE_RANGE = 3, FIRE_DUR = 0.9, FYGAR_FIRE_CD = 4.5;
+const RESPAWN_DELAY = 1.2, ESCAPE_TIME = 40, LAST_FLEE = 3.0;
+const CRUSH_POINTS = [1000, 2500, 4000, 6000, 8000];
+const SKY = "#0a0a1c", TUNNEL = "#0b0b16";
+const BANDS = ["#8a5a2b", "#c06a1c", "#2f6f8f", "#3a7a3a"];
+
+/* ---------- State ---------- */
+let state = "menu";
+let score = 0, high = 20000, level = 1, lives = 3, nextExtra = 20000;
+let grid = [], rocks = [], enemies = [], effects = [];
+let player = null;
+let dirStack = [], fireHeld = false, fireCd2 = 0;
+let roundTime = 0, escapeActive = false, lastTimer = LAST_FLEE, respawnTimer = 0;
+let bannerText = "", bannerT = 0;
+let shakeMag = 0, shakeTime = 0, shakeDur = 0.001;
+let gameTime = 0, lastTime = 0;
+
+/* ---------- Canvas ---------- */
+const stageEl = document.getElementById("stage");
+let ctx;
+function setupCanvas(cv, w, h){
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const c = cv.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return c;
+}
+
+/* ---------- DOM ---------- */
+const overlay = document.getElementById("overlay");
+const elScore = document.getElementById("hud-score");
+const elHigh = document.getElementById("hud-high");
+const elLevel = document.getElementById("hud-level");
+
+/* ---------- Helpers ---------- */
+function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
+function inBounds(cx, cy){ return cx >= 0 && cx < COLS && cy >= 0 && cy < ROWS; }
+function centerX(cx){ return cx * CELL + CELL / 2; }
+function centerY(cy){ return cy * CELL + CELL / 2; }
+function dirVec(d){ return d === "L" ? [-1,0] : d === "R" ? [1,0] : d === "U" ? [0,-1] : d === "D" ? [0,1] : [0,0]; }
+function opposite(d){ return d === "L" ? "R" : d === "R" ? "L" : d === "U" ? "D" : d === "D" ? "U" : null; }
+function hash(x, y){ return ((x * 73856093) ^ (y * 19349663)) >>> 0; }
+function bandOf(cy){ if(cy <= 0) return -1; return clamp(Math.floor((cy - 1) / ((ROWS - 1) / 4)), 0, 3); }
+function dirtColor(cy){ const b = bandOf(cy); return b < 0 ? SKY : BANDS[b]; }
+function shake(m, d){ shakeMag = m; shakeTime = d; shakeDur = d; }
+function currentWant(){ return dirStack.length ? dirStack[dirStack.length - 1] : null; }
+
+function rockAt(cx, cy){
+  for(const r of rocks){
+    if(r.state === "rest" || r.state === "wobble"){ if(r.cx === cx && r.cy === cy) return r; }
+    else if(r.state === "fall"){ if(r.cx === cx && r.fy === cy) return r; }
+  }
+  return null;
+}
+function rockAtExcept(cx, cy, self){
+  for(const r of rocks){
+    if(r === self) continue;
+    if(r.state === "rest" || r.state === "wobble"){ if(r.cx === cx && r.cy === cy) return r; }
+    else if(r.state === "fall"){ if(r.cx === cx && r.fy === cy) return r; }
+  }
+  return null;
+}
+function enemyAtCell(cx, cy){
+  for(const e of enemies){ if(e.dead || e.ghost) continue; if(Math.floor(e.px / CELL) === cx && Math.floor(e.py / CELL) === cy) return e; }
+  return null;
+}
+function playerCanEnter(cx, cy){ if(!inBounds(cx, cy)) return false; if(rockAt(cx, cy)) return false; return true; }
+function enemyCanEnter(cx, cy){ if(!inBounds(cx, cy)) return false; if(rockAt(cx, cy)) return false; return grid[cy][cx] === EMPTY; }
+function setPix(e){
+  if(e.moving){ e.px = centerX(e.cx) + (centerX(e.tx) - centerX(e.cx)) * e.prog; e.py = centerY(e.cy) + (centerY(e.ty) - centerY(e.cy)) * e.prog; }
+  else { e.px = centerX(e.cx); e.py = centerY(e.cy); }
+}
+
+/* ---------- Overlay ---------- */
+function setOverlay(html, dim){ overlay.innerHTML = html; overlay.style.display = "flex"; overlay.classList.toggle("dim", !!dim); }
+function clearOverlay(){ overlay.style.display = "none"; }
+function menuHTML(){
+  return `<div class="ov-card">
+    <h2>TUNNELER</h2>
+    <p>Dig through the earth, pump enemies until they pop, and drop rocks to crush them. Deeper kills are worth more.</p>
+    <div class="controls-list">
+      <kbd>&larr;</kbd><kbd>&rarr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> dig<br>
+      <kbd>Space</kbd> harpoon, mash to inflate and pop. <kbd>P</kbd> pauses.
+    </div>
+    <button class="btn" onclick="startGame()">Start (Enter)</button>
+  </div>`;
+}
+function gameoverHTML(){
+  return `<div class="ov-card"><h2>Game Over</h2>
+    <div class="ov-score">Score ${score} &nbsp;&middot;&nbsp; Reached level ${level}</div>
+    <button class="btn" onclick="startGame()">Play Again (Enter)</button></div>`;
+}
+function showMenu(){ setOverlay(menuHTML(), true); }
+
+/* ---------- HUD ---------- */
+function updateHud(){ if(score > high) high = score; elScore.textContent = score; elHigh.textContent = high; elLevel.textContent = level; }
+function addFloat(x, y, text, color){ effects.push({ kind:"float", x, y, text, color, t:0, dur:1.0 }); }
+function addPop(x, y, color){ effects.push({ kind:"pop", x, y, color, t:0, dur:0.35 }); }
+function addShatter(r){
+  const frags = [];
+  const x = centerX(r.cx), y = r.state === "fall" ? r.py : centerY(r.cy);
+  for(let i = 0; i < 7; i++) frags.push({ x, y, vx:(Math.random()-0.5)*160, vy:-40 - Math.random()*120 });
+  effects.push({ kind:"shatter", frags, t:0, dur:0.5 });
+}
+function checkExtra(){ while(score >= nextExtra){ lives++; addFloat(player ? player.px : W/2, (player ? player.py : H/2) - 30, "1UP", "#b6ff3c"); nextExtra += (nextExtra <= 20000 ? 50000 : 60000); updateHud(); } }
+
+/* ---------- Level build ---------- */
+function makeEnemy(type, cx, cy){
+  return { type, cx, cy, tx:cx, ty:cy, dir:["L","R","U","D"][Math.floor(Math.random()*4)], moving:false, prog:0,
+    px:centerX(cx), py:centerY(cy), speed: ENEMY_SPEED + (level - 1) * 0.15,
+    ghost:false, ghostT: 5 + Math.random()*5, ghostDur:0, escaping:false, escColX:centerX(cx),
+    hooked:false, inflate:0, inflateIdle:0,
+    firing:false, fireT:0, fireCd: 2 + Math.random()*4, fireCells:[], fireDir:"L",
+    dead:false };
+}
+function buildLevel(lvl){
+  grid = [];
+  for(let y = 0; y < ROWS; y++){ const row = []; for(let x = 0; x < COLS; x++) row.push(DIRT); grid.push(row); }
+  for(let x = 0; x < COLS; x++) grid[0][x] = EMPTY;
+  rocks = []; enemies = []; effects = [];
+  const sx = Math.floor(COLS / 2), sy = 2;
+  for(let y = 0; y <= sy; y++) grid[y][sx] = EMPTY;
+  player = { cx:sx, cy:sy, tx:sx, ty:sy, dir:"D", moving:false, prog:0, px:centerX(sx), py:centerY(sy), alive:true, invuln:2.0, harpoon:null };
+
+  const corridors = 2 + Math.floor(Math.random() * 2);
+  for(let i = 0; i < corridors; i++){
+    if(Math.random() < 0.5){
+      const ry = 3 + Math.floor(Math.random() * (ROWS - 5));
+      const rx0 = 1 + Math.floor(Math.random() * (COLS - 6));
+      const len = 3 + Math.floor(Math.random() * 4);
+      for(let x = rx0; x < Math.min(COLS - 1, rx0 + len); x++) grid[ry][x] = EMPTY;
+    } else {
+      const rx = 1 + Math.floor(Math.random() * (COLS - 2));
+      const ry0 = 3 + Math.floor(Math.random() * (ROWS - 7));
+      const len = 3 + Math.floor(Math.random() * 4);
+      for(let y = ry0; y < Math.min(ROWS - 1, ry0 + len); y++) grid[y][rx] = EMPTY;
+    }
+  }
+
+  const total = Math.min(3 + lvl, 8);
+  const fygarTarget = Math.min(1 + Math.floor(lvl / 2), total - 1);
+  let placed = 0, fplaced = 0, tries = 0;
+  const occupied = new Set(); occupied.add(sx + "," + sy);
+  while(placed < total && tries < 500){
+    tries++;
+    const cx = 1 + Math.floor(Math.random() * (COLS - 2));
+    const cy = 3 + Math.floor(Math.random() * (ROWS - 4));
+    const key = cx + "," + cy;
+    if(occupied.has(key)) continue;
+    if(Math.abs(cx - sx) + Math.abs(cy - sy) < 3) continue;
+    grid[cy][cx] = EMPTY;
+    const nd = ["L","R","U","D"][Math.floor(Math.random() * 4)];
+    const [dx, dy] = dirVec(nd);
+    const nx = clamp(cx + dx, 1, COLS - 2), ny = clamp(cy + dy, 1, ROWS - 2);
+    grid[ny][nx] = EMPTY;
+    const remaining = total - placed;
+    const type = (fplaced < fygarTarget && (Math.random() < 0.5 || (fygarTarget - fplaced) >= remaining)) ? "fygar" : "pooka";
+    if(type === "fygar") fplaced++;
+    enemies.push(makeEnemy(type, cx, cy));
+    occupied.add(key); placed++;
+  }
+
+  const rockCount = Math.min(2 + Math.floor(lvl / 2), 5);
+  let rc = 0, rtries = 0;
+  while(rc < rockCount && rtries < 400){
+    rtries++;
+    const cx = 1 + Math.floor(Math.random() * (COLS - 2));
+    const cy = 3 + Math.floor(Math.random() * (ROWS - 5));
+    if(grid[cy][cx] !== DIRT) continue;
+    if(cy + 1 >= ROWS || grid[cy + 1][cx] !== DIRT) continue;
+    if(rockAt(cx, cy)) continue;
+    if(Math.abs(cx - sx) + Math.abs(cy - sy) < 3) continue;
+    rocks.push({ cx, cy, state:"rest", t:0, py:centerY(cy), fy:cy, crush:0 });
+    rc++;
+  }
+
+  roundTime = 0; escapeActive = false; lastTimer = LAST_FLEE; respawnTimer = 0;
+}
+
+/* ---------- Harpoon / pump ---------- */
+function fireHarpoon(){
+  if(player.harpoon) return;
+  const dir = player.dir;
+  const [dx, dy] = dirVec(dir);
+  const startCx = Math.floor(player.px / CELL), startCy = Math.floor(player.py / CELL);
+  let hooked = null, reach = HARPOON_RANGE;
+  for(let step = 1; step <= HARPOON_RANGE; step++){
+    const cx = startCx + dx * step, cy = startCy + dy * step;
+    if(!inBounds(cx, cy) || grid[cy][cx] === DIRT || rockAt(cx, cy)){ reach = step - 0.4; break; }
+    const e = enemyAtCell(cx, cy);
+    if(e && !e.ghost && !e.hooked && !e.dead){ hooked = e; reach = step; break; }
+    reach = step;
+  }
+  player.harpoon = { dir, reach, enemy: hooked, life: hooked ? 999 : HARPOON_LIFE };
+  if(hooked){ hooked.hooked = true; hooked.inflate = 1; hooked.inflateIdle = 0; }
+}
+function pumpEnemy(){
+  const h = player.harpoon;
+  if(!h || !h.enemy || h.enemy.dead) return;
+  const e = h.enemy;
+  e.inflate++; e.inflateIdle = 0;
+  if(e.inflate >= POP_AT) popEnemy(e);
+}
+function popEnemy(e){
+  const band = clamp(bandOf(e.cy), 0, 3);
+  const pts = (e.type === "fygar" ? 300 : 200) * (band + 1);
+  score += pts; updateHud(); checkExtra();
+  addPop(e.px, e.py, e.type === "fygar" ? "#39c24a" : "#e33b3b");
+  addFloat(e.px, e.py - 6, "+" + pts, "#ffe08a");
+  e.dead = true;
+  if(player.harpoon && player.harpoon.enemy === e) player.harpoon = null;
+}
+function fireOrPump(){
+  if(!player.alive) return;
+  if(player.harpoon){ if(player.harpoon.enemy) pumpEnemy(); }
+  else fireHarpoon();
+}
+
+/* ---------- Player update ---------- */
+function updatePlayer(dt){
+  if(player.invuln > 0) player.invuln -= dt;
+  if(!player.alive) return;
+
+  if(fireHeld){ fireCd2 -= dt; if(fireCd2 <= 0){ fireOrPump(); fireCd2 = PUMP_CD; } }
+
+  if(player.harpoon){
+    const h = player.harpoon;
+    if(h.enemy){
+      if(h.enemy.dead){ player.harpoon = null; }
+      else {
+        h.enemy.inflateIdle += dt;
+        if(h.enemy.inflateIdle > INFLATE_DEFLATE){ h.enemy.inflate--; h.enemy.inflateIdle = 0; if(h.enemy.inflate <= 0){ h.enemy.hooked = false; player.harpoon = null; } }
+      }
+    } else { h.life -= dt; if(h.life <= 0) player.harpoon = null; }
+  }
+
+  if(player.harpoon){
+    const w = currentWant();
+    if(w){ if(player.harpoon.enemy) player.harpoon.enemy.hooked = false; player.harpoon = null; }
+    else { setPix(player); return; }
+  }
+
+  const want = currentWant();
+  if(player.moving){
+    player.prog += PLAYER_SPEED * dt;
+    if(want === opposite(player.dir)){
+      const ocx = player.cx, ocy = player.cy;
+      player.cx = player.tx; player.cy = player.ty; player.tx = ocx; player.ty = ocy;
+      player.dir = want; player.prog = 1 - player.prog;
+    }
+    if(player.prog >= 1){ player.cx = player.tx; player.cy = player.ty; player.moving = false; player.prog = 0; }
+  }
+  if(!player.moving){
+    if(want){
+      player.dir = want;
+      const [dx, dy] = dirVec(want);
+      const nx = player.cx + dx, ny = player.cy + dy;
+      if(playerCanEnter(nx, ny)){ player.tx = nx; player.ty = ny; player.moving = true; player.prog = 0; grid[ny][nx] = EMPTY; }
+    }
+  }
+  grid[player.cy][player.cx] = EMPTY;
+  setPix(player);
+}
+
+/* ---------- Enemy update ---------- */
+function chooseEnemyDir(e){
+  const opts = [];
+  for(const d of ["L","R","U","D"]){ const [dx, dy] = dirVec(d); if(enemyCanEnter(e.cx + dx, e.cy + dy)) opts.push(d); }
+  if(opts.length === 0) return null;
+  const rev = opposite(e.dir);
+  let cand = opts.filter(d => d !== rev);
+  if(cand.length === 0) cand = opts;
+  if(Math.random() < 0.25) return cand[Math.floor(Math.random() * cand.length)];
+  let best = cand[0], bestD = Infinity;
+  for(const d of cand){ const [dx, dy] = dirVec(d); const dist = (e.cx + dx - player.cx) ** 2 + (e.cy + dy - player.cy) ** 2; if(dist < bestD){ bestD = dist; best = d; } }
+  return best;
+}
+function startEscape(e){ e.escaping = true; e.ghost = true; e.ghostDur = 0; e.escColX = centerX(e.cx); e.moving = false; e.firing = false; e.fireCells = []; }
+function updateGhost(e, dt){
+  e.ghostDur += dt;
+  let tx, ty, sp;
+  if(e.escaping){ tx = e.escColX; ty = -CELL; sp = GHOST_SPEED * 1.25; }
+  else { tx = player.px; ty = player.py; sp = GHOST_SPEED; }
+  const dx = tx - e.px, dy = ty - e.py, d = Math.hypot(dx, dy) || 1;
+  e.px += dx / d * sp * dt; e.py += dy / d * sp * dt;
+  e.cx = clamp(Math.floor(e.px / CELL), 0, COLS - 1);
+  e.cy = clamp(Math.floor(e.py / CELL), 0, ROWS - 1);
+  if(e.escaping){ if(e.py < CELL * 0.5) e.dead = true; return; }
+  if(e.ghostDur > 0.6 && grid[e.cy][e.cx] === EMPTY){
+    e.px = centerX(e.cx); e.py = centerY(e.cy); e.moving = false; e.prog = 0; e.ghost = false; e.ghostDur = 0; e.ghostT = 5 + Math.random() * 6; return;
+  }
+  if(e.ghostDur > 5.5){
+    e.cx = player.cx; e.cy = player.cy; e.px = centerX(e.cx); e.py = centerY(e.cy);
+    e.moving = false; e.prog = 0; e.ghost = false; e.ghostDur = 0; e.ghostT = 5 + Math.random() * 6;
+  }
+}
+function updateFygarFire(e, dt){
+  if(e.firing){ e.fireT -= dt; if(e.fireT <= 0){ e.firing = false; e.fireCells = []; e.fireCd = FYGAR_FIRE_CD; } return; }
+  e.fireCd -= dt;
+  if(e.fireCd <= 0 && !e.moving && player.alive && player.cy === e.cy){
+    const dir = player.cx < e.cx ? "L" : "R";
+    e.dir = dir;
+    const [dx] = dirVec(dir);
+    const cells = [];
+    for(let s = 1; s <= FIRE_RANGE; s++){ const cx = e.cx + dx * s, cy = e.cy; if(!inBounds(cx, cy) || grid[cy][cx] === DIRT || rockAt(cx, cy)) break; cells.push([cx, cy]); }
+    if(cells.length > 0 && Math.abs(player.cx - e.cx) <= FIRE_RANGE){ e.firing = true; e.fireT = FIRE_DUR; e.fireCells = cells; e.fireDir = dir; }
+    else e.fireCd = 1.0;
+  }
+}
+function updateEnemy(e, dt){
+  if(e.dead || e.hooked) return;
+  if(!e.ghost && !e.escaping){ e.ghostT -= dt; if(e.ghostT <= 0){ e.ghost = true; e.ghostDur = 0; e.moving = false; } }
+  if(e.ghost){ updateGhost(e, dt); return; }
+  if(e.type === "fygar"){ updateFygarFire(e, dt); if(e.firing){ setPix(e); return; } }
+  if(e.moving){ e.prog += e.speed * dt; if(e.prog >= 1){ e.cx = e.tx; e.cy = e.ty; e.moving = false; e.prog = 0; } }
+  if(!e.moving){ const d = chooseEnemyDir(e); if(d){ e.dir = d; const [dx, dy] = dirVec(d); e.tx = e.cx + dx; e.ty = e.cy + dy; e.moving = true; e.prog = 0; } }
+  setPix(e);
+}
+
+/* ---------- Rocks ---------- */
+function crushEnemy(e, r){
+  r.crush++;
+  const pts = CRUSH_POINTS[Math.min(r.crush - 1, CRUSH_POINTS.length - 1)];
+  score += pts; updateHud(); checkExtra();
+  addFloat(e.px, e.py - 6, "+" + pts, "#ffd24a");
+  addPop(e.px, e.py, "#c9a24a");
+  e.dead = true;
+  if(player.harpoon && player.harpoon.enemy === e) player.harpoon = null;
+}
+function updateRocks(dt){
+  for(const r of rocks){
+    if(r.state === "rest"){
+      const belowEmpty = (r.cy + 1 < ROWS) && grid[r.cy + 1][r.cx] === EMPTY && !rockAtExcept(r.cx, r.cy + 1, r);
+      if(belowEmpty){ r.state = "wobble"; r.t = 0; }
+    } else if(r.state === "wobble"){
+      r.t += dt;
+      if(r.t >= 0.6){ r.state = "fall"; r.py = centerY(r.cy); r.fy = r.cy; grid[r.cy][r.cx] = EMPTY; r.crush = 0; }
+    } else if(r.state === "fall"){
+      r.py += ROCK_FALL_SPEED * dt;
+      const newCy = Math.floor(r.py / CELL);
+      if(newCy !== r.fy){
+        for(let cy = r.fy + 1; cy <= newCy; cy++){
+          if(cy >= ROWS){ r.state = "shatter"; r.t = 0; r.py = centerY(ROWS - 1); r.fy = ROWS - 1; break; }
+          if(grid[cy][r.cx] === DIRT || rockAtExcept(r.cx, cy, r)){ r.state = "shatter"; r.t = 0; r.py = centerY(cy - 1); r.fy = cy - 1; break; }
+          grid[cy][r.cx] = EMPTY;
+          r.fy = cy;
+          for(const e of enemies){ if(e.dead || e.ghost) continue; if(Math.floor(e.px / CELL) === r.cx && Math.floor(e.py / CELL) === cy) crushEnemy(e, r); }
+          if(player.alive && player.cx === r.cx && player.cy === cy) killPlayer();
+        }
+      }
+      if(r.state === "fall" && r.py >= H - CELL / 2){ r.state = "shatter"; r.t = 0; }
+    } else if(r.state === "shatter"){
+      r.t += dt; if(r.t >= 0.3){ r.state = "gone"; addShatter(r); }
+    }
+  }
+  rocks = rocks.filter(r => r.state !== "gone");
+}
+
+/* ---------- Death / flow ---------- */
+function killPlayer(){
+  if(!player.alive || player.invuln > 0) return;
+  if(player.harpoon){ if(player.harpoon.enemy) player.harpoon.enemy.hooked = false; player.harpoon = null; }
+  player.alive = false;
+  addPop(player.px, player.py, "#f2f4f8"); shake(11, 0.4);
+  lives--; updateHud();
+  if(lives <= 0){ gameOver(); return; }
+  respawnTimer = RESPAWN_DELAY;
+}
+function respawnPlayer(){
+  const sx = Math.floor(COLS / 2), sy = 2;
+  for(let y = 0; y <= sy; y++) grid[y][sx] = EMPTY;
+  player.cx = sx; player.cy = sy; player.tx = sx; player.ty = sy; player.dir = "D";
+  player.moving = false; player.prog = 0; player.px = centerX(sx); player.py = centerY(sy);
+  player.alive = true; player.invuln = 2.0; player.harpoon = null;
+}
+function checkPlayerDeath(){
+  if(!player.alive || player.invuln > 0) return;
+  for(const e of enemies){
+    if(e.dead || e.hooked) continue;
+    if(Math.abs(e.px - player.px) < CELL * 0.62 && Math.abs(e.py - player.py) < CELL * 0.62){ killPlayer(); return; }
+  }
+  for(const e of enemies){
+    if(e.type === "fygar" && e.firing){ for(const c of e.fireCells){ if(player.cx === c[0] && player.cy === c[1]){ killPlayer(); return; } } }
+  }
+}
+function nextLevel(){ level++; updateHud(); bannerText = "LEVEL " + level; bannerT = 1.8; buildLevel(level); }
+function startGame(){
+  score = 0; lives = 3; level = 1; nextExtra = 20000;
+  dirStack = []; fireHeld = false; fireCd2 = 0;
+  buildLevel(1);
+  bannerText = "LEVEL 1"; bannerT = 1.8;
+  state = "playing"; clearOverlay(); updateHud();
+  try { stageEl.focus(); } catch(e){}
+  lastTime = performance.now();
+}
+function gameOver(){ if(score > high) high = score; updateHud(); state = "gameover"; setOverlay(gameoverHTML(), true); }
+function togglePause(){
+  if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
+  else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }
+}
+
+/* ---------- Update ---------- */
+function update(dt){
+  roundTime += dt;
+  if(player.alive) updatePlayer(dt);
+  else if(lives > 0){ respawnTimer -= dt; if(respawnTimer <= 0) respawnPlayer(); }
+
+  for(const e of enemies){ if(!e.dead) updateEnemy(e, dt); }
+  updateRocks(dt);
+
+  if(!escapeActive && roundTime > ESCAPE_TIME){ escapeActive = true; for(const e of enemies){ if(!e.hooked && !e.dead) startEscape(e); } }
+  if(enemies.length === 1 && !enemies[0].escaping && !enemies[0].hooked){ lastTimer -= dt; if(lastTimer <= 0) startEscape(enemies[0]); }
+  else lastTimer = LAST_FLEE;
+
+  checkPlayerDeath();
+
+  if(player.harpoon && player.harpoon.enemy && player.harpoon.enemy.dead) player.harpoon = null;
+
+  for(const ef of effects){
+    ef.t += dt;
+    if(ef.kind === "float") ef.y -= 26 * dt;
+    if(ef.kind === "shatter") for(const f of ef.frags){ f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 480 * dt; }
+  }
+  effects = effects.filter(ef => ef.t < ef.dur);
+  enemies = enemies.filter(e => !e.dead);
+
+  if(shakeTime > 0) shakeTime -= dt;
+  if(bannerT > 0) bannerT -= dt;
+
+  if(state === "playing" && enemies.length === 0) nextLevel();
+}
+
+/* ---------- Rendering ---------- */
+function drawGrid(){
+  ctx.fillStyle = TUNNEL; ctx.fillRect(0, 0, W, H);
+  for(let y = 0; y < ROWS; y++){
+    for(let x = 0; x < COLS; x++){
+      if(grid[y][x] === DIRT){
+        ctx.fillStyle = dirtColor(y); ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
+        const h = hash(x, y);
+        ctx.fillStyle = "rgba(0,0,0,0.12)";
+        ctx.fillRect(x * CELL + (h % 20), y * CELL + ((h >> 2) % 20), 3, 3);
+        ctx.fillRect(x * CELL + ((h >> 4) % 24), y * CELL + ((h >> 6) % 24), 2, 2);
+        ctx.fillStyle = "rgba(255,255,255,0.05)";
+        ctx.fillRect(x * CELL + ((h >> 8) % 22), y * CELL + ((h >> 10) % 22), 2, 2);
+      } else if(y === 0){
+        ctx.fillStyle = SKY; ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
+      }
+    }
+  }
+}
+function drawRock(r){
+  let x = centerX(r.cx), y = (r.state === "fall") ? r.py : centerY(r.cy);
+  if(r.state === "wobble") x += Math.sin(r.t * 40) * 2;
+  ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = "#8a8f98"; ctx.strokeStyle = "#454a52"; ctx.lineWidth = 2;
+  const rr = CELL * 0.42, pts = 7;
+  ctx.beginPath(); ctx.moveTo(rr, 0);
+  for(let i = 1; i <= pts; i++){ const a = i / pts * Math.PI * 2; const rad = rr * (0.82 + 0.18 * ((hash(r.cx + i, r.cy) % 10) / 10)); ctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad); }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.beginPath(); ctx.ellipse(-rr * 0.3, -rr * 0.35, rr * 0.35, rr * 0.22, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.3)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-rr * 0.2, -rr * 0.1); ctx.lineTo(rr * 0.1, rr * 0.3); ctx.stroke();
+  ctx.restore();
+}
+function drawDigDug(x, y, dir, alpha){
+  ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y);
+  const s = CELL * 0.5, dv = dirVec(dir), dx = dv[0], dy = dv[1];
+  ctx.fillStyle = "#2f6fd0"; ctx.beginPath(); ctx.ellipse(0, s * 0.34, s * 0.42, s * 0.36, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#f2f4f8"; ctx.beginPath(); ctx.ellipse(0, -s * 0.04, s * 0.44, s * 0.5, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(0, -s * 0.34, s * 0.34, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = "#39c0ff"; ctx.beginPath(); ctx.arc(dx * s * 0.16, -s * 0.3 + dy * s * 0.12, s * 0.15, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "#c9ccd2"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(dx * s * 0.32, dy * s * 0.32); ctx.lineTo(dx * s * 0.62, dy * s * 0.62); ctx.stroke();
+  ctx.restore();
+}
+function drawPooka(e){
+  const infl = e.hooked ? (1 + e.inflate * 0.22) : 1;
+  const s = CELL * 0.46 * infl;
+  ctx.save(); ctx.translate(e.px, e.py);
+  if(e.ghost) ctx.globalAlpha = 0.85;
+  if(!e.ghost){
+    ctx.fillStyle = (e.hooked && e.inflate >= 3) ? "#ff8a8a" : "#e33b3b";
+    ctx.beginPath(); ctx.ellipse(0, 0, s, s * 0.92, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#b02020";
+    ctx.beginPath(); ctx.ellipse(-s * 0.4, s * 0.8, s * 0.22, s * 0.16, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(s * 0.4, s * 0.8, s * 0.22, s * 0.16, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.fillStyle = "#ffe36b";
+  ctx.beginPath(); ctx.arc(-s * 0.32, -s * 0.1, s * 0.3, 0, Math.PI * 2); ctx.arc(s * 0.32, -s * 0.1, s * 0.3, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#222";
+  ctx.beginPath(); ctx.arc(-s * 0.32, -s * 0.1, s * 0.13, 0, Math.PI * 2); ctx.arc(s * 0.32, -s * 0.1, s * 0.13, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+function drawFygar(e){
+  const infl = e.hooked ? (1 + e.inflate * 0.22) : 1;
+  const s = CELL * 0.46 * infl, face = (e.dir === "L") ? -1 : 1;
+  ctx.save(); ctx.translate(e.px, e.py);
+  if(e.ghost) ctx.globalAlpha = 0.85;
+  if(!e.ghost){
+    ctx.fillStyle = (e.hooked && e.inflate >= 3) ? "#9cf0a0" : "#39c24a";
+    ctx.beginPath(); ctx.ellipse(0, 0, s * 1.05, s * 0.9, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#2ea33d"; ctx.beginPath(); ctx.ellipse(face * s * 0.9, 0, s * 0.35, s * 0.3, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#207a2c";
+    for(let i = -1; i <= 1; i++){ ctx.beginPath(); ctx.moveTo(i * s * 0.4, -s * 0.85); ctx.lineTo(i * s * 0.4 - 4, -s * 0.55); ctx.lineTo(i * s * 0.4 + 4, -s * 0.55); ctx.closePath(); ctx.fill(); }
+  }
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(face * s * 0.2, -s * 0.2, s * 0.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(face * s * 0.26, -s * 0.2, s * 0.09, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+function drawFire(e){
+  for(const c of e.fireCells){
+    const x = centerX(c[0]), y = centerY(c[1]);
+    ctx.save(); ctx.translate(x, y);
+    ctx.fillStyle = "rgba(255,140,20,0.85)"; ctx.beginPath(); ctx.ellipse(0, 0, CELL * 0.5, CELL * 0.4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "rgba(255,220,60,0.9)"; ctx.beginPath(); ctx.ellipse(0, 0, CELL * 0.3, CELL * 0.24, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+}
+function drawHarpoon(){
+  const h = player.harpoon; if(!h) return;
+  const dv = dirVec(h.dir), dx = dv[0], dy = dv[1];
+  let ex, ey;
+  if(h.enemy && !h.enemy.dead){ ex = h.enemy.px; ey = h.enemy.py; }
+  else { ex = player.px + dx * CELL * h.reach; ey = player.py + dy * CELL * h.reach; }
+  ctx.save(); ctx.strokeStyle = "#e8e8f0"; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(player.px, player.py); ctx.lineTo(ex, ey); ctx.stroke();
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(ex, ey, 3, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+function drawEffects(){
+  for(const ef of effects){
+    const k = ef.t / ef.dur;
+    if(ef.kind === "pop"){
+      ctx.save(); ctx.globalAlpha = 1 - k; ctx.strokeStyle = ef.color; ctx.lineWidth = 2;
+      const rad = 6 + 22 * k;
+      for(let i = 0; i < 8; i++){ const a = i / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(ef.x + Math.cos(a) * rad * 0.5, ef.y + Math.sin(a) * rad * 0.5); ctx.lineTo(ef.x + Math.cos(a) * rad, ef.y + Math.sin(a) * rad); ctx.stroke(); }
+      ctx.restore();
+    } else if(ef.kind === "float"){
+      ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k); ctx.fillStyle = ef.color; ctx.textAlign = "center"; ctx.font = "700 14px 'Chakra Petch', system-ui"; ctx.fillText(ef.text, ef.x, ef.y); ctx.restore();
+    } else if(ef.kind === "shatter"){
+      ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k); ctx.fillStyle = "#8a8f98";
+      for(const f of ef.frags){ ctx.beginPath(); ctx.arc(f.x, f.y, 3, 0, Math.PI * 2); ctx.fill(); }
+      ctx.restore();
+    }
+  }
+}
+function drawLives(){
+  const n = Math.min(lives, 5);
+  for(let i = 0; i < n; i++){ ctx.save(); ctx.translate(18 + i * 22, H - 16); ctx.scale(0.6, 0.6); drawDigDug(0, 0, "R", 1); ctx.restore(); }
+}
+function drawBanner(){
+  if(bannerT <= 0) return;
+  const a = Math.min(1, bannerT / 1.8);
+  ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = "#ffe0b0"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = "700 34px 'Chakra Petch', system-ui"; ctx.shadowColor = "#ffb454"; ctx.shadowBlur = 16;
+  ctx.fillText(bannerText, W / 2, H / 2); ctx.restore();
+}
+function render(){
+  ctx.save();
+  if(shakeTime > 0){ const m = shakeMag * (shakeTime / shakeDur); ctx.translate((Math.random() - 0.5) * m, (Math.random() - 0.5) * m); }
+  if(!player || grid.length === 0){ ctx.fillStyle = "#0b0b16"; ctx.fillRect(0, 0, W, H); ctx.restore(); return; }
+  drawGrid();
+  for(const r of rocks){ if(r.state !== "gone") drawRock(r); }
+  for(const e of enemies){ if(e.type === "fygar" && e.firing) drawFire(e); }
+  for(const e of enemies){ if(e.dead) continue; if(e.type === "pooka") drawPooka(e); else drawFygar(e); }
+  if(player && (state === "playing" || state === "paused")){
+    drawHarpoon();
+    if(player.alive){ const a = player.invuln > 0 ? (0.35 + 0.45 * Math.abs(Math.sin(gameTime * 18))) : 1; drawDigDug(player.px, player.py, player.dir, a); }
+  }
+  drawEffects();
+  if(state === "playing" || state === "paused") drawLives();
+  drawBanner();
+  ctx.restore();
+}
+
+/* ---------- Loop ---------- */
+function loop(t){
+  const dt = Math.min((t - lastTime) / 1000, 0.05);
+  lastTime = t; gameTime += dt;
+  if(state === "playing") update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Input ---------- */
+function pushDir(d){ if(!dirStack.includes(d)) dirStack.push(d); }
+function popDir(d){ const i = dirStack.indexOf(d); if(i >= 0) dirStack.splice(i, 1); }
+function keyToDir(k){
+  switch(k){
+    case "ArrowLeft": case "a": case "A": return "L";
+    case "ArrowRight": case "d": case "D": return "R";
+    case "ArrowUp": case "w": case "W": return "U";
+    case "ArrowDown": case "s": case "S": return "D";
+  }
+  return null;
+}
+window.addEventListener("keydown", e => {
+  if(state === "menu" || state === "gameover"){ if(e.key === "Enter"){ startGame(); e.preventDefault(); } return; }
+  if(e.key === "p" || e.key === "P" || e.key === "Escape"){ togglePause(); e.preventDefault(); return; }
+  if(state !== "playing") return;
+  const d = keyToDir(e.key);
+  if(d){ pushDir(d); e.preventDefault(); return; }
+  if(e.key === " " || e.key === "z" || e.key === "Z"){ if(!e.repeat){ fireOrPump(); fireCd2 = PUMP_CD; } fireHeld = true; e.preventDefault(); }
+}, { passive:false });
+window.addEventListener("keyup", e => {
+  const d = keyToDir(e.key);
+  if(d) popDir(d);
+  if(e.key === " " || e.key === "z" || e.key === "Z") fireHeld = false;
+});
+
+/* ---------- Touch ---------- */
+function holdDir(id, dir){
+  const el = document.getElementById(id);
+  el.addEventListener("pointerdown", e => { e.preventDefault(); pushDir(dir); });
+  el.addEventListener("pointerup", e => { e.preventDefault(); popDir(dir); });
+  el.addEventListener("pointerleave", () => popDir(dir));
+  el.addEventListener("pointercancel", () => popDir(dir));
+}
+holdDir("p-up", "U"); holdDir("p-down", "D"); holdDir("p-left", "L"); holdDir("p-right", "R");
+(function(){
+  const el = document.getElementById("p-fire");
+  el.addEventListener("pointerdown", e => { e.preventDefault(); fireOrPump(); fireCd2 = PUMP_CD; fireHeld = true; });
+  el.addEventListener("pointerup", e => { e.preventDefault(); fireHeld = false; });
+  el.addEventListener("pointerleave", () => fireHeld = false);
+  el.addEventListener("pointercancel", () => fireHeld = false);
+})();
+
+/* ---------- Init ---------- */
+function init(){
+  ctx = setupCanvas(stageEl, W, H);
+  updateHud();
+  showMenu();
+  stageEl.addEventListener("pointerdown", () => stageEl.focus());
+  try { stageEl.focus(); } catch(e){}
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+init();
+</script>
+</body>
+</html>
