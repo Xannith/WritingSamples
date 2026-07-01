@@ -44,14 +44,14 @@ window.DASHBOARD_GAMES = [
     {
         title: "Blocks",
         path: "/games/blocks.html",
-        description: "Block-stacking arcade game.",
+        description: "Stack falling blocks, clear full rows, and try to survive as the speed increases. Classic Tetris-style arcade puzzle action.",
         badge: "Arcade",
         emoji: "🟦"
     },
     {
         title: "Grid Riders",
         path: "/games/grid-riders.html",
-        description: "Grid-based action game.",
+        description: "Race across a grid leaving a glowing trail behind you. Trap your opponent before they trap you, inspired by Tron light cycles and Snake.",
         badge: "Arcade",
         emoji: "🏁"
     },
