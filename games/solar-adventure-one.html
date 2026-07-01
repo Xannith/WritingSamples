@@ -1,0 +1,1521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Solar Adventure One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  /* ============================= styles.css ============================= */
+  :root{
+    --bg:#05060f; --ink:#d8e4f0; --dim:#7f8ba3; --line:rgba(120,160,220,0.16);
+    --panel:rgba(14,22,42,0.82); --accent:#5fe3c8; --warn:#ff6b6b; --gold:#ffd166; --shield:#5aa9ff;
+    --mono:"Share Tech Mono", ui-monospace, monospace; --disp:"Chakra Petch", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:var(--disp);background:radial-gradient(1200px 700px at 50% -10%,#0c1430 0%,rgba(12,20,48,0) 60%),var(--bg);
+    color:var(--ink);min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;
+    -webkit-user-select:none;user-select:none;overflow-x:hidden;}
+  header{text-align:center;}
+  header h1{font-weight:700;font-size:22px;letter-spacing:6px;text-shadow:0 0 22px rgba(95,227,200,0.3);}
+  header p{font-size:9px;letter-spacing:3px;color:var(--dim);margin-top:2px;text-transform:uppercase;}
+  .stage-wrap{position:relative;border-radius:12px;padding:6px;background:rgba(10,16,32,0.6);border:1px solid var(--line);
+    box-shadow:0 0 60px rgba(40,80,160,0.06),0 20px 60px rgba(0,0,0,0.6);}
+  #stage{display:block;width:min(960px,96vw);height:auto;aspect-ratio:960 / 640;border-radius:8px;background:#04050c;}
+  #stage:focus{outline:none;}
+
+  /* HUD */
+  .hud{position:absolute;inset:6px;pointer-events:none;font-family:var(--mono);}
+  .panel{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);}
+  .tl{top:8px;left:8px;min-width:186px;}
+  .tr{top:8px;right:8px;width:150px;}
+  .bl{left:8px;bottom:8px;min-width:220px;font-size:11px;}
+  .bar{height:9px;border-radius:5px;background:rgba(255,255,255,0.07);overflow:hidden;margin:3px 0 6px;}
+  .bar > i{display:block;height:100%;border-radius:5px;transition:width .12s linear;}
+  .lbl{font-size:9px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;display:flex;justify-content:space-between;}
+  .stat-row{display:flex;justify-content:space-between;font-size:12px;margin:2px 0;}
+  .stat-row b{color:var(--gold);font-weight:600;}
+  #radar{display:block;width:134px;height:134px;background:rgba(4,10,22,0.7);border-radius:6px;border:1px solid var(--line);}
+  #mute-btn{display:block;width:100%;margin-top:6px;pointer-events:auto;font-family:var(--mono);font-size:9px;letter-spacing:1px;
+    background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:5px 6px;cursor:pointer;}
+  #mute-btn.off{color:var(--warn);border-color:rgba(255,107,107,0.4);}
+  .radar-lbl{font-size:8px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;margin-bottom:4px;text-align:center;}
+  .mission-box{font-size:11px;line-height:1.5;}
+  .mission-box .mt{color:var(--accent);font-weight:600;}
+  .mission-box .mo{color:var(--ink);}
+  .comp-list{font-size:10px;line-height:1.6;margin-top:5px;}
+  .comp-list .c-have{color:var(--accent);} .comp-list .c-miss{color:var(--dim);}
+  #toast{position:absolute;top:52px;left:50%;transform:translateX(-50%);background:rgba(8,14,30,0.9);border:1px solid var(--line);
+    border-radius:8px;padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--ink);opacity:0;transition:opacity .25s;max-width:70%;text-align:center;}
+  #prompt{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:12px;color:var(--gold);
+    background:rgba(8,14,30,0.85);border:1px solid var(--line);border-radius:20px;padding:6px 14px;opacity:0;transition:opacity .15s;}
+  #dbgbadge{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#04050c;
+    background:var(--warn);border-radius:5px;padding:3px 8px;letter-spacing:1px;display:none;}
+  #dbginfo{position:absolute;bottom:8px;right:8px;font-family:var(--mono);font-size:10px;color:var(--dim);text-align:right;line-height:1.5;display:none;}
+
+  /* Overlays: menu / station / gameover */
+  .overlay{position:absolute;inset:6px;border-radius:8px;display:none;align-items:center;justify-content:center;text-align:center;
+    background:rgba(4,7,16,0.9);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);pointer-events:auto;}
+  .overlay.show{display:flex;}
+  .card{padding:22px 24px;max-width:88%;font-family:var(--disp);}
+  .card h2{font-size:22px;letter-spacing:2px;margin-bottom:8px;}
+  .card p{font-size:12.5px;color:#aab6cc;line-height:1.6;margin-bottom:6px;}
+  .keys{font-family:var(--mono);font-size:11px;color:#9fb0c8;line-height:1.9;margin:10px auto;max-width:460px;text-align:left;}
+  .keys b{color:var(--accent);}
+  .btn{font-family:var(--disp);font-weight:700;letter-spacing:1px;margin-top:14px;padding:10px 22px;border:none;border-radius:9px;
+    background:linear-gradient(180deg,#5fe3c8,#2bb39a);color:#042019;font-size:14px;cursor:pointer;}
+  .btn:active{transform:translateY(1px);}
+
+  /* Station modal */
+  #station{position:absolute;inset:6px;border-radius:8px;display:none;background:rgba(4,7,16,0.94);backdrop-filter:blur(4px);pointer-events:auto;
+    padding:16px;flex-direction:column;}
+  #station.show{display:flex;}
+  #jump{position:absolute;inset:6px;border-radius:8px;display:none;background:rgba(4,7,16,0.94);backdrop-filter:blur(4px);pointer-events:auto;padding:16px;flex-direction:column;}
+  #jump.show{display:flex;}
+  .st-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px;}
+  .st-head h2{font-size:18px;letter-spacing:1px;} .st-head .sub{font-size:10px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;}
+  .st-tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;}
+  .st-tabs button{font-family:var(--mono);font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:rgba(255,255,255,0.03);color:var(--ink);cursor:pointer;}
+  .st-tabs button.active{background:rgba(95,227,200,0.16);border-color:var(--accent);color:#eafffb;}
+  .st-body{flex:1;overflow-y:auto;font-family:var(--mono);font-size:12px;padding-right:6px;}
+  .shop-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border:1px solid var(--line);border-radius:7px;margin-bottom:6px;background:rgba(255,255,255,0.02);}
+  .shop-row .info{line-height:1.4;} .shop-row .info .nm{color:var(--ink);font-size:12.5px;} .shop-row .info .ds{color:var(--dim);font-size:10.5px;}
+  .shop-row .cost{color:var(--gold);margin-right:10px;font-size:12px;white-space:nowrap;}
+  .buy{font-family:var(--disp);font-weight:600;font-size:11px;padding:6px 12px;border:none;border-radius:6px;background:var(--accent);color:#042019;cursor:pointer;}
+  .buy:disabled{background:rgba(255,255,255,0.08);color:var(--dim);cursor:not-allowed;}
+  .st-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:8px;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--dim);}
+  .st-foot .cr{color:var(--gold);}
+  .note{color:var(--dim);font-size:11px;padding:6px 2px;}
+
+  /* Dev console */
+  #console{position:absolute;left:6px;right:6px;bottom:6px;height:44%;display:none;flex-direction:column;
+    background:rgba(3,6,14,0.96);border:1px solid rgba(95,227,200,0.35);border-radius:8px;font-family:var(--mono);pointer-events:auto;box-shadow:0 -10px 40px rgba(0,0,0,0.5);}
+  #console.show{display:flex;}
+  .con-head{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);font-size:11px;color:var(--accent);letter-spacing:1px;}
+  #con-out{flex:1;overflow-y:auto;padding:8px 10px;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+  #con-out .u{color:#9fe6ff;} #con-out .e{color:var(--warn);} #con-out .s{color:var(--accent);} #con-out .n{color:var(--dim);}
+  .con-in{display:flex;border-top:1px solid var(--line);}
+  .con-in span{padding:8px 6px 8px 10px;color:var(--accent);}
+  #con-input{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-family:var(--mono);font-size:13px;padding:8px 10px 8px 0;}
+
+  .foot-controls{font-family:var(--mono);font-size:10.5px;color:#5c6884;text-align:center;max-width:900px;line-height:1.7;}
+  @media (max-width:860px){ .foot-controls{display:none;} .bl{display:none;} }
+</style>
+</head>
+<body>
+  <header>
+    <h1>SOLAR ADVENTURE ONE</h1>
+    <p>Aurelian System &middot; restore the Helios Shield Array</p>
+  </header>
+
+  <div class="stage-wrap">
+    <canvas id="stage" tabindex="0"></canvas>
+
+    <div class="hud" id="hud">
+      <div class="panel tl">
+        <div class="lbl"><span>Hull</span><span id="v-hull">100</span></div>
+        <div class="bar"><i id="b-hull" style="width:100%;background:linear-gradient(90deg,#ff7a7a,#ff5252)"></i></div>
+        <div class="lbl"><span>Shield</span><span id="v-shield">50</span></div>
+        <div class="bar"><i id="b-shield" style="width:100%;background:linear-gradient(90deg,#7cc0ff,#4a90ff)"></i></div>
+        <div class="lbl"><span>Fuel</span><span id="v-fuel">100</span></div>
+        <div class="bar"><i id="b-fuel" style="width:100%;background:linear-gradient(90deg,#ffe08a,#ffc94a)"></i></div>
+        <div class="stat-row"><span>Credits</span><b id="v-credits">0</b></div>
+        <div class="stat-row"><span>Cargo</span><span id="v-cargo">0 / 0</span></div>
+        <div class="stat-row"><span>Weapon</span><span id="v-weapon">-</span></div>
+      </div>
+
+      <div class="panel tr">
+        <div class="radar-lbl">System Radar</div>
+        <canvas id="radar" width="134" height="134"></canvas>
+        <button id="mute-btn" type="button">SOUND: ON</button>
+      </div>
+
+      <div class="panel bl">
+        <div class="mission-box" id="mission-box"><span class="mt">No active mission</span><br><span class="mo">Dock a station (E) and accept one.</span></div>
+        <div class="comp-list" id="comp-list"></div>
+      </div>
+
+      <div id="toast"></div>
+      <div id="prompt"></div>
+      <div id="dbgbadge">DEBUG MODIFIED SAVE</div>
+      <div id="dbginfo"></div>
+    </div>
+
+    <div class="overlay" id="menu">
+      <div class="card">
+        <h2>SOLAR ADVENTURE ONE</h2>
+        <p>You are an independent pilot hired by Emberfall Station to restore security to the failing Aurelian System. Fly, fight, mine, trade, and recover the lost components of the Helios Shield Array, then deploy it at the Solar Heart.</p>
+        <div class="keys">
+          <b>W / Up</b> thrust &nbsp; <b>S / Down</b> brake &nbsp; <b>A D / Left Right</b> turn<br>
+          <b>Space</b> fire primary &nbsp; <b>Shift</b> fire secondary (missile)<br>
+          <b>E</b> interact / dock / scan / deploy &nbsp; <b>J</b> mission log &nbsp; <b>T</b> jump drive<br>
+          <b>~ or F1</b> developer console
+        </div>
+        <button class="btn" onclick="Game.start()">Launch (Enter)</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="endscreen"><div class="card" id="end-card"></div></div>
+
+    <div id="station">
+      <div class="st-head">
+        <div><h2 id="st-name">Station</h2><div class="sub" id="st-type">Station</div></div>
+        <button class="buy" onclick="Game.closeStation()">Undock (E)</button>
+      </div>
+      <div class="st-tabs" id="st-tabs"></div>
+      <div class="st-body" id="st-body"></div>
+      <div class="st-foot"><span id="st-hint">Buy upgrades, refuel, take missions, assemble the array.</span><span class="cr" id="st-cr">0 cr</span></div>
+    </div>
+
+    <div id="jump">
+      <div class="st-head">
+        <div><h2>Jump Drive</h2><div class="sub">Select a destination - jumping burns fuel by distance</div></div>
+        <button class="buy" onclick="Game.closeJump()">Cancel (T)</button>
+      </div>
+      <div class="st-body" id="jump-body"></div>
+      <div class="st-foot"><span>Not enough fuel means you fly there the slow way.</span><span class="cr" id="jump-fuel">Fuel: 0</span></div>
+    </div>
+
+    <div id="console">
+      <div class="con-head"><span>DEVELOPER CONSOLE</span><span>type "help" &middot; ~/F1 to close</span></div>
+      <div id="con-out"></div>
+      <div class="con-in"><span>&gt;</span><input id="con-input" autocomplete="off" spellcheck="false" placeholder="command..."></div>
+    </div>
+  </div>
+
+  <div class="foot-controls">
+    W/S thrust-brake &middot; A/D turn &middot; Space fire &middot; Shift missile &middot; E dock/scan/deploy &middot; T jump drive &middot; J missions &middot; ~ or F1 dev console
+  </div>
+
+<script>
+"use strict";
+/* =================================================================================================
+   SOLAR ADVENTURE ONE  -  single-file MVP
+   Sectioned to mirror the intended multi-file layout. Search the banners to split later:
+     config.js | (data) | save.js | upgrades.js | enemies.js | missions.js | console.js | game.js
+   ================================================================================================= */
+
+/* ================================= config.js ================================= */
+const CONFIG = {
+  title: "Solar Adventure One",
+  devConsoleEnabled: true,
+  map: { w: 5200, h: 5200 },
+  view: { w: 960, h: 640 },
+  startLocation: "location_emberfall_station",
+  startCredits: 1200,
+  // Base ship stats (upgrades are applied as deltas on top of these)
+  baseShip: {
+    max_hull: 100, max_shield: 50, shieldRegen: 4, regenDelay: 3.2,
+    accel: 240, maxSpeed: 300, turn_rate: 3.2,
+    max_fuel: 100, fuelBurn: 5, cargoCap: 8,
+    weaponMult: 1.0, fireMult: 1.0, scanner: 900, missiles: 3, maxMissiles: 6
+  },
+  requiredComponents: ["component_core_stabilizer", "component_harmonic_lens", "component_solar_anchor"],
+  finalWave: { count: 6, enemy: "enemy_blackwake_raider", surviveEnemiesLeft: 0 },
+  respawnPenalty: 0.2, // fraction of credits lost on death
+  cloudRefuel: 18,       // fuel restored per second while inside a nebula cloud
+  emergencyThrust: 0.35, // thrust power fraction available at zero fuel (no burn)
+  cloudCount: 11,        // scattered nebula fuel clouds
+  ambient: { cap: 6, interval: 5.5, engageRange: 1400 }, // roaming pirates near pirate zones
+  colors: { star:"#ffcf6b", accent:"#5fe3c8", enemy:"#ff6b6b", player:"#8ff0d8" }
+};
+
+/* ================================= data (config.js companions) ================================= */
+const DATA = {
+  weapons: {
+    weapon_laser_basic:  { name:"Laser Mk I",     damage:9,  cooldown:0.30, speed:640, color:"#8ff0d8", desc:"Reliable starter laser." },
+    weapon_laser_mk2:    { name:"Laser Mk II",    damage:14, cooldown:0.28, speed:680, color:"#8ff0d8", desc:"Tuned emitter, more punch.", price:2200, unlockAt:"location_emberfall_station" },
+    weapon_laser_mk3:    { name:"Laser Mk III",   damage:19, cooldown:0.26, speed:720, color:"#7ffcff", desc:"Military-grade laser core.", price:4800, unlockAt:"location_luma_outpost" },
+    weapon_plasma_cannon:{ name:"Plasma Cannon",  damage:24, cooldown:0.42, speed:560, color:"#b18cff", desc:"Heavy, slow plasma bolts.", price:5200, unlockAt:"location_luma_outpost" },
+    weapon_scatter_blaster:{ name:"Scatter Blaster", damage:7, cooldown:0.40, speed:560, color:"#9fffe0", desc:"Fires a 3-bolt spread. Great vs swarms.", price:6800, unlockAt:"location_drift_market", spread:3, spreadArc:0.34 },
+    weapon_star_lance:   { name:"Star Lance",     damage:60, cooldown:0.22, speed:860, color:"#ffe08a", desc:"Rapid, devastating energy lance.", price:14000, unlockAt:"location_emberfall_station" }
+  },
+  secondaries: {
+    secondary_nova_missile:{ name:"Nova Missile", damage:120, speed:420, color:"#ff9f5a", desc:"Guided explosive missile." },
+    secondary_pulse_emp:{ name:"Pulse EMP", damage:42, radius:230, color:"#8fd0ff", desc:"Area burst that hits every ship nearby.", type:"aoe", price:4400, unlockAt:"location_drift_market" }
+  },
+  // Upgrades expressed as declarative stat deltas so they are idempotent and reversible.
+  upgrades: {
+    upgrade_hull_1:   { name:"Reinforced Hull I",  stat:"max_hull",  add:40,  price:900,  desc:"+40 max hull" },
+    upgrade_hull_2:   { name:"Reinforced Hull II", stat:"max_hull",  add:70,  price:2600, desc:"+70 max hull", needs:"upgrade_hull_1" },
+    upgrade_shield_1: { name:"Shield Capacitor I", stat:"max_shield",add:40,  price:1100, desc:"+40 max shield" },
+    upgrade_shield_2: { name:"Shield Capacitor II",stat:"max_shield",add:70,  price:3000, desc:"+70 max shield", needs:"upgrade_shield_1" },
+    upgrade_engine_1: { name:"Ion Thrusters I",    stat:"maxSpeed",  add:70,  price:1000, desc:"+70 top speed & accel", also:{accel:60} },
+    upgrade_engine_2: { name:"Ion Thrusters II",   stat:"maxSpeed",  add:100, price:2800, desc:"+100 top speed & accel", also:{accel:80}, needs:"upgrade_engine_1" },
+    upgrade_engine_3: { name:"Ion Thrusters III",  stat:"maxSpeed",  add:130, price:6500, desc:"+130 top speed & accel", also:{accel:100}, needs:"upgrade_engine_2" },
+    upgrade_turn_1:   { name:"Gyro Stabilizer",    stat:"turn_rate", add:1.2, price:800,  desc:"+ turn rate" },
+    upgrade_weapon_1: { name:"Focusing Array I",   stat:"weaponMult",add:0.4, price:1600, desc:"+40% weapon damage" },
+    upgrade_weapon_2: { name:"Focusing Array II",  stat:"weaponMult",add:0.5, price:3800, desc:"+50% weapon damage, twin barrels", needs:"upgrade_weapon_1" },
+    upgrade_firerate_1:{name:"Coolant System",    stat:"fireMult",  add:0.4, price:2200, desc:"+40% fire rate" },
+    upgrade_cargo_1:  { name:"Cargo Bay I",        stat:"cargoCap",  add:8,   price:700,  desc:"+8 cargo capacity" },
+    upgrade_cargo_2:  { name:"Cargo Bay II",       stat:"cargoCap",  add:14,  price:2000, desc:"+14 cargo capacity", needs:"upgrade_cargo_1" },
+    upgrade_cargo_3:  { name:"Cargo Bay III",      stat:"cargoCap",  add:20,  price:4200, desc:"+20 cargo capacity", needs:"upgrade_cargo_2" },
+    upgrade_cargo_4:  { name:"Cargo Bay IV",       stat:"cargoCap",  add:26,  price:7000, desc:"+26 cargo capacity", needs:"upgrade_cargo_3" },
+    upgrade_cargo_5:  { name:"Cargo Bay V",        stat:"cargoCap",  add:34,  price:11000,desc:"+34 cargo capacity", needs:"upgrade_cargo_4" },
+    upgrade_fuel_1:   { name:"Fuel Cells I",       stat:"max_fuel",  add:60,  price:850,  desc:"+60 fuel capacity" },
+    upgrade_fuel_2:   { name:"Fuel Cells II",      stat:"max_fuel",  add:90,  price:2400, desc:"+90 fuel capacity", needs:"upgrade_fuel_1" },
+    upgrade_fuel_3:   { name:"Fuel Cells III",     stat:"max_fuel",  add:120, price:5200, desc:"+120 fuel capacity", needs:"upgrade_fuel_2" },
+    upgrade_fuel_4:   { name:"Fuel Cells IV",      stat:"max_fuel",  add:160, price:9000, desc:"+160 fuel capacity", needs:"upgrade_fuel_3" },
+    upgrade_scanner_1:{ name:"Long-Range Scanner", stat:"scanner",   add:600, price:1500, desc:"+ scanner range" }
+  },
+  resources: {
+    resource_salvaged_metal:{ name:"Salvaged Metal",  value:45,  color:"#b9c2d0" },
+    resource_energy_crystal:{ name:"Energy Crystal",  value:120, color:"#7ce0ff" },
+    resource_rare_component:{ name:"Rare Component",  value:300, color:"#c69bff" },
+    resource_medical_supplies:{ name:"Medical Supplies", value:60, color:"#7cffa0", commodity:true },
+    resource_luxury_goods:{ name:"Luxury Goods", value:150, color:"#ff9ff0", commodity:true },
+    resource_reactor_fuel:{ name:"Reactor Fuel", value:40, color:"#ffd27c", commodity:true }
+  },
+  enemies: {
+    enemy_blackwake_raider:{ name:"Blackwake Raider", hull:26,  speed:210, turn:3.0, dmg:6,  fireRate:1.1, behavior:"chase", reward:120, radius:12, color:"#ff6b6b" },
+    enemy_pirate_fighter:  { name:"Pirate Fighter",   hull:44,  speed:190, turn:2.6, dmg:9,  fireRate:1.4, behavior:"chase", reward:220, radius:13, color:"#ff8a5a" },
+    enemy_heavy_marauder:  { name:"Heavy Marauder",   hull:120, speed:110, turn:1.6, dmg:15, fireRate:1.8, behavior:"chase", reward:520, radius:18, color:"#e0574d" },
+    enemy_drone:           { name:"Swarm Drone",      hull:12,  speed:230, turn:3.6, dmg:4,  fireRate:1.6, behavior:"swarm", reward:60,  radius:9,  color:"#ff9db1" },
+    enemy_interceptor:     { name:"Interceptor",      hull:34,  speed:290, turn:3.8, dmg:8,  fireRate:1.0, behavior:"chase", reward:300, radius:12, color:"#ff5e7a" },
+    enemy_mine_layer:      { name:"Mine Layer",       hull:60,  speed:120, turn:1.8, dmg:0,  fireRate:2.5, behavior:"flee", reward:260, radius:15, color:"#e08a4d" },
+    enemy_boss_guardian:   { name:"Vault Guardian",   hull:520, speed:130, turn:2.0, dmg:18, fireRate:0.7, behavior:"chase", reward:2000, radius:26, color:"#ff4d6d", boss:true, component:"component_core_stabilizer" }
+  },
+  // type: station | planet | field | anomaly | core | pirate
+  locations: {
+    location_emberfall_station:{ name:"Emberfall Station", type:"station", x:1500, y:1620, r:34, hub:true,
+      services:["refuel","repair","shipyard","market","missions","components"], color:"#5fe3c8",
+      market:{ sell:{ resource_salvaged_metal:48, resource_energy_crystal:122, resource_rare_component:305 } } },
+    location_luma_outpost:{ name:"Luma Outpost", type:"station", x:3720, y:1440, r:28,
+      services:["refuel","repair","shipyard","market","missions"], color:"#7ce0ff",
+      market:{ buy:{ resource_reactor_fuel:44 }, sell:{ resource_salvaged_metal:50, resource_energy_crystal:126, resource_luxury_goods:175 } } },
+    location_drift_market:{ name:"Drift Market", type:"station", x:4360, y:2520, r:26,
+      services:["refuel","repair","shipyard","market","missions"], color:"#c0f06f",
+      market:{ buy:{ resource_luxury_goods:130, resource_medical_supplies:58, resource_reactor_fuel:42 },
+               sell:{ resource_salvaged_metal:52, resource_energy_crystal:128, resource_luxury_goods:170 } } },
+    location_aurelian_prime:{ name:"Aurelian Prime", type:"planet", x:1180, y:3360, r:120, color:"#6f8bd0",
+      services:["market","missions","repair"], blurb:"Agricultural world. Cheap medical and fuel, hungry for luxuries.",
+      market:{ buy:{ resource_medical_supplies:45, resource_reactor_fuel:35 },
+               sell:{ resource_luxury_goods:210, resource_salvaged_metal:55, resource_energy_crystal:130 } } },
+    location_vesta_ring:{ name:"Vesta Ring", type:"planet", x:3900, y:3680, r:96, color:"#c8a06f",
+      services:["market","refuel","missions"], blurb:"Mining colony. Metal is cheap here, fuel and medicine sell high.",
+      market:{ buy:{ resource_salvaged_metal:30 },
+               sell:{ resource_reactor_fuel:55, resource_medical_supplies:80, resource_rare_component:320 } } },
+    location_glass_belt:{ name:"The Glass Belt", type:"field", x:2600, y:900, r:520, color:"#9fb6c8" },
+    location_outer_shoals:{ name:"The Outer Shoals", type:"field", x:4780, y:2560, r:760, color:"#9fb6c8", safe:true },
+    location_blackwake_hollow:{ name:"Blackwake Hollow", type:"pirate", x:3260, y:820, r:44, color:"#ff6b6b" },
+    location_raider_picket:{ name:"Raider Picket", type:"pirate", x:980, y:4360, r:40, color:"#ff6b6b" },
+    location_silent_derelict:{ name:"The Silent Derelict", type:"anomaly", x:820, y:2360, r:26, color:"#c69bff", anomaly:true },
+    location_solar_heart:{ name:"The Solar Heart", type:"core", x:2600, y:2600, r:70, color:"#ffcf6b" }
+  },
+  components: {
+    component_core_stabilizer:{ name:"Core Stabilizer", source:"Defeat the Vault Guardian (combat)" },
+    component_harmonic_lens:{ name:"Harmonic Lens", source:"Scan the Silent Derelict (exploration)" },
+    component_solar_anchor:{ name:"Solar Anchor", source:"Refine salvaged metal (mining/trade)" },
+    component_shield_matrix:{ name:"Shield Matrix", source:"(full version)" },
+    component_relay_beacon:{ name:"Relay Beacon", source:"(full version)" },
+    component_energy_regulator:{ name:"Energy Regulator", source:"(full version)" }
+  },
+  missions: {
+    mission_first_delivery:{ name:"Supply Run to Luma", giver:"location_emberfall_station",
+      desc:"Carry medical supplies to Luma Outpost.", type:"deliver", target:"location_luma_outpost",
+      reward:600, cargoItem:"resource_salvaged_metal" },
+    mission_clear_raiders:{ name:"Clear the Approach", giver:"location_emberfall_station",
+      desc:"Destroy 4 Blackwake Raiders threatening the station.", type:"destroy", enemy:"enemy_blackwake_raider", count:4,
+      reward:900, spawn:true },
+    mission_mine_metal:{ name:"Refinery Contract", giver:"location_luma_outpost",
+      desc:"Collect 5 Salvaged Metal from the Glass Belt. Refined into the Solar Anchor.", type:"collect", resource:"resource_salvaged_metal", count:5,
+      reward:700, component:"component_solar_anchor" },
+    mission_scan_anomaly:{ name:"Ghost Signal", giver:"location_luma_outpost",
+      desc:"Scan the Silent Derelict and recover the Harmonic Lens.", type:"scan", target:"location_silent_derelict",
+      reward:1000, component:"component_harmonic_lens" },
+    mission_recover_core:{ name:"The Vault Guardian", giver:"location_emberfall_station",
+      desc:"Destroy the Vault Guardian and take the Core Stabilizer.", type:"boss", enemy:"enemy_boss_guardian",
+      reward:2500, component:"component_core_stabilizer", spawn:true, at:"location_vesta_ring" },
+    mission_pirate_bounty:{ name:"Pirate Bounty", giver:"any",
+      desc:"Destroy 3 pirate ships anywhere in the system. Repeatable.", type:"destroy", enemy:"any", count:3,
+      reward:450, repeatable:true },
+    mission_defend_emberfall:{ name:"Defend Emberfall Station", giver:"location_emberfall_station",
+      desc:"A raider assault is inbound. Destroy all 6 attackers.", type:"destroy", enemy:"enemy_pirate_fighter", count:6,
+      reward:1400, spawn:true },
+    mission_rescue_pilots:{ name:"Stranded Pilots", giver:"location_luma_outpost",
+      desc:"Fly to the distress beacon (E to recover the pilots), then return to Luma Outpost.", type:"rescue",
+      target:"location_luma_outpost", rescueAt:{ x:2100, y:4520 }, reward:850 }
+  }
+};
+
+/* ================================= game state ================================= */
+const state = {
+  scene: "menu",            // menu | play | station | end
+  frozen: false,            // sim paused (console/station/menu open, or manual pause)
+  time: 0,
+  ship: { x:0, y:0, vx:0, vy:0, angle:-Math.PI/2, hull:0, shield:0, sinceHit:0,
+          max_hull:0, max_shield:0, shieldRegen:0, accel:0, maxSpeed:0, turn_rate:0,
+          max_fuel:0, fuel:0, fuelBurn:0, cargoCap:0, weaponMult:1, fireMult:1, scanner:0,
+          missiles:0, maxMissiles:0, fireCd:0, missileCd:0 },
+  weapon: "weapon_laser_basic",
+  secondary: "secondary_nova_missile",
+  credits: 0,
+  cargo: {},                // resource_id -> qty
+  unlockedWeapons: {},      // weapon_id -> true (purchasable/equippable)
+  unlockedSecondaries: {},  // secondary_id -> true
+  upgrades: {},             // upgrade_id -> true
+  missionsCompleted: {},    // mission_id -> true
+  currentMission: null,     // mission_id
+  missionProgress: 0,
+  rescueSite: null,         // {x,y} distress beacon for an active rescue
+  components: {},           // component_id -> true
+  arrayAssembled: false,
+  deployed: false,
+  mapRevealed: false,
+  godmode: false,
+  debug: false,
+  debugModified: false,
+  dockedAt: null,           // location_id when at station
+  finalActive: false,
+  // transient world
+  bullets: [],
+  ebullets: [],
+  enemies: [],
+  pickups: [],
+  asteroids: [],
+  clouds: [],
+  sites: [],                // derelicts + signal anomalies (one-time loot)
+  particles: []
+};
+
+/* ================================= helpers ================================= */
+const TAU = Math.PI * 2;
+function clamp(v,a,b){ return v<a?a:v>b?b:v; }
+function dist(ax,ay,bx,by){ return Math.hypot(ax-bx, ay-by); }
+function angTo(ax,ay,bx,by){ return Math.atan2(by-ay, bx-ax); }
+function angDiff(a,b){ let d=(b-a)%TAU; if(d>Math.PI)d-=TAU; if(d<-Math.PI)d+=TAU; return d; }
+function rid(){ return Math.random().toString(36).slice(2,8); }
+function cargoCount(){ let n=0; for(const k in state.cargo) n+=state.cargo[k]; return n; }
+function fmt(n){ return Math.round(n).toLocaleString("en-US"); }
+
+/* ================================= upgrades.js ================================= */
+const Upgrades = {
+  // Recompute derived ship maxima from base + applied upgrade deltas. Idempotent.
+  recompute(){
+    const b = CONFIG.baseShip, s = state.ship;
+    const acc = { max_hull:b.max_hull, max_shield:b.max_shield, maxSpeed:b.maxSpeed, accel:b.accel,
+      turn_rate:b.turn_rate, max_fuel:b.max_fuel, cargoCap:b.cargoCap, weaponMult:b.weaponMult,
+      fireMult:b.fireMult, scanner:b.scanner };
+    for(const id in state.upgrades){ if(!state.upgrades[id]) continue; const u=DATA.upgrades[id]; if(!u) continue;
+      acc[u.stat] = (acc[u.stat]||0) + u.add;
+      if(u.also) for(const k in u.also) acc[k]=(acc[k]||0)+u.also[k];
+    }
+    s.max_hull=acc.max_hull; s.max_shield=acc.max_shield; s.maxSpeed=acc.maxSpeed; s.accel=acc.accel;
+    s.turn_rate=acc.turn_rate; s.max_fuel=acc.max_fuel; s.cargoCap=acc.cargoCap;
+    s.weaponMult=acc.weaponMult; s.fireMult=acc.fireMult; s.scanner=acc.scanner;
+    s.shieldRegen=b.shieldRegen; s.fuelBurn=b.fuelBurn; s.maxMissiles=b.maxMissiles;
+    s.hull=clamp(s.hull,0,s.max_hull); s.shield=clamp(s.shield,0,s.max_shield); s.fuel=clamp(s.fuel,0,s.max_fuel);
+  },
+  apply(id){
+    const u = DATA.upgrades[id]; if(!u) return { ok:false, msg:"no such upgrade: "+id };
+    if(state.upgrades[id]) return { ok:false, msg:u.name+" already installed" };
+    state.upgrades[id]=true; this.recompute();
+    return { ok:true, msg:"Installed "+u.name };
+  },
+  applyAll(){ let n=0; for(const id in DATA.upgrades){ if(!state.upgrades[id]){ state.upgrades[id]=true; n++; } } this.recompute(); return n; },
+  reset(){ state.upgrades={}; this.recompute(); state.ship.hull=state.ship.max_hull; state.ship.shield=state.ship.max_shield; }
+};
+
+/* ================================= enemies.js ================================= */
+const Enemies = {
+  spawn(id, x, y){
+    const t = DATA.enemies[id]; if(!t) return null;
+    const e = { id, type:id, x, y, vx:0, vy:0, angle:Math.random()*TAU, hull:t.hull, maxHull:t.hull,
+      speed:t.speed, turn:t.turn, dmg:t.dmg, fireRate:t.fireRate, fireCd:Math.random()*1.5,
+      behavior:t.behavior, reward:t.reward, radius:t.radius, color:t.color, boss:!!t.boss,
+      component:t.component||null, uid:rid() };
+    state.enemies.push(e); return e;
+  },
+  spawnNear(id, n){ const s=state.ship; let made=0; for(let i=0;i<n;i++){ const a=Math.random()*TAU, d=280+Math.random()*220;
+    if(this.spawn(id, s.x+Math.cos(a)*d, s.y+Math.sin(a)*d)) made++; } return made; },
+  update(dt){
+    const s = state.ship;
+    for(const e of state.enemies){
+      const d = dist(e.x,e.y,s.x,s.y);
+      const aggro = e.behavior==="flee" ? d < 520 : d < 1400;
+      let desired = e.angle;
+      if(aggro && state.scene==="play"){
+        if(e.behavior==="flee") desired = angTo(e.x,e.y,s.x,s.y) + Math.PI;
+        else desired = angTo(e.x,e.y,s.x,s.y);
+      } else {
+        // idle drift / patrol
+        e.patrolT = (e.patrolT||0) - dt;
+        if(e.patrolT<=0){ e.patrolT = 2+Math.random()*3; e.patrolA = Math.random()*TAU; }
+        desired = e.patrolA||e.angle;
+      }
+      const da = angDiff(e.angle, desired);
+      e.angle += clamp(da, -e.turn*dt, e.turn*dt);
+      // thrust toward facing when engaging or patrolling slowly
+      const thr = aggro ? 1 : 0.35;
+      e.vx += Math.cos(e.angle)*e.speed*thr*dt*1.6;
+      e.vy += Math.sin(e.angle)*e.speed*thr*dt*1.6;
+      const sp = Math.hypot(e.vx,e.vy); const cap = e.speed;
+      if(sp>cap){ e.vx=e.vx/sp*cap; e.vy=e.vy/sp*cap; }
+      e.vx*=0.99; e.vy*=0.99;
+      e.x+=e.vx*dt; e.y+=e.vy*dt;
+      e.x=clamp(e.x,0,CONFIG.map.w); e.y=clamp(e.y,0,CONFIG.map.h);
+      // fire
+      e.fireCd -= dt;
+      if(aggro && e.dmg>0 && e.fireCd<=0 && d < 720 && Math.abs(angDiff(e.angle, angTo(e.x,e.y,s.x,s.y))) < 0.4){
+        e.fireCd = e.fireRate;
+        const a = e.angle;
+        state.ebullets.push({ x:e.x+Math.cos(a)*e.radius, y:e.y+Math.sin(a)*e.radius,
+          vx:Math.cos(a)*460+e.vx, vy:Math.sin(a)*460+e.vy, dmg:e.dmg, life:2.4 });
+      }
+    }
+  }
+};
+
+/* ================================= missions.js ================================= */
+const Missions = {
+  start(id){
+    const m = DATA.missions[id]; if(!m) return { ok:false, msg:"no such mission: "+id };
+    if(state.missionsCompleted[id] && !m.repeatable) return { ok:false, msg:m.name+" already completed" };
+    state.currentMission = id; state.missionProgress = 0; state.rescueSite = null;
+    if(m.type==="deliver" && m.cargoItem){ state.cargo[m.cargoItem]=(state.cargo[m.cargoItem]||0)+1; }
+    if(m.type==="rescue" && m.rescueAt){ state.rescueSite = { x:m.rescueAt.x, y:m.rescueAt.y }; }
+    if(m.spawn){
+      if(m.type==="boss"){ const loc=DATA.locations[m.at]; const bx=loc?loc.x:state.ship.x, by=loc?loc.y:state.ship.y;
+        Enemies.spawn(m.enemy, bx+60, by+60); }
+      else { for(let i=0;i<(m.count||3);i++){ const a=Math.random()*TAU, d=260+Math.random()*260; const e=Enemies.spawn(m.enemy, state.ship.x+Math.cos(a)*d, state.ship.y+Math.sin(a)*d); if(e) e.mission=true; } }
+    }
+    Game.toast("Mission started: "+m.name);
+    Game.refreshMissionHud();
+    return { ok:true, msg:"Started "+m.name };
+  },
+  reset(id){ if(state.currentMission===id){ state.currentMission=null; state.missionProgress=0; state.rescueSite=null; } delete state.missionsCompleted[id]; Game.refreshMissionHud(); return { ok:true, msg:"Reset "+id }; },
+  complete(id, silent){
+    const m = DATA.missions[id]; if(!m) return { ok:false, msg:"no such mission: "+id };
+    if(!m.repeatable) state.missionsCompleted[id]=true;   // repeatable bounties stay available
+    if(state.currentMission===id){ state.currentMission=null; state.missionProgress=0; state.rescueSite=null; }
+    state.credits += m.reward||0;
+    if(m.component && !state.components[m.component]){ state.components[m.component]=true; }
+    if(!silent){ Game.toast("Mission complete: "+m.name+"  (+"+fmt(m.reward||0)+" cr"+(m.component?", "+DATA.components[m.component].name:"")+")"); Sound.success(); }
+    Game.refreshMissionHud(); Game.refreshComponents();
+    return { ok:true, msg:"Completed "+m.name };
+  },
+  // event hooks
+  onKill(type, enemyObj){
+    if(enemyObj && enemyObj.component && !state.components[enemyObj.component]){
+      // boss always yields its component even outside the mission
+      state.components[enemyObj.component]=true; Game.refreshComponents();
+      Game.toast("Recovered "+DATA.components[enemyObj.component].name+"!");
+    }
+    const id=state.currentMission; if(!id) return; const m=DATA.missions[id];
+    if((m.type==="destroy"||m.type==="boss") && (m.enemy===type || m.enemy==="any")){
+      if(m.type==="boss"){ this.complete(id); }
+      else { state.missionProgress++; Game.refreshMissionHud(); if(state.missionProgress>=m.count) this.complete(id); }
+    }
+  },
+  onCollect(resId){
+    const id=state.currentMission; if(!id) return; const m=DATA.missions[id];
+    if(m.type==="collect" && m.resource===resId){ state.missionProgress=(state.cargo[resId]||0);
+      Game.refreshMissionHud(); if(state.missionProgress>=m.count) this.complete(id); }
+  },
+  onScan(locId){
+    const id=state.currentMission; if(!id) return; const m=DATA.missions[id];
+    if(m.type==="scan" && m.target===locId) this.complete(id);
+  },
+  // called when the player presses E at the distress beacon
+  onRescuePickup(){
+    const id=state.currentMission; if(!id) return false; const m=DATA.missions[id];
+    if(m.type==="rescue" && state.missionProgress<1){ state.missionProgress=1; state.rescueSite=null;
+      Game.toast("Pilots aboard. Return to "+DATA.locations[m.target].name+"."); Game.refreshMissionHud(); return true; }
+    return false;
+  },
+  onDock(locId){
+    const id=state.currentMission; if(!id) return; const m=DATA.missions[id];
+    if(m.type==="deliver" && m.target===locId){
+      if(m.cargoItem && state.cargo[m.cargoItem]>0){ state.cargo[m.cargoItem]--; if(state.cargo[m.cargoItem]<=0) delete state.cargo[m.cargoItem]; }
+      this.complete(id);
+    }
+    if(m.type==="rescue" && m.target===locId && state.missionProgress>=1){ this.complete(id); }
+  }
+};
+
+/* ================================= save.js ================================= */
+const Save = {
+  KEY: "solar_adventure_one_save",
+  mem: null, // in-memory fallback when localStorage is unavailable (e.g., sandboxed preview)
+  snapshot(){
+    const s = state;
+    return { v:1, x:s.ship.x, y:s.ship.y, angle:s.ship.angle,
+      hull:s.ship.hull, shield:s.ship.shield, fuel:s.ship.fuel, missiles:s.ship.missiles,
+      credits:s.credits, cargo:s.cargo, weapon:s.weapon, secondary:s.secondary,
+      unlockedWeapons:s.unlockedWeapons, unlockedSecondaries:s.unlockedSecondaries, upgrades:s.upgrades,
+      missionsCompleted:s.missionsCompleted, currentMission:s.currentMission, missionProgress:s.missionProgress,
+      components:s.components, arrayAssembled:s.arrayAssembled, deployed:s.deployed,
+      mapRevealed:s.mapRevealed, debugModified:s.debugModified };
+  },
+  write(obj){
+    const str = JSON.stringify(obj);
+    try{ localStorage.setItem(this.KEY, str); this.mem=str; return true; }
+    catch(e){ this.mem=str; return "memory"; }
+  },
+  read(){
+    try{ const v = localStorage.getItem(this.KEY); if(v!=null) return v; }catch(e){}
+    return this.mem;
+  },
+  save(){ const r=this.write(this.snapshot()); return r===true ? "Game saved." : "Saved to memory (storage blocked in this context)."; },
+  load(){
+    const raw = this.read(); if(!raw) return { ok:false, msg:"No save found." };
+    let d; try{ d=JSON.parse(raw); }catch(e){ return { ok:false, msg:"Save is corrupt." }; }
+    const s=state;
+    s.credits=d.credits||0; s.cargo=d.cargo||{}; s.weapon=d.weapon||"weapon_laser_basic"; s.secondary=d.secondary||"secondary_nova_missile";
+    s.unlockedWeapons=d.unlockedWeapons||{}; s.unlockedSecondaries=d.unlockedSecondaries||{ secondary_nova_missile:true }; s.upgrades=d.upgrades||{};
+    s.missionsCompleted=d.missionsCompleted||{}; s.currentMission=d.currentMission||null; s.missionProgress=d.missionProgress||0;
+    s.components=d.components||{}; s.arrayAssembled=!!d.arrayAssembled; s.deployed=!!d.deployed;
+    s.mapRevealed=!!d.mapRevealed; s.debugModified=!!d.debugModified;
+    Upgrades.recompute();
+    s.ship.x=d.x||0; s.ship.y=d.y||0; s.ship.angle=d.angle||-Math.PI/2;
+    s.ship.hull=d.hull!=null?d.hull:s.ship.max_hull; s.ship.shield=d.shield!=null?d.shield:s.ship.max_shield;
+    s.ship.fuel=d.fuel!=null?d.fuel:s.ship.max_fuel; s.ship.missiles=d.missiles!=null?d.missiles:3;
+    Game.refreshAll();
+    return { ok:true, msg:"Game loaded." };
+  },
+  reset(){ try{ localStorage.removeItem(this.KEY); }catch(e){} this.mem=null; return "Save cleared."; }
+};
+
+/* ================================= sound.js (synthesized Web Audio, no asset files) ================================= */
+const Sound = {
+  ctx:null, master:null, muted:false, ready:false,
+  init(){
+    if(this.ctx) return;
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      this.ctx = new AC();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.32;
+      this.master.connect(this.ctx.destination);
+      this.ready = true;
+    }catch(e){ this.ctx = null; this.ready = false; }
+  },
+  resume(){ try{ if(this.ctx && this.ctx.state==="suspended") this.ctx.resume(); }catch(e){} },
+  // primitives
+  tone(freq, dur, type, vol, slideTo){
+    if(!this.ctx || this.muted) return;
+    const t=this.ctx.currentTime, o=this.ctx.createOscillator(), g=this.ctx.createGain();
+    o.type=type||"square"; o.frequency.setValueAtTime(freq, t);
+    if(slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(1,slideTo), t+dur);
+    g.gain.setValueAtTime(vol||0.2, t); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t+dur+0.02);
+  },
+  noise(dur, vol, filterFreq){
+    if(!this.ctx || this.muted) return;
+    const t=this.ctx.currentTime, len=Math.max(1,Math.floor(this.ctx.sampleRate*dur));
+    const buf=this.ctx.createBuffer(1, len, this.ctx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    const n=this.ctx.createBufferSource(); n.buffer=buf;
+    const g=this.ctx.createGain(); g.gain.setValueAtTime(vol||0.2, t); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    const f=this.ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=filterFreq||1200;
+    n.connect(f); f.connect(g); g.connect(this.master); n.start(t); n.stop(t+dur+0.02);
+  },
+  seq(freqs, step, dur, type, vol){ freqs.forEach((f,i)=> setTimeout(()=>this.tone(f, dur||0.14, type||"triangle", vol||0.16), i*(step||90)) ); },
+  // named effects
+  laser(){ this.tone(720, 0.11, "square", 0.12, 240); },
+  plasma(){ this.tone(380, 0.15, "sawtooth", 0.14, 130); },
+  lance(){ this.tone(880, 0.10, "square", 0.13, 320); this.tone(440,0.10,"triangle",0.08,180); },
+  missile(){ this.noise(0.28, 0.13, 900); this.tone(180, 0.28, "sawtooth", 0.10, 60); },
+  emp(){ this.tone(120, 0.38, "sine", 0.18, 920); this.noise(0.32, 0.10, 1600); },
+  explosion(){ this.noise(0.42, 0.26, 680); this.tone(90, 0.38, "sine", 0.10, 38); },
+  hit(){ this.tone(320, 0.05, "square", 0.06, 200); },
+  hurt(){ this.tone(160, 0.16, "sawtooth", 0.18, 70); this.noise(0.14, 0.09, 500); },
+  pickup(){ this.tone(680, 0.08, "triangle", 0.12, 1020); },
+  buy(){ this.tone(520, 0.07, "square", 0.12); setTimeout(()=>this.tone(790, 0.09, "square", 0.12), 65); },
+  click(){ this.tone(440, 0.04, "square", 0.08); },
+  success(){ this.seq([523,659,784], 95, 0.15, "triangle", 0.15); },
+  win(){ this.seq([392,523,659,784,1046], 130, 0.22, "triangle", 0.17); },
+  warp(){ this.tone(220, 0.5, "sawtooth", 0.16, 1400); setTimeout(()=>this.tone(1200,0.35,"sine",0.1,300),120); this.noise(0.4,0.08,2000); },
+  // Continuous Asteroids-style thruster rumble: a looping filtered-noise node held while thrusting.
+  thrust:{ src:null, gain:null, on:false },
+  startThrust(){
+    if(!this.ctx || this.muted || this.thrust.on) return;
+    try{
+      const dur=0.5, len=Math.floor(this.ctx.sampleRate*dur);
+      const buf=this.ctx.createBuffer(1, len, this.ctx.sampleRate), d=buf.getChannelData(0);
+      let last=0; for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+0.025*w)/1.025; d[i]=last*3.2; } // brown-ish rumble
+      const src=this.ctx.createBufferSource(); src.buffer=buf; src.loop=true;
+      const f=this.ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=360;
+      const g=this.ctx.createGain(); g.gain.value=0.0001;
+      src.connect(f); f.connect(g); g.connect(this.master); src.start();
+      g.gain.setTargetAtTime(0.16, this.ctx.currentTime, 0.03);
+      this.thrust={ src, gain:g, on:true };
+    }catch(e){ this.thrust={ src:null, gain:null, on:false }; }
+  },
+  stopThrust(){
+    const t=this.thrust; if(!this.ctx || !t || !t.on) return;
+    try{ t.gain.gain.setTargetAtTime(0.0001, this.ctx.currentTime, 0.06); const src=t.src; setTimeout(()=>{ try{ src.stop(); }catch(e){} }, 220); }catch(e){}
+    this.thrust={ src:null, gain:null, on:false };
+  },
+  toggle(){ this.muted = !this.muted; if(this.muted) this.stopThrust(); else { this.init(); this.resume(); this.click(); } Game.refreshMuteBtn(); return !this.muted; }
+};
+
+/* ================================= console.js ================================= */
+const DevConsole = {
+  open:false, out:[], cmds:{}, history:[], hi:0,
+  register(name, spec){ this.cmds[name]=spec; },
+  print(msg, cls){ this.out.push({ msg, cls:cls||"" }); if(this.out.length>200) this.out.shift(); this.render(); },
+  render(){
+    const box=document.getElementById("con-out"); if(!box) return;
+    box.innerHTML = this.out.map(o=>`<span class="${o.cls}">${escapeHtml(o.msg)}</span>`).join("\n");
+    box.scrollTop = box.scrollHeight;
+  },
+  toggle(){
+    if(!CONFIG.devConsoleEnabled) return;
+    this.open=!this.open;
+    document.getElementById("console").classList.toggle("show", this.open);
+    Game.updateFrozen();
+    if(this.open){ const i=document.getElementById("con-input"); if(i){ i.value=""; i.focus(); } if(this.out.length===0) this.print('Solar Adventure One dev console. Type "help".',"n"); }
+    else { const i=document.getElementById("con-input"); if(i) i.blur(); try{ document.getElementById("stage").focus(); }catch(e){} }
+  },
+  markModified(name){
+    const READ_ONLY = { help:1, clear:1, "debug on":1, "debug off":1, pause:1, resume:1, save:1, load:1 };
+    if(!READ_ONLY[name]){ state.debugModified=true; Game.refreshDebugBadge(); }
+  },
+  execute(line){
+    line = (line||"").trim(); if(!line) return;
+    this.print("> "+line, "u");
+    this.history.push(line); this.hi=this.history.length;
+    const tokens = line.split(/\s+/);
+    let name=null, spec=null, argStart=0;
+    for(let n=Math.min(3, tokens.length); n>=1; n--){ const cand=tokens.slice(0,n).join(" "); if(this.cmds[cand]){ name=cand; spec=this.cmds[cand]; argStart=n; break; } }
+    if(!spec){ this.print("Unknown command: "+tokens[0]+'  (type "help")', "e"); return; }
+    const args = tokens.slice(argStart);
+    try{
+      const res = spec.run(args);
+      if(res && res.ok===false) this.print(res.msg, "e");
+      else if(res && res.msg) this.print(res.msg, "s");
+      else if(typeof res === "string") this.print(res, "s");
+      this.markModified(name);
+    }catch(err){ this.print("Error: "+(err&&err.message?err.message:String(err)), "e"); }
+  }
+};
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+function num(v, label){ const n=parseFloat(v); if(isNaN(n)) throw new Error("expected a number for "+(label||"value")+", got: "+v); return n; }
+
+/* --- command registry (data-driven, validated) --- */
+(function registerCommands(){
+  const C = DevConsole, S = state;
+  const R = (name, desc, usage, run)=> C.register(name, { desc, usage, run });
+
+  R("help", "List commands, or details for one", "help [command]", (a)=>{
+    if(a.length){ const k=a.join(" "); const c=C.cmds[k]; if(!c) return { ok:false, msg:"No such command: "+k };
+      return "  "+k+" - "+c.desc+"\n  usage: "+c.usage; }
+    const names=Object.keys(C.cmds).sort();
+    return "Commands ("+names.length+"):\n"+names.map(n=>"  "+n).join("\n")+'\nType "help <command>" for usage.';
+  });
+  R("clear", "Clear console output", "clear", ()=>{ C.out=[]; C.render(); return ""; });
+  R("pause", "Pause the game", "pause", ()=>{ Game.manualPause=true; Game.updateFrozen(); return "Paused."; });
+  R("resume", "Resume the game", "resume", ()=>{ Game.manualPause=false; Game.updateFrozen(); return "Resumed."; });
+
+  R("give credits", "Add credits", "give credits <n>", (a)=>{ S.credits+=num(a[0],"amount"); Game.refreshHud(); return "Credits: "+fmt(S.credits); });
+  R("set credits", "Set credits", "set credits <n>", (a)=>{ S.credits=Math.max(0,num(a[0],"amount")); Game.refreshHud(); return "Credits: "+fmt(S.credits); });
+  R("give fuel", "Add fuel", "give fuel <n>", (a)=>{ S.ship.fuel=clamp(S.ship.fuel+num(a[0]),0,S.ship.max_fuel); Game.refreshHud(); return "Fuel: "+Math.round(S.ship.fuel); });
+  R("set fuel", "Set fuel", "set fuel <n>", (a)=>{ S.ship.fuel=clamp(num(a[0]),0,S.ship.max_fuel); Game.refreshHud(); return "Fuel: "+Math.round(S.ship.fuel); });
+  R("give resource", "Add a resource to cargo", "give resource <id> <n>", (a)=>{ const id=a[0]; if(!DATA.resources[id]) return { ok:false, msg:"no such resource: "+id }; const q=num(a[1],"amount"); S.cargo[id]=(S.cargo[id]||0)+q; Game.refreshHud(); Missions.onCollect(id); return DATA.resources[id].name+": "+(S.cargo[id]); });
+  R("give all_resources", "Add n of every resource", "give all_resources <n>", (a)=>{ const q=num(a[0],"amount"); for(const id in DATA.resources){ S.cargo[id]=(S.cargo[id]||0)+q; Missions.onCollect(id); } Game.refreshHud(); return "Added "+q+" of each resource."; });
+
+  R("set hull", "Set current hull", "set hull <n>", (a)=>{ S.ship.hull=clamp(num(a[0]),0,S.ship.max_hull); Game.refreshHud(); return "Hull: "+Math.round(S.ship.hull); });
+  R("set max_hull", "Set max hull", "set max_hull <n>", (a)=>{ S.ship.max_hull=Math.max(1,num(a[0])); S.ship.hull=clamp(S.ship.hull,0,S.ship.max_hull); Game.refreshHud(); return "Max hull: "+Math.round(S.ship.max_hull); });
+  R("set shield", "Set current shield", "set shield <n>", (a)=>{ S.ship.shield=clamp(num(a[0]),0,S.ship.max_shield); Game.refreshHud(); return "Shield: "+Math.round(S.ship.shield); });
+  R("set max_shield", "Set max shield", "set max_shield <n>", (a)=>{ S.ship.max_shield=Math.max(0,num(a[0])); S.ship.shield=clamp(S.ship.shield,0,S.ship.max_shield); Game.refreshHud(); return "Max shield: "+Math.round(S.ship.max_shield); });
+  R("set speed", "Set top speed", "set speed <n>", (a)=>{ S.ship.maxSpeed=Math.max(10,num(a[0])); return "Top speed: "+Math.round(S.ship.maxSpeed); });
+  R("set turn_rate", "Set turn rate", "set turn_rate <n>", (a)=>{ S.ship.turn_rate=Math.max(0.2,num(a[0])); return "Turn rate: "+S.ship.turn_rate; });
+  R("set cargo_capacity", "Set cargo capacity", "set cargo_capacity <n>", (a)=>{ S.ship.cargoCap=Math.max(0,num(a[0])); Game.refreshHud(); return "Cargo cap: "+S.ship.cargoCap; });
+  R("repair", "Restore hull to max", "repair", ()=>{ S.ship.hull=S.ship.max_hull; Game.refreshHud(); return "Hull repaired."; });
+  R("refuel", "Restore fuel to max", "refuel", ()=>{ S.ship.fuel=S.ship.max_fuel; Game.refreshHud(); return "Refueled."; });
+  R("godmode on", "Invulnerability on", "godmode on", ()=>{ S.godmode=true; return "God mode ON."; });
+  R("godmode off", "Invulnerability off", "godmode off", ()=>{ S.godmode=false; return "God mode OFF."; });
+
+  R("set weapon", "Equip primary weapon", "set weapon <id>", (a)=>{ const id=a[0]; if(!DATA.weapons[id]) return { ok:false, msg:"no such weapon: "+id }; S.weapon=id; S.unlockedWeapons[id]=true; Game.refreshHud(); return "Primary: "+DATA.weapons[id].name; });
+  R("set secondary", "Equip secondary weapon", "set secondary <id>", (a)=>{ const id=a[0]; if(!DATA.secondaries[id]) return { ok:false, msg:"no such secondary: "+id }; S.secondary=id; return "Secondary: "+DATA.secondaries[id].name; });
+  R("give weapon", "Unlock a weapon", "give weapon <id>", (a)=>{ const id=a[0]; if(!DATA.weapons[id]) return { ok:false, msg:"no such weapon: "+id }; S.unlockedWeapons[id]=true; return "Unlocked "+DATA.weapons[id].name; });
+  R("unlock weapon", "Unlock a weapon", "unlock weapon <id>", (a)=>{ const id=a[0]; if(!DATA.weapons[id]) return { ok:false, msg:"no such weapon: "+id }; S.unlockedWeapons[id]=true; return "Unlocked "+DATA.weapons[id].name; });
+  R("upgrade", "Apply an upgrade, or 'all'", "upgrade <id|all>", (a)=>{ if(a[0]==="all"){ const n=Upgrades.applyAll(); Game.refreshHud(); return "Applied all upgrades ("+n+" new)."; } const r=Upgrades.apply(a[0]); Game.refreshHud(); return r; });
+  R("reset upgrades", "Remove all upgrades", "reset upgrades", ()=>{ Upgrades.reset(); Game.refreshHud(); return "Upgrades reset to base."; });
+
+  R("complete mission", "Complete a mission (or 'current')", "complete mission <id|current>", (a)=>{ const id=a[0]==="current"?S.currentMission:a[0]; if(!id) return { ok:false, msg:"no current mission" }; return Missions.complete(id); });
+  R("start mission", "Start a mission", "start mission <id>", (a)=>Missions.start(a[0]));
+  R("reset mission", "Reset a mission", "reset mission <id>", (a)=>Missions.reset(a[0]));
+  R("unlock component", "Add a component (or 'all')", "unlock component <id|all>", (a)=>{ if(a[0]==="all"){ for(const id in DATA.components) S.components[id]=true; Game.refreshComponents(); return "All components unlocked."; } const id=a[0]; if(!DATA.components[id]) return { ok:false, msg:"no such component: "+id }; S.components[id]=true; Game.refreshComponents(); return "Unlocked "+DATA.components[id].name; });
+  R("assemble array", "Assemble the Helios Shield Array", "assemble array", ()=>Game.assembleArray());
+  R("win", "Trigger the win sequence", "win", ()=>{ Game.win(); return "Win triggered."; });
+
+  R("teleport", "Teleport to a location id or x y", "teleport <location_id> | teleport <x> <y>", (a)=>{
+    if(a.length>=2 && !isNaN(parseFloat(a[0])) && !isNaN(parseFloat(a[1]))){ S.ship.x=clamp(num(a[0]),0,CONFIG.map.w); S.ship.y=clamp(num(a[1]),0,CONFIG.map.h); S.ship.vx=S.ship.vy=0; return "Teleported to "+Math.round(S.ship.x)+", "+Math.round(S.ship.y); }
+    const loc=DATA.locations[a[0]]; if(!loc) return { ok:false, msg:"no such location: "+a[0] };
+    S.ship.x=loc.x + (loc.r||0) + 60; S.ship.y=loc.y; S.ship.vx=S.ship.vy=0; return "Teleported to "+loc.name;
+  });
+  R("reveal map", "Reveal the full map", "reveal map", ()=>{ S.mapRevealed=true; return "Map revealed."; });
+  R("hide map", "Hide unexplored areas", "hide map", ()=>{ S.mapRevealed=false; return "Map hidden."; });
+  R("spawn enemy", "Spawn enemies near you", "spawn enemy <id> <n>", (a)=>{ const id=a[0]; if(!DATA.enemies[id]) return { ok:false, msg:"no such enemy: "+id }; const n=Math.max(1,Math.round(num(a[1]||"1"))); const m=Enemies.spawnNear(id,n); return "Spawned "+m+" x "+DATA.enemies[id].name; });
+  R("clear enemies", "Remove all enemies", "clear enemies", ()=>{ const n=S.enemies.length; S.enemies=[]; return "Cleared "+n+" enemies."; });
+  R("spawn cargo", "Spawn cargo pickups near you", "spawn cargo <id> <n>", (a)=>{ const id=a[0]; if(!DATA.resources[id]) return { ok:false, msg:"no such resource: "+id }; const n=Math.max(1,Math.round(num(a[1]||"1"))); for(let i=0;i<n;i++){ const ang=Math.random()*TAU,d=40+Math.random()*120; Game.dropPickup(S.ship.x+Math.cos(ang)*d, S.ship.y+Math.sin(ang)*d, id); } return "Spawned "+n+" x "+DATA.resources[id].name; });
+
+  R("save", "Save the game", "save", ()=>Save.save());
+  R("load", "Load the saved game", "load", ()=>Save.load());
+  R("reset save", "Clear the saved game", "reset save", ()=>Save.reset());
+  R("debug on", "Show debug overlay", "debug on", ()=>{ S.debug=true; Game.refreshDebugInfo(); return "Debug ON."; });
+  R("debug off", "Hide debug overlay", "debug off", ()=>{ S.debug=false; document.getElementById("dbginfo").style.display="none"; return "Debug OFF."; });
+  R("sound on", "Enable sound", "sound on", ()=>{ Sound.muted=false; Sound.init(); Sound.resume(); Game.refreshMuteBtn(); return "Sound ON."; });
+  R("sound off", "Mute sound", "sound off", ()=>{ Sound.muted=true; Game.refreshMuteBtn(); return "Sound OFF."; });
+})();
+
+/* ================================= game.js ================================= */
+const Game = {
+  cam:{ x:0, y:0 }, keys:{}, manualPause:false, tabActive:"services", toastT:0, lastT:0,
+
+  init(){
+    this.canvas = document.getElementById("stage");
+    this.ctx = setupCanvas(this.canvas, CONFIG.view.w, CONFIG.view.h);
+    this.radar = document.getElementById("radar"); this.rctx = this.radar.getContext("2d");
+    this.newRun(false);
+    this.bindInput();
+    document.getElementById("menu").classList.add("show");
+    this.refreshAll();
+    this.lastT = now();
+    requestAnimationFrame(this.loop.bind(this));
+  },
+
+  newRun(startPlay){
+    const s = state;
+    s.upgrades = {}; Upgrades.recompute();
+    const b = CONFIG.baseShip;
+    s.ship.hull=s.ship.max_hull; s.ship.shield=s.ship.max_shield; s.ship.fuel=s.ship.max_fuel;
+    s.ship.missiles=b.missiles; s.ship.vx=s.ship.vy=0; s.ship.angle=-Math.PI/2; s.ship.sinceHit=99;
+    const start = DATA.locations[CONFIG.startLocation];
+    s.ship.x = start.x + start.r + 60; s.ship.y = start.y;
+    s.credits = CONFIG.startCredits; s.cargo = {};
+    s.weapon="weapon_laser_basic"; s.secondary="secondary_nova_missile";
+    s.unlockedWeapons={ weapon_laser_basic:true }; s.unlockedSecondaries={ secondary_nova_missile:true }; s.components={};
+    s.missionsCompleted={}; s.currentMission=null; s.missionProgress=0; s.rescueSite=null;
+    s.arrayAssembled=false; s.deployed=false; s.mapRevealed=false; s.godmode=false; s.debug=false; s.debugModified=false;
+    s.bullets=[]; s.ebullets=[]; s.enemies=[]; s.pickups=[]; s.particles=[]; s.finalActive=false; s.dockedAt=null;
+    this.buildAsteroids(); this.buildClouds(); this.buildSites(); this.fuelWarned=false; this.ambientT=CONFIG.ambient.interval;
+    if(startPlay){ s.scene="play"; }
+  },
+
+  buildSites(){
+    state.sites=[]; const W=CONFIG.map.w, H=CONFIG.map.h;
+    const core=DATA.locations.location_solar_heart;
+    const stations=Object.values(DATA.locations).filter(l=>l.type==="station");
+    const farFromStuff=(x,y)=>{ if(dist(x,y,core.x,core.y)<520) return false; for(const l of stations){ if(dist(x,y,l.x,l.y)<420) return false; } return true; };
+    const place=(kind,n)=>{ let made=0,guard=0; while(made<n && guard<200){ guard++;
+      const x=300+Math.random()*(W-600), y=300+Math.random()*(H-600); if(!farFromStuff(x,y)) continue;
+      state.sites.push({ kind, x, y, r:kind==="derelict"?18:16, looted:false, rot:Math.random()*TAU }); made++; } };
+    place("derelict", 6);   // fly up and press E to salvage
+    place("signal", 5);     // fly up and press E to scan
+  },
+
+  fieldTarget(l){ return Math.round((l.r||300)/11); },   // asteroid population per field, scaled by size
+  astClearOfStations(x,y){ for(const id in DATA.locations){ const s=DATA.locations[id]; if(s.type==="station" && dist(x,y,s.x,s.y) < (s.r||30)+180) return false; } return true; },
+  spawnAsteroidIn(fieldId, minPlayerDist){
+    const l=DATA.locations[fieldId]; if(!l) return false;
+    for(let t=0;t<12;t++){
+      const a=Math.random()*TAU, d=Math.sqrt(Math.random())*l.r;   // sqrt = uniform over the disc
+      const x=l.x+Math.cos(a)*d, y=l.y+Math.sin(a)*d;
+      if(x<24||y<24||x>CONFIG.map.w-24||y>CONFIG.map.h-24) continue;
+      if(!this.astClearOfStations(x,y)) continue;
+      if(minPlayerDist && dist(x,y,state.ship.x,state.ship.y)<minPlayerDist) continue;
+      state.asteroids.push({ x, y, r:10+Math.random()*16, hp:18+Math.random()*20, spin:(Math.random()-0.5)*0.6, rot:Math.random()*TAU, field:fieldId });
+      return true;
+    }
+    return false;
+  },
+  buildAsteroids(){
+    state.asteroids=[];
+    for(const id in DATA.locations){ const l=DATA.locations[id]; if(l.type!=="field") continue;
+      const n=this.fieldTarget(l); for(let i=0;i<n;i++) this.spawnAsteroidIn(id, 0); }
+  },
+  maintainAsteroids(dt){   // endlessly top fields back up so you can farm forever
+    this.astT=(this.astT||0)-dt; if(this.astT>0) return; this.astT=2.0;
+    for(const id in DATA.locations){ const l=DATA.locations[id]; if(l.type!=="field") continue;
+      const target=this.fieldTarget(l); let cur=0; for(const a of state.asteroids){ if(a.field===id && a.hp>0) cur++; }
+      let add=Math.min(4, target-cur); while(add-->0) this.spawnAsteroidIn(id, 240); }   // respawn off-screen from the player
+  },
+  buildClouds(){
+    state.clouds=[]; const W=CONFIG.map.w, H=CONFIG.map.h;
+    const cx=DATA.locations.location_solar_heart.x, cy=DATA.locations.location_solar_heart.y;
+    // One guaranteed cloud within easy reach of the starting hub so you can never be stranded early.
+    const st=DATA.locations.location_emberfall_station;
+    state.clouds.push({ x:st.x+560, y:st.y-220, r:220, seed:Math.random()*TAU });
+    for(let i=0;i<CONFIG.cloudCount;i++){
+      let x,y,tries=0;
+      do{ x=340+Math.random()*(W-680); y=340+Math.random()*(H-680); tries++; }
+      while(tries<16 && (dist(x,y,cx,cy)<560 || dist(x,y,st.x,st.y)<420));
+      state.clouds.push({ x, y, r:150+Math.random()*130, seed:Math.random()*TAU });
+    }
+  },
+
+  start(){ document.getElementById("menu").classList.remove("show"); document.getElementById("endscreen").classList.remove("show");
+    Sound.init(); Sound.resume(); Sound.click();
+    this.newRun(true); this.refreshAll(); this.updateFrozen(); try{ this.canvas.focus(); }catch(e){} },
+
+  /* ---------- input ---------- */
+  bindInput(){
+    const unlock=()=>{ Sound.init(); Sound.resume(); };  // browsers require a gesture before audio
+    window.addEventListener("keydown",(e)=>{
+      unlock();
+      if(e.key==="`" || e.code==="Backquote" || e.key==="F1"){ DevConsole.toggle(); e.preventDefault(); return; }
+      if(DevConsole.open) return; // input field handles typing
+      if(state.scene==="menu" || state.scene==="end"){ if(e.key==="Enter"){ if(state.scene==="menu") this.start(); else { document.getElementById("endscreen").classList.remove("show"); document.getElementById("menu").classList.add("show"); state.scene="menu"; this.updateFrozen(); } e.preventDefault(); } return; }
+      const k=e.key.toLowerCase();
+      if(state.scene==="jump"){ if(k==="t"||k==="e"||e.key==="Escape") this.closeJump(); e.preventDefault(); return; }
+      if(state.scene==="station"){ if(k==="e"||e.key==="Escape") this.closeStation(); e.preventDefault(); return; }
+      if(k==="e"){ this.interact(); e.preventDefault(); return; }
+      if(k==="t"){ this.openJump(); e.preventDefault(); return; }
+      if(k==="j"){ this.toast(this.missionSummary()); e.preventDefault(); return; }
+      if(k==="p"){ this.manualPause=!this.manualPause; this.updateFrozen(); this.toast(this.manualPause?"Paused":"Resumed"); e.preventDefault(); return; }
+      this.keys[k]=true;
+      if(["arrowup","arrowdown","arrowleft","arrowright"," "].includes(e.key.toLowerCase()) || e.key===" ") e.preventDefault();
+    });
+    window.addEventListener("keyup",(e)=>{ this.keys[e.key.toLowerCase()]=false; });
+
+    const ci=document.getElementById("con-input");
+    ci.addEventListener("keydown",(e)=>{
+      if(e.key==="Enter"){ DevConsole.execute(ci.value); ci.value=""; e.preventDefault(); }
+      else if(e.key==="ArrowUp"){ if(DevConsole.history.length){ DevConsole.hi=Math.max(0,DevConsole.hi-1); ci.value=DevConsole.history[DevConsole.hi]||""; } e.preventDefault(); }
+      else if(e.key==="ArrowDown"){ if(DevConsole.history.length){ DevConsole.hi=Math.min(DevConsole.history.length,DevConsole.hi+1); ci.value=DevConsole.history[DevConsole.hi]||""; } e.preventDefault(); }
+      else if(e.key==="`" || e.code==="Backquote" || e.key==="F1"){ DevConsole.toggle(); e.preventDefault(); }
+    });
+    this.canvas.addEventListener("pointerdown",()=>{ unlock(); try{ this.canvas.focus(); }catch(e){} });
+    const mb=document.getElementById("mute-btn"); if(mb){ mb.addEventListener("click",(e)=>{ e.preventDefault(); Sound.toggle(); }); }
+    this.refreshMuteBtn();
+  },
+  refreshMuteBtn(){ const mb=document.getElementById("mute-btn"); if(!mb) return; mb.textContent = Sound.muted ? "SOUND: OFF" : "SOUND: ON"; mb.classList.toggle("off", Sound.muted); },
+
+  updateFrozen(){ state.frozen = DevConsole.open || this.manualPause || state.scene!=="play";
+    if(state.frozen && this._thrustSnd){ Sound.stopThrust(); this._thrustSnd=false; } },
+
+  /* ---------- interaction ---------- */
+  nearestLocation(){ let best=null,bd=1e9; for(const id in DATA.locations){ const l=DATA.locations[id];
+    if(l.type==="pirate"||l.type==="field") continue;         // not dockable
+    const d=dist(state.ship.x,state.ship.y,l.x,l.y);
+    if(d < (l.r||30)+70 && d<bd){ bd=d; best=id; } } return best; },
+  nearestSite(){ let best=null,bd=1e9; for(const st of state.sites){ if(st.looted) continue; const d=dist(state.ship.x,state.ship.y,st.x,st.y);
+    if(d < st.r+66 && d<bd){ bd=d; best=st; } } return best; },
+  nearRescue(){ if(!state.rescueSite) return false; return dist(state.ship.x,state.ship.y,state.rescueSite.x,state.rescueSite.y) < 66; },
+  interact(){
+    // rescue beacon takes priority when you are on it
+    if(this.nearRescue() && Missions.onRescuePickup()){ this.spawnScanFx(state.rescueSite? state.rescueSite.x:state.ship.x, state.ship.y); return; }
+    const id=this.nearestLocation();
+    if(id){ const l=DATA.locations[id];
+      if(l.type==="station"||l.type==="planet"){ this.openStation(id); return; }
+      if(l.anomaly){ Missions.onScan(id); this.toast("Scanned "+l.name+"."); this.spawnScanFx(l.x,l.y); return; }
+      if(l.type==="core"){ this.tryDeploy(); return; }
+    }
+    const site=this.nearestSite();
+    if(site) this.salvageSite(site);
+  },
+  salvageSite(site){
+    site.looted=true; this.spawnScanFx(site.x, site.y); Sound.success();
+    if(site.kind==="derelict"){
+      const credits=180+Math.floor(Math.random()*320); state.credits+=credits;
+      // scatter some salvage to scoop
+      const drops=2+Math.floor(Math.random()*3);
+      for(let i=0;i<drops;i++){ const a=Math.random()*TAU,d=20+Math.random()*70; this.dropPickup(site.x+Math.cos(a)*d, site.y+Math.sin(a)*d, Math.random()<0.3?"resource_energy_crystal":"resource_salvaged_metal"); }
+      if(Math.random()<0.18){ this.dropPickup(site.x, site.y, "resource_rare_component"); this.toast("Derelict salvaged: +"+fmt(credits)+" cr and a Rare Component!"); }
+      else this.toast("Derelict salvaged: +"+fmt(credits)+" cr and scattered cargo.");
+    } else { // signal
+      const credits=220+Math.floor(Math.random()*260); state.credits+=credits;
+      const lore=["a fading Aurelian distress log","an old survey cache","a smuggler's coordinate ledger","a corrupted defense-grid ping"][Math.floor(Math.random()*4)];
+      this.toast("Signal decoded ("+lore+"): +"+fmt(credits)+" cr.");
+    }
+    this.refreshHud();
+  },
+
+  openStation(id){ const l=DATA.locations[id]; state.dockedAt=id; state.scene="station"; this.updateFrozen();
+    Missions.onDock(id);
+    document.getElementById("st-name").textContent=l.name;
+    document.getElementById("st-type").textContent=(l.type==="planet"?"Planet":l.hub?"Primary Hub":"Station")+" - "+l.services.join(", ");
+    // unlock weapons sold here
+    for(const wid in DATA.weapons){ const w=DATA.weapons[wid]; if(w.unlockAt===id) state.unlockedWeapons[wid]=state.unlockedWeapons[wid]||false; }
+    const tabs = [];
+    if(l.services.includes("refuel")||l.services.includes("repair")) tabs.push(["services","Services"]);
+    if(l.services.includes("shipyard")) tabs.push(["shipyard","Shipyard"]);
+    if(l.services.includes("market")) tabs.push(["market","Market"]);
+    if(l.services.includes("missions")) tabs.push(["missions","Missions"]);
+    if(l.services.includes("components")) tabs.push(["components","Array"]);
+    const tabBar=document.getElementById("st-tabs"); tabBar.innerHTML="";
+    this.tabActive = tabs.length?tabs[0][0]:"services";
+    tabs.forEach(([key,label])=>{ const b=document.createElement("button"); b.textContent=label; b.onclick=()=>{ this.tabActive=key; this.renderStation(); };
+      b.dataset.key=key; tabBar.appendChild(b); });
+    document.getElementById("station").classList.add("show");
+    this.renderStation();
+  },
+  closeStation(){ document.getElementById("station").classList.remove("show"); state.dockedAt=null; state.scene="play"; this.updateFrozen(); this.refreshAll(); try{ this.canvas.focus(); }catch(e){} },
+
+  /* ---------- jump drive (fast travel) ---------- */
+  jumpCost(l){ return Math.max(6, Math.round(dist(state.ship.x,state.ship.y,l.x,l.y)/110)); },
+  openJump(){ if(state.scene!=="play") return; state.scene="jump"; this.updateFrozen(); document.getElementById("jump").classList.add("show"); this.renderJump(); },
+  closeJump(){ document.getElementById("jump").classList.remove("show"); state.scene="play"; this.updateFrozen(); try{ this.canvas.focus(); }catch(e){} },
+  renderJump(){
+    document.getElementById("jump-fuel").textContent = "Fuel: "+Math.round(state.ship.fuel)+" / "+Math.round(state.ship.max_fuel);
+    const body=document.getElementById("jump-body"); let html="";
+    const order=["station","planet","core","anomaly","field","pirate"];
+    const ids=Object.keys(DATA.locations).sort((a,b)=> order.indexOf(DATA.locations[a].type)-order.indexOf(DATA.locations[b].type));
+    for(const id of ids){ const l=DATA.locations[id]; const d=dist(state.ship.x,state.ship.y,l.x,l.y); const cost=this.jumpCost(l);
+      const here = d < (l.r||30)+120;
+      const label = here ? "here" : (state.ship.fuel>=cost ? "Jump" : "no fuel");
+      const kind = l.type==="pirate"?"hostile zone":l.type==="core"?"system core":l.type;
+      html+='<div class="shop-row"><div class="info"><div class="nm">'+escapeHtml(l.name)+'</div><div class="ds">'+escapeHtml(kind)+" - "+fmt(Math.round(d))+' units away</div></div>'+
+        '<span class="cost">'+(here?"":cost+" fuel")+'</span>'+
+        (here?'<button class="buy" disabled>here</button>':'<button class="buy" data-jump="'+id+'" '+(state.ship.fuel>=cost?'':'disabled')+'>Jump</button>')+'</div>';
+    }
+    body.innerHTML=html;
+    Array.from(body.querySelectorAll(".buy")).forEach(btn=>{ if(btn.dataset.jump) btn.onclick=()=>this.jumpTo(btn.dataset.jump); });
+  },
+  jumpTo(id){ const l=DATA.locations[id]; if(!l) return; const cost=this.jumpCost(l);
+    if(state.ship.fuel < cost) return;
+    state.ship.fuel -= cost;
+    const tx = l.type==="field" ? l.x : l.x + (l.r||0) + 60;   // drop into the middle of a belt
+    state.ship.x = clamp(tx, 40, CONFIG.map.w-40); state.ship.y = clamp(l.y, 40, CONFIG.map.h-40); state.ship.vx=state.ship.vy=0;
+    Sound.warp(); this.spawnScanFx(state.ship.x, state.ship.y);
+    this.closeJump(); this.toast("Jumped to "+l.name+" (-"+cost+" fuel).");
+    Missions.onDock(id); this.refreshAll();
+  },
+
+  renderStation(){
+    const id=state.dockedAt; if(!id) return; const l=DATA.locations[id];
+    document.getElementById("st-cr").textContent=fmt(state.credits)+" cr";
+    Array.from(document.getElementById("st-tabs").children).forEach(b=>b.classList.toggle("active", b.dataset.key===this.tabActive));
+    const body=document.getElementById("st-body"); let html="";
+    const s=state.ship;
+    if(this.tabActive==="services"){
+      const fuelNeed=Math.ceil(s.max_fuel-s.fuel), fuelCost=fuelNeed*3;
+      const hullNeed=Math.ceil(s.max_hull-s.hull), repCost=hullNeed*5;
+      html+=this.rowHTML("Refuel", "Restore fuel to maximum ("+Math.round(s.fuel)+"/"+Math.round(s.max_fuel)+")", fuelCost>0?fuelCost+" cr":"full", "refuel", fuelCost>0 && state.credits>=fuelCost);
+      html+=this.rowHTML("Repair Hull", "Restore hull to maximum ("+Math.round(s.hull)+"/"+Math.round(s.max_hull)+")", repCost>0?repCost+" cr":"full", "repair", repCost>0 && state.credits>=repCost);
+      html+=this.rowHTML("Buy Missiles (+3)", "Nova missiles: "+s.missiles+"/"+s.maxMissiles, "450 cr", "missiles", state.credits>=450 && s.missiles<s.maxMissiles);
+    } else if(this.tabActive==="shipyard"){
+      html+='<div class="note">UPGRADES</div>';
+      for(const uid in DATA.upgrades){ const u=DATA.upgrades[uid]; const owned=!!state.upgrades[uid];
+        const locked = u.needs && !state.upgrades[u.needs];
+        const label = owned?"installed":(locked?"needs "+DATA.upgrades[u.needs].name:u.price+" cr");
+        html+=this.rowHTML(u.name, u.desc, label, "up:"+uid, !owned && !locked && state.credits>=u.price, owned);
+      }
+      html+='<div class="note">WEAPONS (primary)</div>';
+      for(const wid in DATA.weapons){ const w=DATA.weapons[wid]; if(!w.price && wid!=="weapon_laser_basic") continue;
+        const owned = !!state.unlockedWeapons[wid]; const sellHere = (wid==="weapon_laser_basic") || w.unlockAt===id || owned;
+        if(!sellHere) continue;
+        const equipped = state.weapon===wid;
+        const label = equipped?"equipped":(owned?"equip":(w.price||0)+" cr");
+        html+=this.rowHTML(w.name+" ("+w.damage+" dmg)", w.desc, label, "wep:"+wid, equipped?false:(owned || state.credits>=(w.price||0)), equipped);
+      }
+      html+='<div class="note">SECONDARIES</div>';
+      for(const sid in DATA.secondaries){ const w=DATA.secondaries[sid];
+        const owned = !!state.unlockedSecondaries[sid]; const sellHere = (sid==="secondary_nova_missile") || w.unlockAt===id || owned;
+        if(!sellHere) continue;
+        const equipped = state.secondary===sid;
+        const label = equipped?"equipped":(owned?"equip":(w.price||0)+" cr");
+        html+=this.rowHTML(w.name+" ("+w.damage+" dmg)", w.desc, label, "sec:"+sid, equipped?false:(owned || state.credits>=(w.price||0)), equipped);
+      }
+    } else if(this.tabActive==="market"){
+      const buyP=(rid2)=> l.market && l.market.buy && l.market.buy[rid2];
+      const sellP=(rid2)=> (l.market && l.market.sell && l.market.sell[rid2]) || DATA.resources[rid2].value;
+      html+='<div class="note">BUY GOODS (cargo '+cargoCount()+"/"+s.cargoCap+")</div>";
+      let anyBuy=false;
+      if(l.market && l.market.buy){ for(const rid2 in l.market.buy){ anyBuy=true; const r=DATA.resources[rid2]; const p=buyP(rid2);
+        const full=cargoCount()>=s.cargoCap;
+        html+=this.rowHTML(r.name, "Buy 1 unit"+(full?" (hold full)":""), p+" cr", "buyc:"+rid2, !full && state.credits>=p);
+      } }
+      if(!anyBuy) html+='<div class="note">This market has nothing to sell you.</div>';
+      html+='<div class="note">SELL CARGO</div>';
+      let anySell=false;
+      for(const rid2 in state.cargo){ if(state.cargo[rid2]<=0) continue; anySell=true; const r=DATA.resources[rid2]; const p=sellP(rid2);
+        html+=this.rowHTML(r.name+" x"+state.cargo[rid2], p+" cr each here", "Sell all: "+(p*state.cargo[rid2])+" cr", "sell:"+rid2, true);
+      }
+      if(!anySell) html+='<div class="note">Cargo hold is empty. Mine the Glass Belt, salvage wrecks, or buy low elsewhere.</div>';
+    } else if(this.tabActive==="missions"){
+      let any=false;
+      for(const mid in DATA.missions){ const m=DATA.missions[mid]; if(m.giver!==id && m.giver!=="any") continue;
+        const done=state.missionsCompleted[mid] && !m.repeatable, active=state.currentMission===mid; any=true;
+        const label = done?"complete":(active?"active":(m.repeatable?"accept":"accept"));
+        const desc=m.desc+"  (+"+fmt(m.reward)+" cr"+(m.component?", "+DATA.components[m.component].name:"")+")";
+        html+=this.rowHTML(m.name, desc, label, "mis:"+mid, !done && !active && !state.currentMission, done);
+      }
+      if(state.currentMission && DATA.missions[state.currentMission].giver!==id && DATA.missions[state.currentMission].giver!=="any"){ html+='<div class="note">Active elsewhere: '+DATA.missions[state.currentMission].name+"</div>"; }
+      else if(state.currentMission){ html+='<div class="note">One mission at a time. Finish or reset the active one to take another.</div>'; }
+      if(!any) html+='<div class="note">No contracts available here.</div>';
+    } else if(this.tabActive==="components"){
+      html+='<div class="note">HELIOS SHIELD ARRAY</div>';
+      for(const cid of CONFIG.requiredComponents){ const c=DATA.components[cid]; const have=!!state.components[cid];
+        html+='<div class="shop-row"><div class="info"><div class="nm">'+(have?"[OK] ":"[  ] ")+escapeHtml(c.name)+'</div><div class="ds">'+escapeHtml(c.source)+'</div></div><div class="cost">'+(have?"secured":"missing")+'</div></div>';
+      }
+      const haveAll=CONFIG.requiredComponents.every(c=>state.components[c]);
+      if(state.arrayAssembled) html+='<div class="note" style="color:var(--accent)">Array assembled. Deploy it at the Solar Heart (fly to center, press E).</div>';
+      else html+=this.rowHTML("Assemble Helios Shield Array", haveAll?"All components secured. Build the array.":"Requires all "+CONFIG.requiredComponents.length+" components.", haveAll?"assemble":"locked", "assemble", haveAll);
+    }
+    body.innerHTML=html;
+    Array.from(body.querySelectorAll(".buy")).forEach(btn=>{ btn.onclick=()=>this.stationAction(btn.dataset.act); });
+  },
+  rowHTML(name, desc, cost, act, enabled, owned){
+    const label = act.startsWith("sell") ? "Sell"
+      : act==="assemble" ? "Build"
+      : act.startsWith("mis") ? "Accept"
+      : act.startsWith("buyc") ? "Buy"
+      : act.startsWith("sec") ? (state.unlockedSecondaries[act.slice(4)] ? "Equip" : "Buy")
+      : act.startsWith("wep") ? (state.unlockedWeapons[act.slice(4)] ? "Equip" : "Buy")
+      : "Buy";
+    return '<div class="shop-row"><div class="info"><div class="nm">'+escapeHtml(name)+'</div><div class="ds">'+escapeHtml(desc)+'</div></div>'+
+      '<span class="cost">'+escapeHtml(cost)+'</span>'+
+      (owned?'<button class="buy" disabled>owned</button>':'<button class="buy" data-act="'+act+'" '+(enabled?'':'disabled')+'>'+label+'</button>')+'</div>';
+  },
+  stationAction(act){
+    const s=state.ship; const l=DATA.locations[state.dockedAt]||{};
+    const sellP=(rid2)=> (l.market && l.market.sell && l.market.sell[rid2]) || DATA.resources[rid2].value;
+    if(act==="refuel"){ const need=Math.ceil(s.max_fuel-s.fuel)*3; if(state.credits>=need){ state.credits-=need; s.fuel=s.max_fuel; } }
+    else if(act==="repair"){ const need=Math.ceil(s.max_hull-s.hull)*5; if(state.credits>=need){ state.credits-=need; s.hull=s.max_hull; } }
+    else if(act==="missiles"){ if(state.credits>=450 && s.missiles<s.maxMissiles){ state.credits-=450; s.missiles=Math.min(s.maxMissiles,s.missiles+3); } }
+    else if(act.startsWith("up:")){ const uid=act.slice(3); const u=DATA.upgrades[uid]; if(u && !state.upgrades[uid] && state.credits>=u.price){ state.credits-=u.price; Upgrades.apply(uid); } }
+    else if(act.startsWith("wep:")){ const wid=act.slice(4); const w=DATA.weapons[wid];
+      if(state.unlockedWeapons[wid]){ state.weapon=wid; }
+      else if(state.credits>=(w.price||0)){ state.credits-=(w.price||0); state.unlockedWeapons[wid]=true; state.weapon=wid; } }
+    else if(act.startsWith("sec:")){ const sid=act.slice(4); const w=DATA.secondaries[sid];
+      if(state.unlockedSecondaries[sid]){ state.secondary=sid; }
+      else if(state.credits>=(w.price||0)){ state.credits-=(w.price||0); state.unlockedSecondaries[sid]=true; state.secondary=sid; } }
+    else if(act.startsWith("buyc:")){ const rid2=act.slice(5); const p=(l.market&&l.market.buy&&l.market.buy[rid2]); if(p && state.credits>=p && cargoCount()<s.cargoCap){ state.credits-=p; state.cargo[rid2]=(state.cargo[rid2]||0)+1; } }
+    else if(act.startsWith("sell:")){ const rid2=act.slice(5); const q=state.cargo[rid2]||0; if(q>0){ state.credits+=sellP(rid2)*q; delete state.cargo[rid2]; } }
+    else if(act.startsWith("mis:")){ Missions.start(act.slice(4)); }
+    else if(act==="assemble"){ this.assembleArray(); }
+    if(act.startsWith("mis:")) Sound.click(); else if(act!=="assemble") Sound.buy();
+    this.renderStation(); this.refreshHud(); this.refreshComponents();
+  },
+
+  assembleArray(){
+    const haveAll=CONFIG.requiredComponents.every(c=>state.components[c]);
+    if(!haveAll) return { ok:false, msg:"Missing components: "+CONFIG.requiredComponents.filter(c=>!state.components[c]).map(c=>DATA.components[c].name).join(", ") };
+    state.arrayAssembled=true; this.toast("Helios Shield Array assembled. Deploy it at the Solar Heart."); this.refreshComponents(); Sound.success();
+    if(state.scene==="station") this.renderStation();
+    return { ok:true, msg:"Array assembled." };
+  },
+  tryDeploy(){
+    if(!state.arrayAssembled){ this.toast("You must assemble the Helios Shield Array first."); return; }
+    if(state.deployed){ this.toast("Array already deploying. Survive the wave!"); return; }
+    state.deployed=true; state.finalActive=true; this.toast("Deploying the array. Defend the Solar Heart!");
+    const c=DATA.locations.location_solar_heart;
+    for(let i=0;i<CONFIG.finalWave.count;i++){ const a=(i/CONFIG.finalWave.count)*TAU, d=360;
+      Enemies.spawn(CONFIG.finalWave.enemy, c.x+Math.cos(a)*d, c.y+Math.sin(a)*d); }
+    this.finalTimer=18;
+  },
+
+  dropPickup(x,y,resId,kind){ state.pickups.push({ x, y, res:resId||null, kind:kind||"resource", life:26, vx:(Math.random()-0.5)*30, vy:(Math.random()-0.5)*30 }); },
+
+  /* ---------- combat helpers ---------- */
+  firePrimary(){ const s=state.ship; if(s.fireCd>0) return; const w=DATA.weapons[state.weapon];
+    s.fireCd = w.cooldown / s.fireMult;
+    const dual = !!state.upgrades.upgrade_weapon_2;      // top focusing array = twin barrels
+    const lanes = dual ? [-7, 7] : [0];
+    const n = w.spread||1, arc = w.spreadArc||0, perpA = s.angle + Math.PI/2;
+    for(const lane of lanes){ const ox=Math.cos(perpA)*lane, oy=Math.sin(perpA)*lane;
+      for(let i=0;i<n;i++){ const off = n>1 ? (i/(n-1)-0.5)*arc : 0; const a=s.angle+off;
+        state.bullets.push({ x:s.x+Math.cos(a)*16+ox, y:s.y+Math.sin(a)*16+oy, vx:Math.cos(a)*w.speed+s.vx, vy:Math.sin(a)*w.speed+s.vy,
+          dmg:w.damage*s.weaponMult, life:1.5, color:w.color }); }
+    }
+    if(state.weapon==="weapon_star_lance") Sound.lance();
+    else if(state.weapon==="weapon_plasma_cannon") Sound.plasma();
+    else Sound.laser();
+  },
+  fireSecondary(){ const s=state.ship; if(s.missileCd>0 || s.missiles<=0) return; const w=DATA.secondaries[state.secondary];
+    s.missileCd=0.8; s.missiles--;
+    if(w.type==="aoe"){
+      // EMP burst: damage every enemy within radius, plus a visible shockwave
+      this.explode(s.x, s.y, w.color, 30); Sound.emp();
+      for(let k=0;k<28;k++){ const a=(k/28)*TAU; state.particles.push({ x:s.x, y:s.y, vx:Math.cos(a)*w.radius*1.4, vy:Math.sin(a)*w.radius*1.4, life:0.4, color:w.color }); }
+      for(const e of state.enemies){ if(dist(e.x,e.y,s.x,s.y)<=w.radius){ e.hull-=w.damage; if(e.hull<=0) this.killEnemy(e); } }
+      state.enemies=state.enemies.filter(e=>e.hull>0);
+    } else {
+      const a=s.angle; Sound.missile();
+      state.bullets.push({ x:s.x+Math.cos(a)*16, y:s.y+Math.sin(a)*16, vx:Math.cos(a)*w.speed+s.vx, vy:Math.sin(a)*w.speed+s.vy,
+        dmg:w.damage, life:3.0, color:w.color, missile:true });
+    }
+    this.refreshHud();
+  },
+  hitPlayer(dmg){ const s=state.ship; if(state.godmode) return;
+    if(s.shield>0){ const a=Math.min(s.shield,dmg); s.shield-=a; dmg-=a; }
+    if(dmg>0) s.hull-=dmg; s.sinceHit=0;
+    if(dmg>0) Sound.hurt();
+    if(s.hull<=0){ s.hull=0; this.playerDestroyed(); }
+    this.refreshHud();
+  },
+  playerDestroyed(){
+    this.explode(state.ship.x, state.ship.y, "#8ff0d8", 26);
+    const lost=Math.floor(state.credits*CONFIG.respawnPenalty); state.credits-=lost;
+    // respawn at last station (docked or start hub)
+    const hub = DATA.locations[state.dockedAt] || DATA.locations[CONFIG.startLocation];
+    const s=state.ship; s.x=hub.x+hub.r+60; s.y=hub.y; s.vx=s.vy=0; s.hull=s.max_hull; s.shield=s.max_shield; s.fuel=Math.max(s.fuel, s.max_fuel*0.5);
+    state.finalActive=false; state.enemies=state.enemies.filter(e=>e.boss); // keep bosses
+    this.toast("Ship destroyed. Recovered at "+hub.name+". Lost "+fmt(lost)+" credits.");
+    this.refreshAll();
+  },
+  explode(x,y,color,n){ for(let i=0;i<(n||14);i++){ const a=Math.random()*TAU, sp=40+Math.random()*160;
+    state.particles.push({ x, y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:0.4+Math.random()*0.4, color }); } },
+  spawnScanFx(x,y){ for(let i=0;i<20;i++){ const a=(i/20)*TAU; state.particles.push({ x, y, vx:Math.cos(a)*120, vy:Math.sin(a)*120, life:0.6, color:"#c69bff" }); } },
+  spawnAmbient(dt){
+    const zones = this._pirateZones || (this._pirateZones = Object.values(DATA.locations).filter(l=>l.type==="pirate"));
+    if(!zones.length) return;
+    this.ambientT -= dt;
+    if(this.ambientT>0) return;
+    this.ambientT = CONFIG.ambient.interval;
+    const roaming = state.enemies.filter(e=>e.ambient).length;
+    if(roaming >= CONFIG.ambient.cap) return;
+    const z = zones[Math.floor(Math.random()*zones.length)];
+    const pool = ["enemy_blackwake_raider","enemy_pirate_fighter","enemy_interceptor","enemy_drone"];
+    const a=Math.random()*TAU, d=180+Math.random()*380;
+    const e = Enemies.spawn(pool[Math.floor(Math.random()*pool.length)], z.x+Math.cos(a)*d, z.y+Math.sin(a)*d);
+    if(e) e.ambient=true;
+  },
+
+  /* ---------- update ---------- */
+  update(dt){
+    state.time+=dt;
+    const s=state.ship;
+    // input -> movement
+    const K=this.keys;
+    const turn = (K["a"]||K["arrowleft"]?-1:0) + (K["d"]||K["arrowright"]?1:0);
+    s.angle += turn * s.turn_rate * dt;
+    const thrust = (K["w"]||K["arrowup"])?1:0, brake=(K["s"]||K["arrowdown"])?1:0;
+    if(thrust && !this._thrustSnd){ Sound.startThrust(); this._thrustSnd=true; }
+    else if(!thrust && this._thrustSnd){ Sound.stopThrust(); this._thrustSnd=false; }
+    if(thrust){ const power = s.fuel>0 ? 1 : CONFIG.emergencyThrust;   // limp on emergency thrusters at empty
+      s.vx+=Math.cos(s.angle)*s.accel*power*dt; s.vy+=Math.sin(s.angle)*s.accel*power*dt;
+      if(s.fuel>0) s.fuel=Math.max(0,s.fuel-s.fuelBurn*dt); }
+    if(brake){ s.vx*=(1-1.6*dt); s.vy*=(1-1.6*dt); }
+    const sp=Math.hypot(s.vx,s.vy); if(sp>s.maxSpeed){ s.vx=s.vx/sp*s.maxSpeed; s.vy=s.vy/sp*s.maxSpeed; }
+    s.vx*=0.995; s.vy*=0.995;
+    s.x=clamp(s.x+s.vx*dt,0,CONFIG.map.w); s.y=clamp(s.y+s.vy*dt,0,CONFIG.map.h);
+    // fire
+    s.fireCd-=dt; s.missileCd-=dt;
+    if(K[" "]||K["spacebar"]) this.firePrimary();
+    if(K["shift"]) this.fireSecondary();
+    // shield regen
+    s.sinceHit+=dt;
+    if(s.sinceHit>CONFIG.baseShip.regenDelay && s.shield<s.max_shield){ s.shield=Math.min(s.max_shield, s.shield+s.shieldRegen*dt); }
+
+    // nebula refuel: fly through a fuel cloud to top up
+    let inCloud=false;
+    for(const cl of state.clouds){ if(dist(s.x,s.y,cl.x,cl.y) < cl.r){ inCloud=true; break; } }
+    if(inCloud && s.fuel<s.max_fuel) s.fuel=Math.min(s.max_fuel, s.fuel+CONFIG.cloudRefuel*dt);
+    if(s.fuel<=0 && !this.fuelWarned){ this.fuelWarned=true; this.toast("Out of fuel. Emergency thrusters only - reach a fuel cloud (teal on radar) or a station."); }
+    if(s.fuel>2) this.fuelWarned=false;
+
+    this.spawnAmbient(dt);
+    this.maintainAsteroids(dt);
+    Enemies.update(dt);
+
+    // player bullets
+    for(const b of state.bullets){ b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt;
+      // vs enemies
+      for(const e of state.enemies){ if(dist(b.x,b.y,e.x,e.y)<e.radius+4){ e.hull-=b.dmg; b.life=0;
+        this.explode(b.x,b.y,b.color,b.missile?12:4);
+        if(e.hull<=0){ this.killEnemy(e); } else Sound.hit(); break; } }
+      // vs asteroids
+      if(b.life>0) for(const a of state.asteroids){ if(a.hp>0 && dist(b.x,b.y,a.x,a.y)<a.r+4){ a.hp-=b.dmg; b.life=0; this.explode(b.x,b.y,"#9fb6c8",4);
+        if(a.hp<=0){ this.explode(a.x,a.y,"#9fb6c8",14); Sound.explosion();
+          const drops=1+(Math.random()<0.35?1:0);
+          for(let q=0;q<drops;q++) this.dropPickup(a.x+(Math.random()-0.5)*16, a.y+(Math.random()-0.5)*16, Math.random()<0.20?"resource_energy_crystal":"resource_salvaged_metal");
+        } else Sound.hit(); break; } }
+    }
+    state.bullets=state.bullets.filter(b=>b.life>0);
+    state.enemies=state.enemies.filter(e=>e.hull>0);
+    state.asteroids=state.asteroids.filter(a=>a.hp>0);
+
+    // enemy bullets vs player
+    for(const b of state.ebullets){ b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt;
+      if(dist(b.x,b.y,s.x,s.y)<12){ b.life=0; this.hitPlayer(b.dmg); this.explode(b.x,b.y,"#ff6b6b",5); } }
+    state.ebullets=state.ebullets.filter(b=>b.life>0);
+
+    // enemy body collision
+    for(const e of state.enemies){ if(dist(e.x,e.y,s.x,s.y)<e.radius+11){ this.hitPlayer((e.dmg||6)*dt*10); const push=angTo(s.x,s.y,e.x,e.y); s.vx-=Math.cos(push)*30; s.vy-=Math.sin(push)*30; } }
+
+    // pickups
+    for(const p of state.pickups){ p.life-=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=0.96; p.vy*=0.96;
+      const d=dist(p.x,p.y,s.x,s.y);
+      if(d<90){ p.x+=(s.x-p.x)*dt*3; p.y+=(s.y-p.y)*dt*3; }
+      if(d<16){ p.life=0; this.collect(p); } }
+    state.pickups=state.pickups.filter(p=>p.life>0);
+
+    // particles
+    for(const pt of state.particles){ pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.vx*=0.94; pt.vy*=0.94; pt.life-=dt; }
+    state.particles=state.particles.filter(p=>p.life>0);
+
+    // final wave check
+    if(state.finalActive){ this.finalTimer-=dt;
+      const left=state.enemies.length;
+      if(this.finalTimer<=0 && left<=CONFIG.finalWave.surviveEnemiesLeft){ this.win(); } }
+
+    this.refreshHud();          // live HUD so fuel, shield, and hull update every frame
+    this.refreshPrompt(inCloud);
+  },
+  refreshPrompt(inCloud){
+    const el=document.getElementById("prompt"); if(!el) return;
+    let txt=null;
+    if(this.nearRescue()) txt="Press E to recover the stranded pilots";
+    if(!txt){ const id=this.nearestLocation();
+      if(id){ const l=DATA.locations[id];
+        if(l.type==="station") txt="Press E to dock at "+l.name;
+        else if(l.type==="planet") txt="Press E to land at "+l.name;
+        else if(l.anomaly) txt="Press E to scan "+l.name;
+        else if(l.type==="core") txt = state.arrayAssembled ? "Press E to deploy the Helios Shield Array" : "Assemble the array first, then deploy here";
+      }
+    }
+    if(!txt){ const site=this.nearestSite(); if(site) txt = site.kind==="derelict" ? "Press E to salvage the derelict" : "Press E to decode the signal"; }
+    if(inCloud && state.ship.fuel<state.ship.max_fuel) txt="Refueling from nebula...";
+    if(txt){ el.textContent=txt; el.style.opacity="1"; } else el.style.opacity="0";
+  },
+
+  collect(p){
+    if(p.res){ if(cargoCount()>=state.ship.cargoCap){ this.toast("Cargo hold full."); return; }
+      state.cargo[p.res]=(state.cargo[p.res]||0)+1; Missions.onCollect(p.res); this.refreshHud(); Sound.pickup();
+      this.toast("+1 "+DATA.resources[p.res].name); }
+    else if(p.kind==="credits"){ state.credits+=p.amount||0; this.refreshHud(); Sound.pickup(); }
+    else if(p.kind==="fuel"){ state.ship.fuel=clamp(state.ship.fuel+(p.amount||20),0,state.ship.max_fuel); this.refreshHud(); Sound.pickup(); }
+  },
+  killEnemy(e){ this.explode(e.x,e.y,e.color,e.boss?30:16); Sound.explosion();
+    state.credits+=e.reward; this.refreshHud();
+    // drops
+    if(Math.random()<0.5) this.dropPickup(e.x,e.y, Math.random()<0.3?"resource_energy_crystal":"resource_salvaged_metal");
+    if(Math.random()<0.4) state.pickups.push({ x:e.x, y:e.y, kind:"fuel", amount:16, life:22, vx:0, vy:0 });
+    Missions.onKill(e.type, e);
+    this.toast("+"+fmt(e.reward)+" cr");
+  },
+
+  win(){ if(state.scene==="end") return; state.scene="end"; state.finalActive=false; this.updateFrozen(); Sound.win();
+    document.getElementById("end-card").innerHTML =
+      '<h2>SYSTEM SECURED</h2><p>The Helios Shield Array flares to life across the Aurelian System. The solar storms calm, the Blackwake raiders scatter, and Emberfall Station broadcasts your name across every channel. The system is safe, pilot, and you made it so.</p>'+
+      '<p style="color:var(--gold)">Final credits: '+fmt(state.credits)+'</p>'+
+      '<button class="btn" onclick="Game.start()">Fly Again (Enter)</button>';
+    document.getElementById("endscreen").classList.add("show");
+  },
+
+  /* ---------- render ---------- */
+  loop(t){ const dt=Math.min((t-this.lastT)/1000, 0.05); this.lastT=t;
+    this.updateFrozen();
+    if(!state.frozen && state.scene==="play") this.update(dt);
+    this.render(); this.refreshDebugInfo();
+    if(this.toastT>0){ this.toastT-=dt; if(this.toastT<=0) document.getElementById("toast").style.opacity="0"; }
+    requestAnimationFrame(this.loop.bind(this));
+  },
+  render(){
+    const ctx=this.ctx, VW=CONFIG.view.w, VH=CONFIG.view.h, s=state.ship;
+    this.cam.x=clamp(s.x-VW/2, 0, Math.max(0,CONFIG.map.w-VW));
+    this.cam.y=clamp(s.y-VH/2, 0, Math.max(0,CONFIG.map.h-VH));
+    ctx.fillStyle="#04050c"; ctx.fillRect(0,0,VW,VH);
+    this.drawStars(ctx);
+    ctx.save(); ctx.translate(-this.cam.x,-this.cam.y);
+    this.drawClouds(ctx);
+    // locations
+    for(const id in DATA.locations) this.drawLocation(ctx, id, DATA.locations[id]);
+    this.drawSites(ctx);
+    // asteroids
+    for(const a of state.asteroids){ if(a.hp<=0) continue; a.rot+=a.spin*0.016;
+      ctx.save(); ctx.translate(a.x,a.y); ctx.rotate(a.rot); ctx.fillStyle="#5a6472"; ctx.strokeStyle="#39424f"; ctx.lineWidth=2;
+      ctx.beginPath(); for(let i=0;i<7;i++){ const ang=i/7*TAU, rr=a.r*(0.8+0.2*((i*13)%5)/5); ctx.lineTo(Math.cos(ang)*rr,Math.sin(ang)*rr); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
+    // pickups
+    for(const p of state.pickups){ const col=p.res?DATA.resources[p.res].color:(p.kind==="fuel"?"#ffe08a":"#ffd166");
+      ctx.fillStyle=col; ctx.globalAlpha=clamp(p.life,0,1); ctx.beginPath(); ctx.arc(p.x,p.y,4,0,TAU); ctx.fill();
+      ctx.globalAlpha=0.3; ctx.beginPath(); ctx.arc(p.x,p.y,7,0,TAU); ctx.fill(); ctx.globalAlpha=1; }
+    // bullets
+    for(const b of state.bullets){ ctx.strokeStyle=b.color; ctx.lineWidth=b.missile?4:2; ctx.beginPath();
+      ctx.moveTo(b.x,b.y); ctx.lineTo(b.x-b.vx*0.02,b.y-b.vy*0.02); ctx.stroke(); }
+    for(const b of state.ebullets){ ctx.fillStyle="#ff6b6b"; ctx.beginPath(); ctx.arc(b.x,b.y,3,0,TAU); ctx.fill(); }
+    // enemies
+    for(const e of state.enemies) this.drawEnemy(ctx,e);
+    // particles
+    for(const pt of state.particles){ ctx.globalAlpha=clamp(pt.life*2,0,1); ctx.fillStyle=pt.color; ctx.fillRect(pt.x-1.5,pt.y-1.5,3,3); }
+    ctx.globalAlpha=1;
+    // player
+    if(state.scene!=="menu") this.drawShip(ctx,s);
+    ctx.restore();
+    this.drawRadar();
+  },
+  drawStars(ctx){
+    if(!this._stars){ this._stars=[[],[],[]]; const VW=CONFIG.view.w,VH=CONFIG.view.h;
+      for(let l=0;l<3;l++){ const n=[70,50,34][l]; for(let i=0;i<n;i++) this._stars[l].push({ x:Math.random()*VW, y:Math.random()*VH, s:[1,1.5,2][l] }); } }
+    const VW=CONFIG.view.w,VH=CONFIG.view.h;
+    for(let l=0;l<3;l++){ const f=[0.2,0.45,0.8][l]; const ox=(this.cam.x*f)%VW, oy=(this.cam.y*f)%VH;
+      ctx.fillStyle=["#3a4a6a","#6a7fb0","#aebfe0"][l];
+      for(const st of this._stars[l]){ let x=st.x-ox; if(x<0)x+=VW; let y=st.y-oy; if(y<0)y+=VH; ctx.fillRect(x,y,st.s,st.s); } }
+  },
+  drawClouds(ctx){
+    const t=state.time;
+    for(const cl of state.clouds){
+      const pulse = 1 + 0.04*Math.sin(t*0.8 + cl.seed);
+      const g=ctx.createRadialGradient(cl.x,cl.y,cl.r*0.08,cl.x,cl.y,cl.r*pulse);
+      g.addColorStop(0,"rgba(70,232,204,0.17)"); g.addColorStop(0.5,"rgba(58,176,200,0.08)"); g.addColorStop(1,"rgba(58,176,200,0)");
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cl.x,cl.y,cl.r*pulse,0,TAU); ctx.fill();
+      for(let i=0;i<3;i++){ const a=cl.seed+i*2.1+t*0.15, rr=cl.r*0.42, px=cl.x+Math.cos(a)*rr, py=cl.y+Math.sin(a)*rr;
+        const g2=ctx.createRadialGradient(px,py,0,px,py,cl.r*0.5);
+        g2.addColorStop(0,"rgba(130,244,214,0.10)"); g2.addColorStop(1,"rgba(130,244,214,0)");
+        ctx.fillStyle=g2; ctx.beginPath(); ctx.arc(px,py,cl.r*0.5,0,TAU); ctx.fill(); }
+    }
+  },
+  drawLocation(ctx, id, l){
+    const revealed = state.mapRevealed || dist(state.ship.x,state.ship.y,l.x,l.y) < state.ship.scanner+ (l.r||0) + 400;
+    if(l.type==="core"){
+      const g=ctx.createRadialGradient(l.x,l.y,10,l.x,l.y,l.r*2.4);
+      g.addColorStop(0,"rgba(255,207,107,0.9)"); g.addColorStop(0.4,"rgba(255,140,60,0.5)"); g.addColorStop(1,"rgba(255,80,40,0)");
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(l.x,l.y,l.r*2.4,0,TAU); ctx.fill();
+      ctx.fillStyle="#ffe8b0"; ctx.beginPath(); ctx.arc(l.x,l.y,l.r,0,TAU); ctx.fill();
+      ctx.fillStyle="#fff6df"; ctx.font="12px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText(l.name,l.x,l.y+l.r+18);
+      if(state.arrayAssembled && !state.deployed){ ctx.strokeStyle="#5fe3c8"; ctx.lineWidth=2; ctx.setLineDash([6,6]); ctx.beginPath(); ctx.arc(l.x,l.y,l.r+40+Math.sin(state.time*3)*6,0,TAU); ctx.stroke(); ctx.setLineDash([]); }
+      return;
+    }
+    if(!revealed) return;
+    if(l.type==="field"){ ctx.strokeStyle="rgba(159,182,200,0.18)"; ctx.lineWidth=1.5; ctx.setLineDash([4,8]); ctx.beginPath(); ctx.arc(l.x,l.y,l.r,0,TAU); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle="rgba(159,182,200,0.5)"; ctx.font="11px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText(l.name,l.x,l.y-l.r-8); return; }
+    if(l.type==="planet"){
+      const g=ctx.createRadialGradient(l.x-l.r*0.3,l.y-l.r*0.3,l.r*0.2,l.x,l.y,l.r);
+      g.addColorStop(0,l.color); g.addColorStop(1,"#1a2440"); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(l.x,l.y,l.r,0,TAU); ctx.fill();
+      ctx.fillStyle="#9fb0c8"; ctx.font="12px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText(l.name,l.x,l.y+l.r+16); return; }
+    if(l.type==="station"){
+      ctx.save(); ctx.translate(l.x,l.y); ctx.strokeStyle=l.color; ctx.fillStyle="#0c1830"; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.arc(0,0,l.r*0.6,0,TAU); ctx.fill(); ctx.stroke();
+      for(let i=0;i<4;i++){ ctx.save(); ctx.rotate(i/4*TAU); ctx.fillStyle=l.color; ctx.fillRect(l.r*0.5,-3,l.r*0.7,6); ctx.restore(); }
+      ctx.fillStyle="#eafffb"; ctx.beginPath(); ctx.arc(0,0,l.r*0.22,0,TAU); ctx.fill(); ctx.restore();
+      ctx.fillStyle=l.color; ctx.font="12px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText(l.name,l.x,l.y+l.r+14); return; }
+    if(l.type==="anomaly"){
+      ctx.save(); ctx.translate(l.x,l.y); ctx.rotate(state.time*0.6); ctx.strokeStyle=l.color; ctx.lineWidth=2;
+      ctx.beginPath(); for(let i=0;i<5;i++){ const a=i/5*TAU; ctx.lineTo(Math.cos(a)*l.r,Math.sin(a)*l.r); } ctx.closePath(); ctx.stroke(); ctx.restore();
+      ctx.fillStyle=l.color; ctx.font="11px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText(l.name,l.x,l.y+l.r+14); return; }
+    if(l.type==="pirate"){
+      ctx.save(); ctx.translate(l.x,l.y); ctx.strokeStyle="rgba(255,107,107,0.35)"; ctx.lineWidth=1.5; ctx.setLineDash([3,7]);
+      ctx.beginPath(); ctx.arc(0,0,l.r*4.2,0,TAU); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle="#ff6b6b"; ctx.lineWidth=2; ctx.beginPath();
+      ctx.moveTo(-l.r*0.5,-l.r*0.5); ctx.lineTo(l.r*0.5,l.r*0.5); ctx.moveTo(l.r*0.5,-l.r*0.5); ctx.lineTo(-l.r*0.5,l.r*0.5); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle="#ff8a8a"; ctx.font="11px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText(l.name+" (hostile)",l.x,l.y+l.r*4.2+14); return; }
+  },
+  drawSites(ctx){
+    for(const st of state.sites){ if(st.looted) continue;
+      if(st.kind==="derelict"){
+        ctx.save(); ctx.translate(st.x,st.y); ctx.rotate(st.rot); ctx.fillStyle="#6b7482"; ctx.strokeStyle="#3a424e"; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(-st.r,-st.r*0.4); ctx.lineTo(st.r*0.7,-st.r*0.6); ctx.lineTo(st.r,st.r*0.3); ctx.lineTo(-st.r*0.3,st.r*0.6); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle="#2a2f38"; ctx.beginPath(); ctx.moveTo(-st.r*0.2,-st.r*0.5); ctx.lineTo(-st.r*0.1,st.r*0.5); ctx.stroke(); ctx.restore();
+        ctx.fillStyle="rgba(180,190,205,0.6)"; ctx.font="10px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText("derelict",st.x,st.y+st.r+12);
+      } else {
+        const pu=0.5+0.5*Math.abs(Math.sin(state.time*2+st.rot));
+        ctx.save(); ctx.strokeStyle="rgba(124,224,255,"+(0.4+0.4*pu)+")"; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.arc(st.x,st.y,st.r*(0.7+pu*0.7),0,TAU); ctx.stroke();
+        ctx.fillStyle="#7ce0ff"; ctx.beginPath(); ctx.arc(st.x,st.y,3,0,TAU); ctx.fill(); ctx.restore();
+        ctx.fillStyle="rgba(124,224,255,0.6)"; ctx.font="10px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText("signal",st.x,st.y+st.r+14);
+      }
+    }
+    if(state.rescueSite){ const r=state.rescueSite; const pu=0.5+0.5*Math.abs(Math.sin(state.time*3));
+      ctx.save(); ctx.strokeStyle="rgba(255,209,102,"+(0.5+0.5*pu)+")"; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.arc(r.x,r.y,20+pu*14,0,TAU); ctx.stroke();
+      ctx.fillStyle="#ffd166"; ctx.beginPath(); ctx.arc(r.x,r.y,4,0,TAU); ctx.fill(); ctx.restore();
+      ctx.fillStyle="#ffd166"; ctx.font="11px 'Share Tech Mono'"; ctx.textAlign="center"; ctx.fillText("DISTRESS BEACON",r.x,r.y+40);
+    }
+  },
+  drawShip(ctx,s){
+    const up = state.upgrades;
+    const countUp = (prefix)=>{ let n=0; for(const k in up){ if(up[k] && k.indexOf(prefix)===0) n++; } return n; };
+    const cargoTier  = countUp("upgrade_cargo_");
+    const shieldTier = countUp("upgrade_shield_");
+    const weaponTier = countUp("upgrade_weapon_");
+    const engineTier = countUp("upgrade_engine_");
+    const tail = 10 + Math.min(cargoTier,5)*5;   // cargo pods lengthen the hull
+    ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.angle);
+    // engine flame (bigger with engine upgrades)
+    if((this.keys["w"]||this.keys["arrowup"]) && s.fuel>0){ const fl=16+engineTier*5+Math.random()*6;
+      ctx.fillStyle="#ffb454"; ctx.beginPath(); ctx.moveTo(-tail,-4); ctx.lineTo(-tail-fl,0); ctx.lineTo(-tail,4); ctx.closePath(); ctx.fill();
+      ctx.fillStyle="#fff0c0"; ctx.beginPath(); ctx.moveTo(-tail,-2); ctx.lineTo(-tail-fl*0.5,0); ctx.lineTo(-tail,2); ctx.closePath(); ctx.fill(); }
+    // cargo pod extension behind the hull
+    if(cargoTier>0){ ctx.fillStyle="#3f6f63"; ctx.strokeStyle="#0a2b24"; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(-9,-6); ctx.lineTo(-tail,-5); ctx.lineTo(-tail,5); ctx.lineTo(-9,6); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+    // weapon prongs (grow with weapon upgrades; twin at max)
+    if(weaponTier>0){ const len=6+weaponTier*4; ctx.strokeStyle="#cfe0a0"; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(6,-5); ctx.lineTo(6+len,-5); ctx.moveTo(6,5); ctx.lineTo(6+len,5); ctx.stroke();
+      if(weaponTier>=2){ ctx.strokeStyle="#ffe08a"; ctx.beginPath(); ctx.moveTo(8,-8); ctx.lineTo(8+len,-8); ctx.moveTo(8,8); ctx.lineTo(8+len,8); ctx.stroke(); } }
+    // hull
+    ctx.fillStyle=CONFIG.colors.player; ctx.strokeStyle="#0a2b24"; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(15,0); ctx.lineTo(-10,-9); ctx.lineTo(-5,0); ctx.lineTo(-10,9); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle="#0a2b24"; ctx.beginPath(); ctx.arc(2,0,2.4,0,TAU); ctx.fill();  // cockpit
+    ctx.restore();
+    // shield bubbles: base ring plus one extra concentric ring per shield array
+    if(s.max_shield>0){ const frac=clamp(s.shield/s.max_shield,0,1); const rings=1+shieldTier;
+      for(let i=0;i<rings;i++){ const rad=20+i*5; const a=(0.10+0.42*frac)*(1-i*0.22);
+        ctx.strokeStyle="rgba(90,169,255,"+Math.max(0.05,a).toFixed(3)+")"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(s.x,s.y,rad,0,TAU); ctx.stroke(); } }
+  },
+  drawEnemy(ctx,e){
+    ctx.save(); ctx.translate(e.x,e.y); ctx.rotate(e.angle);
+    ctx.fillStyle=e.color; ctx.strokeStyle="#2a0a12"; ctx.lineWidth=1.5;
+    const r=e.radius;
+    if(e.boss){ ctx.beginPath(); for(let i=0;i<6;i++){ const a=i/6*TAU; ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r); } ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle="#ffd166"; ctx.beginPath(); ctx.arc(0,0,r*0.3,0,TAU); ctx.fill(); }
+    else { ctx.beginPath(); ctx.moveTo(-r,0); ctx.lineTo(r*0.8,-r*0.8); ctx.lineTo(r*0.5,0); ctx.lineTo(r*0.8,r*0.8); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+    ctx.restore();
+    // hp bar for tougher foes
+    if(e.maxHull>30){ const w=e.radius*2; ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(e.x-w/2,e.y-e.radius-8,w,3);
+      ctx.fillStyle="#ff6b6b"; ctx.fillRect(e.x-w/2,e.y-e.radius-8,w*clamp(e.hull/e.maxHull,0,1),3); }
+  },
+  drawRadar(){
+    const ctx=this.rctx, R=134, cx=R/2, cy=R/2, range=state.ship.scanner*1.6;
+    ctx.clearRect(0,0,R,R); ctx.fillStyle="rgba(4,10,22,0.6)"; ctx.fillRect(0,0,R,R);
+    ctx.strokeStyle="rgba(95,227,200,0.18)"; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(cx,cy,R/2-4,0,TAU); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,cy,(R/2-4)/2,0,TAU); ctx.stroke();
+    const s=state.ship, k=(R/2-6)/range;
+    const plot=(x,y,col,sz)=>{ const dx=(x-s.x)*k, dy=(y-s.y)*k; if(Math.hypot(dx,dy)>R/2-5) return; ctx.fillStyle=col; ctx.fillRect(cx+dx-sz/2,cy+dy-sz/2,sz,sz); };
+    for(const cl of state.clouds) plot(cl.x,cl.y,"rgba(95,227,200,0.6)",3);
+    for(const id in DATA.locations){ const l=DATA.locations[id];
+      const col = l.type==="core"?"#ffcf6b":l.type==="station"?"#5fe3c8":l.type==="planet"?"#8aa0d8":l.type==="anomaly"?"#c69bff":l.type==="pirate"?"#ff6b6b":l.type==="field"?"#8a97a8":"#6f8bd0";
+      plot(l.x,l.y, col, l.type==="core"?5:4); }
+    for(const st of state.sites){ if(st.looted) continue; plot(st.x,st.y, st.kind==="derelict"?"#b4becd":"#7ce0ff", 2); }
+    if(state.rescueSite) plot(state.rescueSite.x, state.rescueSite.y, "#ffd166", 4);
+    for(const e of state.enemies) plot(e.x,e.y, e.boss?"#ffd166":"#ff6b6b", e.boss?5:3);
+    for(const p of state.pickups) plot(p.x,p.y,"#ffd166",2);
+    ctx.fillStyle="#8ff0d8"; ctx.fillRect(cx-2,cy-2,4,4);
+  },
+
+  /* ---------- HUD refresh ---------- */
+  refreshAll(){ this.refreshHud(); this.refreshMissionHud(); this.refreshComponents(); this.refreshDebugBadge(); },
+  refreshHud(){
+    const s=state.ship;
+    setW("b-hull", s.hull/s.max_hull); setW("b-shield", s.max_shield?s.shield/s.max_shield:0); setW("b-fuel", s.fuel/s.max_fuel);
+    const fb=document.getElementById("b-fuel"); if(fb){ const fr=s.max_fuel?s.fuel/s.max_fuel:0;
+      fb.style.background = fr<0.25 ? "linear-gradient(90deg,#ff8a5a,#ff5252)" : "linear-gradient(90deg,#ffe08a,#ffc94a)"; }
+    setT("v-hull", Math.round(s.hull)); setT("v-shield", Math.round(s.shield)); setT("v-fuel", Math.round(s.fuel));
+    setT("v-credits", fmt(state.credits)); setT("v-cargo", cargoCount()+" / "+s.cargoCap);
+    setT("v-weapon", DATA.weapons[state.weapon].name+"  M:"+s.missiles);
+  },
+  refreshMissionHud(){
+    const box=document.getElementById("mission-box"); if(!box) return;
+    if(!state.currentMission){ box.innerHTML='<span class="mt">No active mission</span><br><span class="mo">Dock a station (E) and accept one.</span>'; return; }
+    const m=DATA.missions[state.currentMission]; let prog="";
+    if(m.type==="destroy") prog=" ("+state.missionProgress+"/"+m.count+")";
+    else if(m.type==="collect") prog=" ("+(state.cargo[m.resource]||0)+"/"+m.count+")";
+    box.innerHTML='<span class="mt">'+escapeHtml(m.name)+'</span>'+escapeHtml(prog)+'<br><span class="mo">'+escapeHtml(m.desc)+'</span>';
+  },
+  refreshComponents(){
+    const box=document.getElementById("comp-list"); if(!box) return;
+    let html='<b style="color:#9fb0c8">Helios Array:</b> ';
+    html+=CONFIG.requiredComponents.map(c=>'<span class="'+(state.components[c]?"c-have":"c-miss")+'">'+(state.components[c]?"[x] ":"[ ] ")+DATA.components[c].name.split(" ")[0]+"</span>").join("  ");
+    if(state.arrayAssembled) html+='  <span class="c-have">ASSEMBLED</span>';
+    box.innerHTML=html;
+  },
+  refreshDebugBadge(){ document.getElementById("dbgbadge").style.display = state.debugModified?"block":"none"; },
+  refreshDebugInfo(){ const el=document.getElementById("dbginfo"); if(!state.debug){ if(el.style.display!=="none")el.style.display="none"; return; }
+    el.style.display="block"; const s=state.ship;
+    el.innerHTML="x "+Math.round(s.x)+"  y "+Math.round(s.y)+"<br>vel "+Math.round(Math.hypot(s.vx,s.vy))+"<br>enemies "+state.enemies.length+"<br>mission "+(state.currentMission||"-")+"<br>scene "+state.scene; },
+
+  toast(msg){ const el=document.getElementById("toast"); el.textContent=msg; el.style.opacity="1"; this.toastT=2.6; },
+  missionSummary(){ if(!state.currentMission) return "No active mission. Dock a station to accept one."; const m=DATA.missions[state.currentMission]; return m.name+": "+m.desc; },
+  updatePrompt(){}
+};
+
+/* small DOM helpers */
+function setW(id, frac){ const e=document.getElementById(id); if(e) e.style.width=(clamp(frac,0,1)*100).toFixed(1)+"%"; }
+function setT(id, txt){ const e=document.getElementById(id); if(e) e.textContent=txt; }
+function setupCanvas(cv,w,h){ const dpr=window.devicePixelRatio||1; cv.width=w*dpr; cv.height=h*dpr; const c=cv.getContext("2d"); c.setTransform(dpr,0,0,dpr,0,0); return c; }
+function now(){ return (typeof performance!=="undefined"&&performance.now)?performance.now():Date.now(); }
+
+/* boot */
+Game.init();
+</script>
+</body>
+</html>
