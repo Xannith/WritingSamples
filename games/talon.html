@@ -56,6 +56,7 @@
     display:block;width:min(840px,94vw);height:auto;aspect-ratio:840 / 600;
     border-radius:8px;background:#0a0812;
   }
+  #stage:focus{outline:none;}
   .overlay{
     position:absolute;inset:8px;border-radius:8px;
     display:flex;align-items:center;justify-content:center;text-align:center;
@@ -88,7 +89,6 @@
   .touch button:active{background:rgba(255,180,60,0.22);}
   .touch .flap{min-width:150px;background:rgba(255,180,60,0.14);}
   .help{font-size:12px;color:#7a715f;text-align:center;max-width:560px;line-height:1.8;}
-  @media (min-width:820px){ .touch{display:none;} }
   @media (max-width:819px){ .help{display:none;} }
   @media (prefers-reduced-motion:no-preference){
     header,.hud,.arena-wrap{animation:rise .5s ease both;}
@@ -109,7 +109,7 @@
   </div>
 
   <div class="arena-wrap">
-    <canvas id="stage"></canvas>
+    <canvas id="stage" tabindex="0"></canvas>
     <div class="overlay" id="overlay"></div>
   </div>
 
@@ -155,11 +155,11 @@ const TIERS = {
 };
 
 const PALETTES = {
-  player: { body:"#efe2c4", belly:"#fff7e6", outline:"#6f5326", wing:"#e2cfa4", rider:"#ffd23f", lance:"#fff3c4", beak:"#ff9a3c", legs:"#c69a4e", plume:"#ff5a4c" },
+  player: { body:"#54cf6b", belly:"#93e6a3", outline:"#1f5e2c", wing:"#3fb257", rider:"#ffd23f", lance:"#fff3c4", beak:"#ff9a3c", legs:"#2f8a45", plume:"#ff5a4c" },
   bounder:{ body:"#c9433a", belly:"#e07068", outline:"#4e1510", wing:"#a92f28", rider:"#e88b83", lance:"#ffd9d4", beak:"#ffcf3c", legs:"#6e211b", plume:"#ffd23f" },
   hunter: { body:"#9aa3ad", belly:"#c4ccd4", outline:"#363c44", wing:"#7f8792", rider:"#d6dde4", lance:"#ffffff", beak:"#ffcf3c", legs:"#464d54", plume:"#43e0ff" },
-  lord:   { body:"#4f7ed0", belly:"#7ea3e0", outline:"#182a54", wing:"#3f68b4", rider:"#a9c4f0", lance:"#e6efff", beak:"#ffcf3c", legs:"#243a6c", plume:"#b6ff3c" },
-  ptero:  { body:"#8fce6b", belly:"#b8e595", outline:"#2f4d24", wing:"#79b657", beak:"#ff4d3c", legs:"#3a5a2c" }
+  lord:   { body:"#4f7ed0", belly:"#7ea3e0", outline:"#182a54", wing:"#3f68b4", rider:"#a9c4f0", lance:"#e6efff", beak:"#ffcf3c", legs:"#243a6c", plume:"#ffd23f" },
+  ptero:  { body:"#a86cff", belly:"#c9a8ff", outline:"#3a1f66", wing:"#8f52e0", beak:"#ff4d3c", legs:"#4a2e7a" }
 };
 
 /* ---------- State ---------- */
@@ -505,6 +505,7 @@ function maybeSpawnPtero(){
 }
 function update(dt){
   waveTime += dt;
+  if(player.invuln > 0) player.invuln -= dt;
   control(dt);
   physics(player, dt);
   trollUpdate(dt);
@@ -718,6 +719,7 @@ function startGame(){
   state = "playing"; clearOverlay();
   startWave(1);
   updateHud();
+  try { stageEl.focus(); } catch(e){}
   lastTime = performance.now();
 }
 function gameOver(){ state = "gameover"; setOverlay(gameoverHTML(), true); }
@@ -772,6 +774,8 @@ function init(){
   resetPlayer();
   updateHud();
   showMenu();
+  stageEl.addEventListener("pointerdown", () => stageEl.focus());
+  try { stageEl.focus(); } catch(e){}
   lastTime = performance.now();
   requestAnimationFrame(loop);
 }
