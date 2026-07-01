@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>VECTOR BELT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05060a;
+    --panel:rgba(255,255,255,0.04);
+    --panel-line:rgba(255,255,255,0.09);
+    --text:#eaf2f8;
+    --muted:#8a93a8;
+    --accent:#43e0ff;
+    --warn:#ff5a5a;
+    --display:"Chakra Petch", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(1100px 600px at 50% -14%, #0d1526 0%, rgba(13,21,38,0) 60%),
+      var(--bg);
+    color:var(--text);
+    min-height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:12px;padding:16px;
+    -webkit-user-select:none;user-select:none;
+    touch-action:manipulation;
+    overflow-x:hidden;
+  }
+  header{text-align:center;}
+  header h1{
+    font-family:var(--display);font-weight:700;
+    font-size:28px;letter-spacing:9px;color:var(--text);
+    text-shadow:0 0 24px rgba(67,224,255,0.28);
+  }
+  header p{
+    font-family:var(--display);font-weight:500;
+    font-size:11px;letter-spacing:3px;color:var(--muted);
+    margin-top:4px;text-transform:uppercase;
+  }
+
+  .hud{
+    display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;
+    font-family:var(--display);
+  }
+  .hud .item{display:flex;align-items:baseline;gap:7px;}
+  .hud .item span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .hud .item b{font-size:22px;font-variant-numeric:tabular-nums;color:var(--text);}
+  .hud .tele{
+    font-size:11px;letter-spacing:2px;padding:4px 9px;border-radius:6px;
+    border:1px solid var(--panel-line);color:var(--muted);text-transform:uppercase;
+  }
+  .hud .tele.ready{color:#04222a;background:var(--accent);border-color:var(--accent);}
+
+  .arena-wrap{
+    position:relative;border-radius:14px;padding:8px;
+    background:var(--panel);border:1px solid var(--panel-line);
+    box-shadow:0 0 70px rgba(67,224,255,0.05), 0 24px 70px rgba(0,0,0,0.6);
+  }
+  #space{
+    display:block;width:min(820px,94vw);height:auto;aspect-ratio:820 / 600;
+    border-radius:8px;background:#05060a;
+  }
+
+  .loadout{
+    display:flex;gap:6px;flex-wrap:wrap;justify-content:center;
+    max-width:min(820px,94vw);min-height:26px;
+  }
+  .chip{
+    font-family:var(--display);font-size:11px;letter-spacing:1px;
+    padding:4px 9px;border-radius:20px;
+    border:1px solid rgba(67,224,255,0.3);background:rgba(67,224,255,0.08);color:#bfeeff;
+  }
+  .chip.empty{border-color:var(--panel-line);background:rgba(255,255,255,0.03);color:var(--muted);}
+
+  .overlay{
+    position:absolute;inset:8px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .overlay.dim{
+    background:rgba(5,6,10,0.9);
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  }
+  .ov-card{padding:22px;max-width:94%;}
+  .ov-card.wide{max-width:97%;}
+  .ov-card h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:3px;margin-bottom:8px;}
+  .ov-card > p{font-size:13px;color:#aab4c4;line-height:1.6;margin-bottom:6px;}
+  .ov-score{
+    font-family:var(--display);font-size:15px;color:var(--muted);
+    letter-spacing:2px;margin:10px 0;text-transform:uppercase;font-variant-numeric:tabular-nums;
+  }
+  .controls-list{font-size:12px;color:#9aa4b6;line-height:2;margin-top:8px;}
+  .controls-list kbd{
+    font-family:var(--display);font-size:11px;
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+    border-radius:5px;padding:1px 6px;color:#e6ebf3;
+  }
+  .btn{
+    font-family:var(--display);font-weight:700;letter-spacing:1px;
+    margin-top:14px;padding:11px 22px;border:none;border-radius:10px;
+    background:linear-gradient(180deg,#43e0ff,#1cb6d4);color:#04222a;
+    font-size:14px;cursor:pointer;transition:transform .08s ease, filter .15s ease;
+  }
+  .btn:hover{filter:brightness(1.08);}
+  .btn:active{transform:translateY(1px);}
+
+  .cards{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+  .card{
+    position:relative;width:180px;text-align:left;padding:16px 14px;
+    border-radius:12px;border:1px solid var(--panel-line);
+    background:rgba(255,255,255,0.04);color:var(--text);cursor:pointer;
+    transition:transform .1s ease, border-color .1s ease, background .1s ease;
+  }
+  .card:hover{transform:translateY(-3px);border-color:var(--accent);background:rgba(67,224,255,0.08);}
+  .card-key{
+    position:absolute;top:8px;right:10px;font-family:var(--display);font-size:12px;
+    color:var(--muted);border:1px solid var(--panel-line);border-radius:5px;padding:0 6px;
+  }
+  .card-name{font-family:var(--display);font-weight:700;font-size:15px;color:#eaf6ff;margin-bottom:6px;}
+  .card-desc{font-size:12px;color:#aab4c4;line-height:1.5;min-height:36px;}
+  .card-lv{margin-top:8px;font-family:var(--display);font-size:12px;color:var(--accent);letter-spacing:1px;}
+
+  .touch{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;width:min(600px,96vw);}
+  .touch .grp{display:flex;gap:8px;}
+  .touch button{
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:1px;
+    padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.11);
+    background:rgba(255,255,255,0.05);color:#e6ebf3;text-transform:uppercase;min-width:58px;
+  }
+  .touch button:active{background:rgba(67,224,255,0.2);}
+
+  .help{font-size:12px;color:#6b7688;text-align:center;max-width:600px;line-height:1.8;}
+
+  @media (min-width:820px){ .touch{display:none;} }
+  @media (max-width:819px){ .help{display:none;} }
+
+  @media (prefers-reduced-motion:no-preference){
+    header,.hud,.arena-wrap{animation:rise .5s ease both;}
+    @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>VECTOR BELT</h1>
+    <p>Break the rocks, upgrade the ship, survive the belt</p>
+  </header>
+
+  <div class="hud">
+    <div class="item"><span>Score</span><b id="hud-score">0</b></div>
+    <div class="item"><span>Wave</span><b id="hud-wave">1</b></div>
+    <div class="item"><span>Lives</span><b id="hud-lives">3</b></div>
+    <div class="tele" id="hud-tele">Ready</div>
+    <div class="item" id="hud-shield-wrap" style="display:none"><span>Shield</span><b id="hud-shield">0 / 0</b></div>
+  </div>
+
+  <div class="arena-wrap">
+    <canvas id="space"></canvas>
+    <div class="overlay" id="overlay"></div>
+  </div>
+
+  <div class="loadout" id="loadout"></div>
+
+  <div class="touch">
+    <div class="grp">
+      <button id="t-left">&#9668;</button>
+      <button id="t-thrust">&#9650;</button>
+      <button id="t-right">&#9658;</button>
+    </div>
+    <div class="grp">
+      <button id="t-fire">Fire</button>
+      <button id="t-tele">Warp</button>
+    </div>
+  </div>
+
+  <div class="help">
+    Turn with <b>Left / Right</b> or <b>A / D</b>, thrust with <b>Up</b> or <b>W</b>, fire with <b>Space</b>, teleport with <b>Shift</b>. Clear a wave to pick an upgrade. <b>P</b> pauses.
+  </div>
+
+<script>
+"use strict";
+
+/* ---------- Constants ---------- */
+const W = 820, H = 600;
+const SHIP_R = 14, NOSE = 16;
+const DRAG = 0.6;
+const INVULN_SPAWN = 2.2, INVULN_TELE = 0.7, INVULN_SHIELD = 1.2;
+const SHIELD_REGEN = 8;
+const START_LIVES = 3;
+
+const UPGRADES = [
+  { key:"rapid",    name:"Rapid Fire",       max:5, desc:"Shoot noticeably faster." },
+  { key:"spread",   name:"Spread Shot",      max:4, desc:"Fire an extra bullet in a fan." },
+  { key:"engine",   name:"Afterburner",      max:5, desc:"More thrust and higher top speed." },
+  { key:"gyro",     name:"Gyros",            max:5, desc:"Turn the ship faster." },
+  { key:"velocity", name:"Hi-Velocity Rounds", max:4, desc:"Faster bullets with longer range." },
+  { key:"pierce",   name:"Piercing Rounds",  max:3, desc:"Bullets punch through one more rock." },
+  { key:"phase",    name:"Phase Drive",      max:3, desc:"Shorter teleport cooldown." },
+  { key:"shield",   name:"Deflector Shield", max:3, desc:"Absorb a hit; it recharges over time." },
+  { key:"life",     name:"Repair Bay",       max:5, desc:"Gain an extra life right now." }
+];
+
+/* ---------- State ---------- */
+let up = { rapid:0, spread:0, engine:0, gyro:0, velocity:0, pierce:0, phase:0, shield:0, life:0 };
+let score = 0, lives = START_LIVES, wave = 1;
+let bullets = [], rocks = [], particles = [], rings = [];
+let ship = null;
+let fireTimer = 0, teleTimer = 0, shieldCharges = 0, shieldRegen = SHIELD_REGEN, invuln = 0;
+let state = "menu";            // menu | playing | upgrade | paused | gameover
+let offered = [];
+let waveBannerText = "", waveBannerTimer = 0;
+let shakeMag = 0, shakeTime = 0, shakeDur = 0.001;
+let stars = [];
+let lastTime = 0;
+const input = { left:false, right:false, thrust:false, fire:false };
+
+/* ---------- Canvas setup ---------- */
+const spaceEl = document.getElementById("space");
+let ctx;
+function setupCanvas(cv, w, h){
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const c = cv.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return c;
+}
+
+/* ---------- DOM refs ---------- */
+const overlay = document.getElementById("overlay");
+const elScore = document.getElementById("hud-score");
+const elWave = document.getElementById("hud-wave");
+const elLives = document.getElementById("hud-lives");
+const elTele = document.getElementById("hud-tele");
+const elShieldWrap = document.getElementById("hud-shield-wrap");
+const elShield = document.getElementById("hud-shield");
+const loadoutEl = document.getElementById("loadout");
+
+/* ---------- Derived ship stats ---------- */
+function fireCooldown(){ return Math.max(0.09, 0.30 * Math.pow(0.85, up.rapid)); }
+function thrustAccel(){ return 360 + up.engine * 85; }
+function maxSpeed(){ return 340 + up.engine * 55; }
+function rotSpeed(){ return 4.0 + up.gyro * 0.85; }
+function bulletSpeed(){ return 560 + up.velocity * 95; }
+function bulletLife(){ return 1.05 + up.velocity * 0.22; }
+function teleCooldown(){ return Math.max(1.2, 5 - up.phase * 1.3); }
+function shieldMax(){ return up.shield; }
+
+/* ---------- Helpers ---------- */
+function wrap(v, max){ return ((v % max) + max) % max; }
+function distWrap(x1, y1, x2, y2){
+  let dx = Math.abs(x1 - x2); dx = Math.min(dx, W - dx);
+  let dy = Math.abs(y1 - y2); dy = Math.min(dy, H - dy);
+  return Math.hypot(dx, dy);
+}
+function shuffle(a){ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function roman(n){ return ["","I","II","III","IV","V","VI","VII"][n] || String(n); }
+function shake(mag, dur){ shakeMag = mag; shakeTime = dur; shakeDur = dur; }
+function resetShip(){ ship = { x:W/2, y:H/2, vx:0, vy:0, angle:-Math.PI/2, radius:SHIP_R }; }
+
+/* ---------- Overlay ---------- */
+function setOverlay(html, dim){ overlay.innerHTML = html; overlay.style.display = "flex"; overlay.classList.toggle("dim", !!dim); }
+function clearOverlay(){ overlay.style.display = "none"; }
+
+function menuHTML(){
+  return `
+  <div class="ov-card">
+    <h2>VECTOR BELT</h2>
+    <p>An Asteroids-style shooter with ship upgrades between waves.</p>
+    <div class="controls-list">
+      <kbd>&larr;</kbd><kbd>&rarr;</kbd> or <kbd>A</kbd><kbd>D</kbd> turn, <kbd>&uarr;</kbd> / <kbd>W</kbd> thrust<br>
+      <kbd>Space</kbd> fire, <kbd>Shift</kbd> teleport, <kbd>P</kbd> pause
+    </div>
+    <button class="btn" onclick="startGame()">Start (Enter)</button>
+  </div>`;
+}
+function showMenu(){ setOverlay(menuHTML(), true); }
+
+function upgradeHTML(){
+  const cards = offered.map((o, i) => {
+    const lv = o.fallback ? "" : `<div class="card-lv">Lv ${up[o.key]} &rarr; ${up[o.key] + 1}</div>`;
+    return `<button class="card" onclick="pickUpgrade(${i})">
+      <div class="card-key">${i + 1}</div>
+      <div class="card-name">${o.name}</div>
+      <div class="card-desc">${o.desc}</div>${lv}
+    </button>`;
+  }).join("");
+  return `<div class="ov-card wide"><h2>Wave ${wave} cleared</h2><p>Choose an upgrade</p><div class="cards">${cards}</div></div>`;
+}
+
+function gameoverHTML(){
+  return `<div class="ov-card">
+    <h2>Game Over</h2>
+    <div class="ov-score">Score ${score} &nbsp;&middot;&nbsp; Reached wave ${wave}</div>
+    <button class="btn" onclick="startGame()">Play Again (Enter)</button>
+  </div>`;
+}
+
+/* ---------- HUD ---------- */
+function updateHud(){
+  elScore.textContent = score;
+  elWave.textContent = wave;
+  elLives.textContent = Math.max(0, lives);
+}
+let _teleReady = null, _shieldStr = null;
+function updateStatus(){
+  const ready = teleTimer <= 0 && state === "playing";
+  if(ready !== _teleReady){
+    _teleReady = ready;
+    elTele.textContent = ready ? "Ready" : "Charging";
+    elTele.classList.toggle("ready", ready);
+  }
+  const sm = shieldMax();
+  const ss = sm > 0 ? (shieldCharges + " / " + sm) : "off";
+  if(ss !== _shieldStr){
+    _shieldStr = ss;
+    if(sm > 0){ elShieldWrap.style.display = ""; elShield.textContent = ss; }
+    else elShieldWrap.style.display = "none";
+  }
+}
+function updateLoadout(){
+  const chips = UPGRADES.filter(u => up[u.key] > 0)
+    .map(u => `<span class="chip">${u.name} ${roman(up[u.key])}</span>`).join("");
+  loadoutEl.innerHTML = chips || `<span class="chip empty">No upgrades yet</span>`;
+}
+
+/* ---------- Rocks ---------- */
+function makeRock(x, y, tier){
+  const radius = tier === 0 ? 42 : tier === 1 ? 24 : 13;
+  const base = tier === 0 ? 42 : tier === 1 ? 72 : 108;
+  const speed = base + wave * 5 + Math.random() * 35;
+  const dir = Math.random() * Math.PI * 2;
+  const points = 9 + Math.floor(Math.random() * 4);
+  const verts = [];
+  for(let i = 0; i < points; i++) verts.push({ ang:(i / points) * Math.PI * 2, r:radius * (0.72 + Math.random() * 0.42) });
+  return { x, y, vx:Math.cos(dir)*speed, vy:Math.sin(dir)*speed, radius, tier, verts, rot:Math.random()*Math.PI*2, spin:(Math.random()-0.5)*1.3 };
+}
+function spawnWave(){
+  rocks = [];
+  const count = 3 + Math.min(wave, 9);
+  for(let i = 0; i < count; i++){
+    let x, y, tries = 0;
+    do { x = Math.random()*W; y = Math.random()*H; tries++; } while(distWrap(x, y, ship.x, ship.y) < 170 && tries < 40);
+    rocks.push(makeRock(x, y, 0));
+  }
+}
+function destroyRock(r){
+  score += r.tier === 0 ? 20 : r.tier === 1 ? 50 : 100;
+  spawnDebris(r.x, r.y, r.tier);
+  if(r.tier < 2){ rocks.push(makeRock(r.x, r.y, r.tier + 1)); rocks.push(makeRock(r.x, r.y, r.tier + 1)); }
+  updateHud();
+}
+function stepRocks(dt){
+  for(const r of rocks){ r.x = wrap(r.x + r.vx*dt, W); r.y = wrap(r.y + r.vy*dt, H); r.rot += r.spin*dt; }
+}
+
+/* ---------- Effects ---------- */
+function spawnDebris(x, y, tier){
+  const n = 6 + tier * 2;
+  for(let i = 0; i < n; i++){ const a = Math.random()*Math.PI*2, sp = 60 + Math.random()*150;
+    particles.push({ x, y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:0.45+Math.random()*0.35, maxLife:0.8, color:"#cfe8f5", size:2 }); }
+}
+function spawnThrust(){
+  const a = ship.angle + Math.PI, spread = (Math.random()-0.5)*0.5, sp = 120 + Math.random()*80;
+  particles.push({ x:ship.x+Math.cos(a)*12, y:ship.y+Math.sin(a)*12,
+    vx:Math.cos(a+spread)*sp + ship.vx*0.3, vy:Math.sin(a+spread)*sp + ship.vy*0.3,
+    life:0.35, maxLife:0.35, color:"#ffb454", size:2 });
+}
+function spawnRing(x, y, color, maxR, life){ rings.push({ x, y, maxR:maxR||40, life:life||0.4, maxLife:life||0.4, color }); }
+function explodeShip(){
+  for(let i = 0; i < 20; i++){ const a = Math.random()*Math.PI*2, sp = 60 + Math.random()*180;
+    particles.push({ x:ship.x, y:ship.y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:0.6+Math.random()*0.5, maxLife:1.1, color:i%3===0?"#ffb454":"#cfe8f5", size:2.4 }); }
+  spawnRing(ship.x, ship.y, "#ff7a4c", 64, 0.5);
+}
+
+/* ---------- Actions ---------- */
+function shoot(){
+  const n = 1 + up.spread;
+  const arc = Math.min(1.0, (n - 1) * 0.16);
+  const bs = bulletSpeed(), bl = bulletLife(), pc = up.pierce;
+  const nx = ship.x + Math.cos(ship.angle)*NOSE, ny = ship.y + Math.sin(ship.angle)*NOSE;
+  for(let i = 0; i < n; i++){
+    const t = n === 1 ? 0 : (i / (n - 1) - 0.5);
+    const a = ship.angle + t * arc;
+    bullets.push({ x:nx, y:ny, vx:Math.cos(a)*bs, vy:Math.sin(a)*bs, life:bl, pierce:pc });
+  }
+}
+function teleport(){
+  if(state !== "playing" || teleTimer > 0) return;
+  teleTimer = teleCooldown();
+  spawnRing(ship.x, ship.y, "#b06cff", 42, 0.45);
+  let best = { x:W/2, y:H/2 }, bestClear = -1e9;
+  for(let i = 0; i < 14; i++){
+    const x = 50 + Math.random()*(W - 100), y = 50 + Math.random()*(H - 100);
+    let clr = 1e9;
+    for(const r of rocks){ const d = distWrap(x, y, r.x, r.y) - r.radius; if(d < clr) clr = d; }
+    if(clr > bestClear){ bestClear = clr; best = { x, y }; }
+  }
+  ship.x = best.x; ship.y = best.y; ship.vx *= 0.25; ship.vy *= 0.25;
+  spawnRing(ship.x, ship.y, "#b06cff", 42, 0.45);
+  invuln = Math.max(invuln, INVULN_TELE);
+  updateStatus();
+}
+function shipHit(r){
+  if(shieldCharges > 0){
+    shieldCharges--; invuln = INVULN_SHIELD; shake(9, 0.35);
+    const ang = Math.atan2(ship.y - r.y, ship.x - r.x);
+    ship.vx += Math.cos(ang)*160; ship.vy += Math.sin(ang)*160;
+    spawnRing(ship.x, ship.y, "#43e0ff", 44, 0.4);
+  } else {
+    lives--; explodeShip(); shake(16, 0.55);
+    if(lives <= 0){ updateHud(); gameOver(); return; }
+    resetShip(); invuln = INVULN_SPAWN;
+  }
+  updateHud();
+}
+
+/* ---------- Collisions ---------- */
+function bulletRockCollisions(){
+  for(let bi = bullets.length - 1; bi >= 0; bi--){
+    const b = bullets[bi];
+    for(let ri = rocks.length - 1; ri >= 0; ri--){
+      const r = rocks[ri];
+      if(distWrap(b.x, b.y, r.x, r.y) < r.radius){
+        rocks.splice(ri, 1);
+        destroyRock(r);
+        if(b.pierce > 0){ b.pierce--; }
+        else { bullets.splice(bi, 1); break; }
+      }
+    }
+  }
+}
+function shipRockCollisions(){
+  if(invuln > 0) return;
+  for(let ri = rocks.length - 1; ri >= 0; ri--){
+    const r = rocks[ri];
+    if(distWrap(ship.x, ship.y, r.x, r.y) < r.radius + ship.radius){ shipHit(r); return; }
+  }
+}
+
+/* ---------- Update ---------- */
+function update(dt){
+  if(input.left) ship.angle -= rotSpeed()*dt;
+  if(input.right) ship.angle += rotSpeed()*dt;
+  if(input.thrust){
+    ship.vx += Math.cos(ship.angle)*thrustAccel()*dt;
+    ship.vy += Math.sin(ship.angle)*thrustAccel()*dt;
+    if(Math.random() < 0.7) spawnThrust();
+  }
+  ship.vx -= ship.vx * DRAG * dt;
+  ship.vy -= ship.vy * DRAG * dt;
+  const sp = Math.hypot(ship.vx, ship.vy), ms = maxSpeed();
+  if(sp > ms){ ship.vx = ship.vx / sp * ms; ship.vy = ship.vy / sp * ms; }
+  ship.x = wrap(ship.x + ship.vx*dt, W);
+  ship.y = wrap(ship.y + ship.vy*dt, H);
+
+  fireTimer -= dt;
+  teleTimer = Math.max(0, teleTimer - dt);
+  invuln = Math.max(0, invuln - dt);
+  if(shieldMax() > 0 && shieldCharges < shieldMax()){
+    shieldRegen -= dt;
+    if(shieldRegen <= 0){ shieldCharges++; shieldRegen = SHIELD_REGEN; }
+  }
+  if(input.fire && fireTimer <= 0){ shoot(); fireTimer = fireCooldown(); }
+
+  for(let i = bullets.length - 1; i >= 0; i--){
+    const b = bullets[i];
+    b.x = wrap(b.x + b.vx*dt, W); b.y = wrap(b.y + b.vy*dt, H);
+    b.life -= dt; if(b.life <= 0) bullets.splice(i, 1);
+  }
+  stepRocks(dt);
+  for(let i = particles.length - 1; i >= 0; i--){
+    const p = particles[i]; p.x += p.vx*dt; p.y += p.vy*dt; p.life -= dt;
+    if(p.life <= 0) particles.splice(i, 1);
+  }
+  for(let i = rings.length - 1; i >= 0; i--){ rings[i].life -= dt; if(rings[i].life <= 0) rings.splice(i, 1); }
+  if(waveBannerTimer > 0) waveBannerTimer -= dt;
+  if(shakeTime > 0) shakeTime -= dt;
+
+  bulletRockCollisions();
+  shipRockCollisions();
+
+  if(rocks.length === 0) endWave();
+}
+function updateMenu(dt){ stepRocks(dt); }
+
+/* ---------- Render ---------- */
+function forWrap(x, y, r, fn){
+  const xs = [x], ys = [y];
+  if(x < r) xs.push(x + W); if(x > W - r) xs.push(x - W);
+  if(y < r) ys.push(y + H); if(y > H - r) ys.push(y - H);
+  for(const X of xs) for(const Y of ys) fn(X, Y);
+}
+function drawStars(){
+  for(const s of stars){ ctx.globalAlpha = s.a; ctx.fillStyle = "#9fb4c8"; ctx.fillRect(s.x, s.y, s.s, s.s); }
+  ctx.globalAlpha = 1;
+}
+function drawRocks(){
+  ctx.save();
+  ctx.strokeStyle = "#dfeaf2"; ctx.lineWidth = 1.6; ctx.shadowColor = "#7fc8ff"; ctx.shadowBlur = 6;
+  for(const r of rocks){
+    forWrap(r.x, r.y, r.radius, (px, py) => {
+      ctx.save(); ctx.translate(px, py); ctx.rotate(r.rot);
+      ctx.beginPath();
+      for(let i = 0; i < r.verts.length; i++){
+        const v = r.verts[i], vx = Math.cos(v.ang)*v.r, vy = Math.sin(v.ang)*v.r;
+        if(i === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
+      }
+      ctx.closePath(); ctx.stroke(); ctx.restore();
+    });
+  }
+  ctx.restore();
+}
+function drawBullets(){
+  ctx.save(); ctx.fillStyle = "#ffffff"; ctx.shadowColor = "#9fe0ff"; ctx.shadowBlur = 8;
+  for(const b of bullets){ ctx.beginPath(); ctx.arc(b.x, b.y, 2.4, 0, Math.PI*2); ctx.fill(); }
+  ctx.restore();
+}
+function drawParticles(){
+  for(const p of particles){ ctx.globalAlpha = Math.max(0, p.life / p.maxLife); ctx.fillStyle = p.color; ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size); }
+  ctx.globalAlpha = 1;
+}
+function drawRings(){
+  for(const r of rings){
+    const k = Math.max(0, r.life / r.maxLife);
+    ctx.save(); ctx.globalAlpha = k; ctx.strokeStyle = r.color; ctx.lineWidth = 2;
+    ctx.shadowColor = r.color; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.arc(r.x, r.y, r.maxR * (1 - k), 0, Math.PI*2); ctx.stroke(); ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
+function drawShip(){
+  const blinkOff = invuln > 0 && state === "playing" && (Math.floor(invuln * 12) % 2 === 0);
+  forWrap(ship.x, ship.y, SHIP_R + 10, (px, py) => {
+    if(shieldCharges > 0){
+      ctx.save(); ctx.strokeStyle = "#43e0ff"; ctx.globalAlpha = 0.45 + 0.2*Math.sin(performance.now()/140);
+      ctx.lineWidth = 2; ctx.shadowColor = "#43e0ff"; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(px, py, SHIP_R + 7, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    }
+    if(blinkOff) return;
+    ctx.save(); ctx.translate(px, py); ctx.rotate(ship.angle);
+    if(input.thrust && state === "playing" && Math.random() < 0.85){
+      ctx.save(); ctx.strokeStyle = "#ffb454"; ctx.lineWidth = 2; ctx.shadowColor = "#ff8a3c"; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.moveTo(-6, 4); ctx.lineTo(-6 - (7 + Math.random()*7), 0); ctx.lineTo(-6, -4); ctx.stroke(); ctx.restore();
+    }
+    ctx.strokeStyle = "#c8ecff"; ctx.lineWidth = 2; ctx.shadowColor = "#7fd0ff"; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.moveTo(16, 0); ctx.lineTo(-11, 9); ctx.lineTo(-6, 0); ctx.lineTo(-11, -9); ctx.closePath(); ctx.stroke();
+    ctx.restore();
+  });
+}
+function drawWaveBanner(){
+  if(waveBannerTimer <= 0) return;
+  const a = Math.min(1, waveBannerTimer / 1.6);
+  ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = "#eaf6ff";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = "700 46px 'Chakra Petch', system-ui";
+  ctx.shadowColor = "#43e0ff"; ctx.shadowBlur = 16;
+  ctx.fillText(waveBannerText, W/2, H/2); ctx.restore();
+}
+function render(){
+  ctx.save();
+  if(shakeTime > 0){ const m = shakeMag * (shakeTime / shakeDur); ctx.translate((Math.random()-0.5)*m, (Math.random()-0.5)*m); }
+  ctx.fillStyle = "#05060a"; ctx.fillRect(-60, -60, W + 120, H + 120);
+  drawStars(); drawRocks(); drawBullets(); drawParticles(); drawRings();
+  if(state === "playing" || state === "upgrade" || state === "paused") drawShip();
+  drawWaveBanner();
+  ctx.restore();
+}
+
+/* ---------- Flow ---------- */
+function buildOffers(){
+  const pool = UPGRADES.filter(u => up[u.key] < u.max).map(u => Object.assign({}, u));
+  shuffle(pool);
+  offered = pool.slice(0, 3);
+  while(offered.length < 3) offered.push({ fallback:true, name:"Salvage", desc:"Collect a bonus of 3000 points.", key:"_pts", max:99 });
+}
+function startWave(){
+  bullets = [];
+  spawnWave();
+  invuln = Math.max(invuln, 1.4);
+  waveBannerText = "WAVE " + wave;
+  waveBannerTimer = 1.6;
+}
+function endWave(){
+  state = "upgrade";
+  buildOffers();
+  setOverlay(upgradeHTML(), true);
+}
+function pickUpgrade(i){
+  if(state !== "upgrade") return;
+  const o = offered[i];
+  if(!o) return;
+  if(o.fallback){ score += 3000; }
+  else {
+    up[o.key]++;
+    if(o.key === "life") lives++;
+    if(o.key === "shield") shieldCharges = shieldMax();
+  }
+  wave++;
+  clearOverlay();
+  state = "playing";
+  startWave();
+  updateHud(); updateLoadout();
+  lastTime = performance.now();
+}
+function startGame(){
+  up = { rapid:0, spread:0, engine:0, gyro:0, velocity:0, pierce:0, phase:0, shield:0, life:0 };
+  score = 0; lives = START_LIVES; wave = 1;
+  bullets = []; particles = []; rings = [];
+  resetShip();
+  fireTimer = 0; teleTimer = 0; shieldCharges = 0; shieldRegen = SHIELD_REGEN; invuln = 0;
+  input.left = input.right = input.thrust = input.fire = false;
+  clearOverlay();
+  state = "playing";
+  startWave();
+  updateHud(); updateLoadout();
+  lastTime = performance.now();
+}
+function gameOver(){ state = "gameover"; setOverlay(gameoverHTML(), true); }
+function togglePause(){
+  if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
+  else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }
+}
+
+/* ---------- Loop ---------- */
+function loop(t){
+  const dt = Math.min((t - lastTime) / 1000, 0.05);
+  lastTime = t;
+  if(state === "playing") update(dt);
+  else if(state === "menu") updateMenu(dt);
+  render();
+  updateStatus();
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Keyboard ---------- */
+document.addEventListener("keydown", e => {
+  if(state === "menu" || state === "gameover"){ if(e.key === "Enter"){ startGame(); e.preventDefault(); } return; }
+  if(state === "upgrade"){
+    if(e.key === "1") pickUpgrade(0);
+    else if(e.key === "2") pickUpgrade(1);
+    else if(e.key === "3") pickUpgrade(2);
+    return;
+  }
+  if(e.key === "p" || e.key === "P" || e.key === "Escape"){ togglePause(); e.preventDefault(); return; }
+  if(state !== "playing") return;
+  switch(e.key){
+    case "ArrowLeft": case "a": case "A": input.left = true; e.preventDefault(); break;
+    case "ArrowRight": case "d": case "D": input.right = true; e.preventDefault(); break;
+    case "ArrowUp": case "w": case "W": input.thrust = true; e.preventDefault(); break;
+    case " ": input.fire = true; e.preventDefault(); break;
+    case "Shift": if(!e.repeat) teleport(); e.preventDefault(); break;
+  }
+}, { passive:false });
+document.addEventListener("keyup", e => {
+  switch(e.key){
+    case "ArrowLeft": case "a": case "A": input.left = false; break;
+    case "ArrowRight": case "d": case "D": input.right = false; break;
+    case "ArrowUp": case "w": case "W": input.thrust = false; break;
+    case " ": input.fire = false; break;
+  }
+});
+
+/* ---------- Touch ---------- */
+function holdBtn(id, on){
+  const el = document.getElementById(id);
+  el.addEventListener("pointerdown", e => { e.preventDefault(); on(true); });
+  el.addEventListener("pointerup", e => { e.preventDefault(); on(false); });
+  el.addEventListener("pointerleave", () => on(false));
+  el.addEventListener("pointercancel", () => on(false));
+}
+holdBtn("t-left", v => input.left = v);
+holdBtn("t-right", v => input.right = v);
+holdBtn("t-thrust", v => input.thrust = v);
+holdBtn("t-fire", v => input.fire = v);
+document.getElementById("t-tele").addEventListener("pointerdown", e => { e.preventDefault(); teleport(); });
+
+/* ---------- Init ---------- */
+function makeStars(){
+  stars = [];
+  for(let i = 0; i < 90; i++) stars.push({ x:Math.random()*W, y:Math.random()*H, a:0.15 + Math.random()*0.5, s:Math.random() < 0.85 ? 1 : 2 });
+}
+function init(){
+  ctx = setupCanvas(spaceEl, W, H);
+  makeStars();
+  resetShip();
+  rocks = [];
+  for(let i = 0; i < 7; i++) rocks.push(makeRock(Math.random()*W, Math.random()*H, i % 3));
+  updateHud(); updateLoadout(); updateStatus();
+  showMenu();
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+init();
+</script>
+</body>
+</html>
