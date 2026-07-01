@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade | JoshWritingSamples</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/dashboard.css">
+    <style>
+        /* Arcade page — small, page-specific tweaks on top of the shared styles. */
+        .arcade-body { background: var(--parchment); min-height: 100vh; }
+        .arcade-shell { max-width: 1000px; margin: 0 auto; padding: 28px 20px 60px; }
+        .arcade-top {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; flex-wrap: wrap; margin-bottom: 6px;
+        }
+        .arcade-back {
+            font-size: 0.85rem; color: var(--moss); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .arcade-back:hover { color: var(--forest); text-decoration: underline; }
+        .arcade-title {
+            font-family: 'DM Serif Display', serif; color: var(--forest);
+            font-size: 2rem; line-height: 1.1; margin: 8px 0 4px;
+        }
+        .arcade-desc { color: var(--slate); font-size: 0.95rem; margin-bottom: 26px; max-width: 640px; }
+        .game-card { display: flex; flex-direction: column; }
+        .game-card-emoji { font-size: 1.15rem; margin-right: 2px; }
+        .game-card .agent-card-desc { flex: 1; }
+        .game-launch { align-self: flex-start; text-decoration: none; margin-top: 4px; }
+        .arcade-empty { color: var(--sage); font-size: 0.95rem; }
+        @media (max-width: 600px) {
+            .arcade-title { font-size: 1.6rem; }
+            .arcade-shell { padding: 20px 14px 48px; }
+        }
+    </style>
+</head>
+<body class="arcade-body">
+
+<!--
+  Arcade page. Lists every game registered in /games.js and launches it.
+  This page is gated by the same UI-only session flag as the dashboard
+  (see login.html). It is NOT real authentication.
+-->
+
+<div class="arcade-shell">
+
+    <div class="arcade-top">
+        <a class="arcade-back" href="/dashboard.html">&larr; Back to dashboard</a>
+    </div>
+
+    <h1 class="arcade-title">🕹 Arcade</h1>
+    <p class="arcade-desc">
+        Browser games in the <code>/games</code> folder. Click any card to play.
+        To add a game, drop it in <code>/games</code> and register it in <code>games.js</code>.
+    </p>
+
+    <!-- Populated at load from window.DASHBOARD_GAMES (see /games.js) -->
+    <div class="agent-overview-grid" id="arcadeGrid"></div>
+    <p class="arcade-empty" id="arcadeEmpty" style="display:none;">
+        No games registered yet. Add one to <code>games.js</code> to see it here.
+    </p>
+
+</div>
+
+<!-- Games registry — edit this file to add/remove games. -->
+<script src="/games.js"></script>
+<script>
+// ── Auth gate — same UI-only session flag as the dashboard ──
+(function () {
+    if (sessionStorage.getItem('hls-dashboard') !== '1') {
+        window.location.href = '/login.html';
+    }
+})();
+
+// ── Render the game cards from the registry ─────────────────
+(function () {
+    var grid  = document.getElementById('arcadeGrid');
+    var empty = document.getElementById('arcadeEmpty');
+    var games = window.DASHBOARD_GAMES || [];
+
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+        });
+    }
+
+    if (!games.length) { empty.style.display = 'block'; return; }
+
+    games.forEach(function (g) {
+        if (!g || !g.path) return;
+        var card = document.createElement('div');
+        card.className = 'agent-card game-card';
+
+        var emoji = g.emoji ? '<span class="game-card-emoji">' + esc(g.emoji) + '</span> ' : '';
+        var badge = g.badge ? '<span class="agent-badge badge-browser">' + esc(g.badge) + '</span>' : '';
+        var desc  = g.description ? '<p class="agent-card-desc">' + esc(g.description) + '</p>' : '';
+
+        card.innerHTML =
+            '<div class="agent-card-top">' +
+                '<div class="agent-card-name">' + emoji + esc(g.title || 'Untitled game') + '</div>' +
+                badge +
+            '</div>' +
+            desc +
+            '<a class="btn btn-primary game-launch" href="' + esc(g.path) + '" style="font-size:0.82rem;">▶ Play</a>';
+
+        // Clicking anywhere on the card launches the game (the button handles its own click).
+        card.addEventListener('click', function (e) {
+            if (e.target.closest('.game-launch')) return;
+            window.location.href = g.path;
+        });
+
+        grid.appendChild(card);
+    });
+})();
+</script>
+
+</body>
+</html>

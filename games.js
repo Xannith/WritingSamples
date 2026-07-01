@@ -1,30 +1,32 @@
 // ============================================================
-//  GAMES REGISTRY
+//  GAMES REGISTRY  (Arcade)
 //  ------------------------------------------------------------
-//  This is the single place you edit to add a new browser game
-//  to the dashboard's Games section. It is a plain array — no
-//  build step, no backend, no framework.
+//  Single source of truth for the games shown in the Arcade.
+//  Plain array — no build step, no backend, no framework.
 //
-//  A static site (GitHub Pages / custom domain) cannot list the
-//  contents of the /Games folder from the browser, so games are
-//  registered here manually. The dashboard reads this array and
-//  renders a card for each game automatically.
+//  A static site (GitHub Pages / custom domain) can't list the
+//  contents of the /games folder from the browser, so games are
+//  registered here manually. Both the Arcade page (/games/) and
+//  the dashboard read this array and render a card per game.
+//
+//  ── FOLDER RULE ────────────────────────────────────────────
+//  Everything lives under the lowercase  /games  folder.
+//  Never use an uppercase "Games" path.
 //
 //  ── HOW TO ADD A NEW GAME ──────────────────────────────────
-//  1. Put your game in its own folder inside /Games, e.g.
-//         Games/my-cool-game/index.html
-//     (Anything the folder needs — js, css, images — lives
-//      alongside that index.html.)
-//  2. Add one object to the GAMES array below. Copy the
-//     template comment at the bottom of the array.
-//  3. Save. That's it — the card shows up on the dashboard.
+//  1. Put your game inside /games. Two supported layouts:
+//       • Single file:   games/my-game.html
+//       • Own folder:    games/my-game/index.html   (launches index.html)
+//  2. Add one object to the GAMES array below (copy the template).
+//  3. Save. The card appears in the Arcade automatically.
+//
+//  Paths are ROOT-RELATIVE (start with "/games/") so they resolve
+//  correctly from the dashboard, the arcade page, or anywhere.
 //
 //  Fields:
 //    title       (required)  Name shown on the card.
-//    path        (required)  Relative path to the game's launch
-//                            page. If a game ships its own
-//                            index.html, point at the folder OR
-//                            the index.html directly.
+//    path        (required)  Root-relative path to the launch page,
+//                            e.g. "/games/my-game/index.html".
 //    description (optional)  One or two sentences under the title.
 //    badge       (optional)  Small tag, e.g. "Arcade", "Puzzle".
 //    emoji       (optional)  Little icon shown on the card.
@@ -34,24 +36,21 @@ window.DASHBOARD_GAMES = [
 
     {
         title: "Color Catch",
-        path: "Games/color-catch/index.html",
+        path: "/games/color-catch/index.html",
         description: "Fast little arcade game — move the paddle and catch only the tiles that match the target color. Miss one and it's game over. Works with mouse, touch, or arrow keys.",
         badge: "Arcade",
         emoji: "🎯"
     },
-
-    // These two were uploaded to the lowercase /games folder (flat HTML files).
-    // Registered here so they show on the dashboard. Edit the descriptions anytime.
     {
         title: "Blocks",
-        path: "games/blocks.html",
+        path: "/games/blocks.html",
         description: "Block-stacking arcade game.",
         badge: "Arcade",
         emoji: "🟦"
     },
     {
         title: "Grid Riders",
-        path: "games/grid-riders.html",
+        path: "/games/grid-riders.html",
         description: "Grid-based action game.",
         badge: "Arcade",
         emoji: "🏁"
@@ -62,7 +61,7 @@ window.DASHBOARD_GAMES = [
     //
     // {
     //     title: "My Cool Game",
-    //     path: "Games/my-cool-game/index.html",
+    //     path: "/games/my-cool-game/index.html",   // or "/games/my-cool-game.html"
     //     description: "Short description of what the game is.",
     //     badge: "Puzzle",
     //     emoji: "🧩"

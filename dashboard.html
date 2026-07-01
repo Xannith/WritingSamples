@@ -210,6 +210,7 @@
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button class="btn btn-primary" onclick="navigate('launch')" style="font-size:0.85rem;">⚡ Launch Instructions (Kelex)</button>
                 <button class="btn btn-secondary" onclick="navigate('credentials')" style="font-size:0.85rem;">🔑 Credentials Guide</button>
+                <a href="/games/index.html" class="btn btn-secondary" style="font-size:0.85rem;">🕹 Open Arcade &rarr;</a>
                 <a href="https://github.com/Xannith/ai-agents" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:0.85rem;">View ai-agents repo &rarr;</a>
             </div>
 
@@ -1082,11 +1083,16 @@
         <section id="section-games" class="dash-section">
 
             <p class="dash-section-eyebrow">Games</p>
-            <h1 class="dash-section-title">Games</h1>
+            <h1 class="dash-section-title">Arcade</h1>
             <p class="dash-section-desc">
-                Browser games built for this site. Click any card to launch it in a new tab.
-                To add a new game, drop it in the <code>/Games</code> folder and register it in
-                <code>games.js</code> — the grid below updates automatically.
+                Browser games in the <code>/games</code> folder. Open the full Arcade page, or launch
+                any game directly from the cards below. To add a new game, drop it in <code>/games</code>
+                and register it in <code>games.js</code> — the Arcade updates automatically.
+            </p>
+
+            <!-- Primary, can't-fail entry point to the dedicated Arcade page. -->
+            <p style="margin-bottom:26px;">
+                <a class="btn btn-primary" href="/games/index.html" style="font-size:0.9rem;">🕹 Open the Arcade &rarr;</a>
             </p>
 
             <!-- Populated at load from window.DASHBOARD_GAMES (see /games.js) -->
@@ -1160,7 +1166,7 @@ var SECTION_TITLES = {
     'gap-scout':       'Content Gap Scout',
     'metadata-gen':    'Metadata Generator',
     'prompt-builder':  'Prompt Builder',
-    'games':           'Games',
+    'games':           'Arcade',
     'credentials':     'Credentials & Settings',
     'launch':          'Launch Instructions',
     'notes':           'Notes',
