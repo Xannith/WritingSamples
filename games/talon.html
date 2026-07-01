@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>TALON</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0812;
+    --panel:rgba(255,255,255,0.04);
+    --panel-line:rgba(255,255,255,0.09);
+    --text:#f3e9d6;
+    --muted:#9a8f7a;
+    --accent:#ffb43c;
+    --display:"Chakra Petch", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(1100px 620px at 50% 120%, #2a1013 0%, rgba(42,16,19,0) 55%),
+      var(--bg);
+    color:var(--text);
+    min-height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:12px;padding:16px;
+    -webkit-user-select:none;user-select:none;
+    touch-action:manipulation;overflow-x:hidden;
+  }
+  header{text-align:center;}
+  header h1{
+    font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:12px;
+    color:var(--text);text-shadow:0 0 26px rgba(255,140,50,0.35);
+  }
+  header p{
+    font-family:var(--display);font-weight:500;font-size:11px;letter-spacing:3px;
+    color:var(--muted);margin-top:4px;text-transform:uppercase;
+  }
+  .hud{
+    display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;
+    font-family:var(--display);
+  }
+  .hud .item{display:flex;align-items:baseline;gap:7px;}
+  .hud .item span{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .hud .item b{font-size:22px;font-variant-numeric:tabular-nums;color:var(--text);}
+  .arena-wrap{
+    position:relative;border-radius:14px;padding:8px;background:var(--panel);
+    border:1px solid var(--panel-line);
+    box-shadow:0 0 70px rgba(255,140,50,0.06), 0 24px 70px rgba(0,0,0,0.6);
+  }
+  #stage{
+    display:block;width:min(840px,94vw);height:auto;aspect-ratio:840 / 600;
+    border-radius:8px;background:#0a0812;
+  }
+  .overlay{
+    position:absolute;inset:8px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .overlay.dim{background:rgba(10,8,18,0.9);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);}
+  .ov-card{padding:22px;max-width:94%;}
+  .ov-card h2{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:3px;margin-bottom:8px;}
+  .ov-card > p{font-size:13px;color:#c3b79f;line-height:1.6;margin-bottom:6px;}
+  .ov-score{font-family:var(--display);font-size:15px;color:var(--muted);letter-spacing:2px;margin:10px 0;text-transform:uppercase;font-variant-numeric:tabular-nums;}
+  .controls-list{font-size:12px;color:#b0a488;line-height:2;margin-top:8px;max-width:440px;}
+  .controls-list kbd{
+    font-family:var(--display);font-size:11px;background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);border-radius:5px;padding:1px 6px;color:#f0e8d6;
+  }
+  .btn{
+    font-family:var(--display);font-weight:700;letter-spacing:1px;margin-top:16px;
+    padding:11px 24px;border:none;border-radius:10px;
+    background:linear-gradient(180deg,#ffc255,#f0922c);color:#3a1e05;font-size:14px;cursor:pointer;
+    transition:transform .08s ease, filter .15s ease;
+  }
+  .btn:hover{filter:brightness(1.07);}
+  .btn:active{transform:translateY(1px);}
+  .touch{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;width:min(560px,96vw);}
+  .touch .grp{display:flex;gap:8px;}
+  .touch button{
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:1px;
+    padding:16px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.11);
+    background:rgba(255,255,255,0.05);color:#f0e8d6;text-transform:uppercase;min-width:60px;
+  }
+  .touch button:active{background:rgba(255,180,60,0.22);}
+  .touch .flap{min-width:150px;background:rgba(255,180,60,0.14);}
+  .help{font-size:12px;color:#7a715f;text-align:center;max-width:560px;line-height:1.8;}
+  @media (min-width:820px){ .touch{display:none;} }
+  @media (max-width:819px){ .help{display:none;} }
+  @media (prefers-reduced-motion:no-preference){
+    header,.hud,.arena-wrap{animation:rise .5s ease both;}
+    @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>TALON</h1>
+    <p>A Joust-style brawl: flap, lance, and gather the eggs</p>
+  </header>
+
+  <div class="hud">
+    <div class="item"><span>Score</span><b id="hud-score">0</b></div>
+    <div class="item"><span>Wave</span><b id="hud-wave">1</b></div>
+    <div class="item"><span>Lives</span><b id="hud-lives">3</b></div>
+  </div>
+
+  <div class="arena-wrap">
+    <canvas id="stage"></canvas>
+    <div class="overlay" id="overlay"></div>
+  </div>
+
+  <div class="touch">
+    <div class="grp">
+      <button id="t-left">&#9668;</button>
+      <button id="t-right">&#9658;</button>
+    </div>
+    <button id="t-flap" class="flap">Flap</button>
+  </div>
+
+  <div class="help">
+    Move with <b>Left / Right</b> or <b>A / D</b>, and tap <b>Space</b> or <b>Up</b> to flap. Ride higher than your foe to unseat them, then grab the egg before it hatches. Watch the lava. <b>P</b> pauses.
+  </div>
+
+<script>
+"use strict";
+
+/* ---------- Constants ---------- */
+const W = 840, H = 600;
+const LAVA_SURFACE = 574, FOOT = 16;
+const GRAVITY = 950, MAX_FALL = 640, FLAP_IMPULSE = 300, MAX_RISE = 430;
+const ACCEL_GROUND = 900, ACCEL_AIR = 780, MAX_VX = 300, GROUND_FRICTION = 5.5, AIR_DRAG = 0.5;
+const EQUAL_BAND = 12;
+const HATCH_TIME = 7;
+const EXTRA_EVERY = 20000;
+const CAMP_LIMIT = 22;
+
+const PLATFORMS = [
+  { x:70,  y:560, w:330, h:40 },   // left ground   70..400
+  { x:440, y:560, w:330, h:40 },   // right ground  440..770
+  { x:150, y:432, w:170, h:16 },
+  { x:520, y:432, w:170, h:16 },
+  { x:335, y:300, w:170, h:16 },
+  { x:40,  y:214, w:130, h:16 },
+  { x:670, y:214, w:130, h:16 }
+];
+
+const TIERS = {
+  bounder:{ points:500,  flapPow:250, speed:210, accelScale:0.70, aggro:0.20 },
+  hunter: { points:750,  flapPow:275, speed:255, accelScale:0.95, aggro:0.60 },
+  lord:   { points:1000, flapPow:300, speed:300, accelScale:1.15, aggro:0.95 }
+};
+
+const PALETTES = {
+  player: { body:"#efe2c4", belly:"#fff7e6", outline:"#6f5326", wing:"#e2cfa4", rider:"#ffd23f", lance:"#fff3c4", beak:"#ff9a3c", legs:"#c69a4e", plume:"#ff5a4c" },
+  bounder:{ body:"#c9433a", belly:"#e07068", outline:"#4e1510", wing:"#a92f28", rider:"#e88b83", lance:"#ffd9d4", beak:"#ffcf3c", legs:"#6e211b", plume:"#ffd23f" },
+  hunter: { body:"#9aa3ad", belly:"#c4ccd4", outline:"#363c44", wing:"#7f8792", rider:"#d6dde4", lance:"#ffffff", beak:"#ffcf3c", legs:"#464d54", plume:"#43e0ff" },
+  lord:   { body:"#4f7ed0", belly:"#7ea3e0", outline:"#182a54", wing:"#3f68b4", rider:"#a9c4f0", lance:"#e6efff", beak:"#ffcf3c", legs:"#243a6c", plume:"#b6ff3c" },
+  ptero:  { body:"#8fce6b", belly:"#b8e595", outline:"#2f4d24", wing:"#79b657", beak:"#ff4d3c", legs:"#3a5a2c" }
+};
+
+/* ---------- State ---------- */
+let state = "menu";
+let score = 0, lives = 3, wave = 1, combo = 0, nextExtra = EXTRA_EVERY;
+let waveTime = 0;
+let player = null;
+let enemies = [], eggs = [], floats = [], embers = [];
+let ptero = null;
+let troll = { active:false, x:0, y:LAVA_SURFACE, grab:0 };
+let waveBannerText = "", waveBannerT = 0;
+let shakeMag = 0, shakeTime = 0, shakeDur = 0.001;
+let gameTime = 0, lastTime = 0;
+const input = { left:false, right:false };
+
+/* ---------- Canvas ---------- */
+const stageEl = document.getElementById("stage");
+let ctx;
+function setupCanvas(cv, w, h){
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const c = cv.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return c;
+}
+
+/* ---------- DOM ---------- */
+const overlay = document.getElementById("overlay");
+const elScore = document.getElementById("hud-score");
+const elWave = document.getElementById("hud-wave");
+const elLives = document.getElementById("hud-lives");
+
+/* ---------- Helpers ---------- */
+function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
+function wrapdx(from, to){ let d = to - from; if(d > W/2) d -= W; if(d < -W/2) d += W; return d; }
+function overGround(x){ return (x >= 70 && x <= 400) || (x >= 440 && x <= 770); }
+function nearestGroundCenter(x){
+  const cs = [235, 605]; let best = cs[0], bd = 1e9;
+  for(const c of cs){ const d = Math.abs(wrapdx(x, c)); if(d < bd){ bd = d; best = c; } }
+  return best;
+}
+function overlap(a, b){ const dx = wrapdx(a.x, b.x), dy = a.y - b.y; return Math.hypot(dx, dy) < (a.r + b.r); }
+function platformUnderPoint(x, feetY){
+  let best = null;
+  for(const p of PLATFORMS){ if(x > p.x - 2 && x < p.x + p.w + 2 && Math.abs(feetY - p.y) < 8) best = p; }
+  return best;
+}
+function roundRectPath(x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function forWrap(x, y, r, fn){
+  const xs = [x], ys = [y];
+  if(x < r) xs.push(x + W); if(x > W - r) xs.push(x - W);
+  ys.length; // y range not wrapped (arena is bounded vertically)
+  for(const X of xs) fn(X, y);
+}
+
+/* ---------- Overlay ---------- */
+function setOverlay(html, dim){ overlay.innerHTML = html; overlay.style.display = "flex"; overlay.classList.toggle("dim", !!dim); }
+function clearOverlay(){ overlay.style.display = "none"; }
+function menuHTML(){
+  return `<div class="ov-card">
+    <h2>TALON</h2>
+    <p>A Joust-style arcade brawl on flying mounts over a lava cavern.</p>
+    <div class="controls-list">
+      <kbd>&larr;</kbd><kbd>&rarr;</kbd> or <kbd>A</kbd><kbd>D</kbd> move, <kbd>Space</kbd> or <kbd>&uarr;</kbd> flap<br>
+      Fly higher than a foe to unseat them, then collect the egg. <kbd>P</kbd> pauses.
+    </div>
+    <button class="btn" onclick="startGame()">Start (Enter)</button>
+  </div>`;
+}
+function gameoverHTML(){
+  return `<div class="ov-card"><h2>Game Over</h2>
+    <div class="ov-score">Score ${score} &nbsp;&middot;&nbsp; Reached wave ${wave}</div>
+    <button class="btn" onclick="startGame()">Play Again (Enter)</button></div>`;
+}
+function showMenu(){ setOverlay(menuHTML(), true); }
+
+/* ---------- HUD ---------- */
+function updateHud(){ elScore.textContent = score; elWave.textContent = wave; elLives.textContent = Math.max(0, lives); }
+function floatText(x, y, text, color){ floats.push({ x, y, text, color, life:1.1, max:1.1 }); }
+function shake(mag, dur){ shakeMag = mag; shakeTime = dur; shakeDur = dur; }
+function checkExtra(){ while(score >= nextExtra){ lives++; floatText(player.x, player.y - 44, "1UP", "#b6ff3c"); nextExtra += EXTRA_EVERY; updateHud(); } }
+
+/* ---------- Spawning ---------- */
+function makeBird(type, x, y){
+  return { type, x, y, vx:0, vy:0, facing:Math.random() < 0.5 ? -1 : 1,
+    onGround:true, flapT:0, walkPhase:0, flapCd:0, think:0, wanderDir:Math.random() < 0.5 ? -1 : 1,
+    delay:0, spawnFlash:0, invuln:0, r:20, phase:Math.random() * 6, prevFeet:y + FOOT, dead:false };
+}
+function makeEnemy(type, delay){
+  const p = PLATFORMS[Math.floor(Math.random() * PLATFORMS.length)];
+  const x = p.x + 20 + Math.random() * (p.w - 40);
+  const b = makeBird(type, x, p.y - FOOT);
+  b.delay = delay; b.spawnFlash = 0.6;
+  return b;
+}
+function waveSpec(n){
+  const count = Math.min(2 + n, 7);
+  const list = [];
+  for(let i = 0; i < count; i++){
+    const r = Math.random();
+    let tier = "bounder";
+    if(n >= 5) tier = r < 0.40 ? "lord" : r < 0.75 ? "hunter" : "bounder";
+    else if(n >= 3) tier = r < 0.50 ? "hunter" : r < 0.85 ? "bounder" : "lord";
+    else if(n >= 2) tier = r < 0.30 ? "hunter" : "bounder";
+    list.push(tier);
+  }
+  return list;
+}
+function resetPlayer(){
+  player = makeBird("player", 235, 560 - FOOT);
+  player.facing = 1; player.onGround = true; player.invuln = 2.0;
+}
+function startWave(n){
+  combo = 0; waveTime = 0; ptero = null;
+  enemies = [];
+  let delay = 0.2;
+  for(const tier of waveSpec(n)){ enemies.push(makeEnemy(tier, delay)); delay += 0.35; }
+  waveBannerText = "WAVE " + n; waveBannerT = 1.6;
+  player.invuln = Math.max(player.invuln, 1.5);
+}
+function spawnPtero(){
+  const fromLeft = Math.random() < 0.5;
+  ptero = { type:"ptero", x:fromLeft ? -20 : W + 20, y:clamp(player.y + (Math.random() - 0.5) * 80, 60, H - 90),
+    vx:fromLeft ? 200 : -200, vy:0, facing:fromLeft ? 1 : -1, r:22, bob:Math.random() * 6, dead:false };
+  floatText(W / 2, 130, "PTERODACTYL", "#ff6a5a");
+}
+
+/* ---------- Physics ---------- */
+function flap(b, power){
+  b.vy -= power; if(b.vy < -MAX_RISE) b.vy = -MAX_RISE;
+  b.onGround = false; b.flapT = 0.22;
+  if(b === player && troll.grab > 0) troll.grab = Math.max(0, troll.grab - 0.35);
+}
+function collideGround(b){
+  const feetAfter = b.y + FOOT;
+  if(b.onGround){
+    const p = platformUnderPoint(b.x, b.y + FOOT);
+    if(p && Math.abs((b.y + FOOT) - p.y) < 6){ b.y = p.y - FOOT; b.vy = 0; }
+    else b.onGround = false;
+    return;
+  }
+  if(b.vy >= 0){
+    for(const p of PLATFORMS){
+      if(b.x > p.x - 2 && b.x < p.x + p.w + 2 && b.prevFeet <= p.y + 2 && feetAfter >= p.y){
+        b.y = p.y - FOOT; b.vy = 0; b.onGround = true; return;
+      }
+    }
+  }
+}
+function checkLava(b){
+  const feet = b.y + FOOT;
+  if(feet >= LAVA_SURFACE && !b.onGround && !overGround(b.x)){
+    lavaSplash(b.x);
+    if(b === player){ if(player.invuln > 0) return; playerHit(); }
+    else b.dead = true;
+  }
+}
+function physics(b, dt){
+  if(!b.onGround){ b.vy += GRAVITY * dt; if(b.vy > MAX_FALL) b.vy = MAX_FALL; }
+  b.prevFeet = b.y + FOOT;
+  b.x += b.vx * dt; b.y += b.vy * dt;
+  if(b.x < 0) b.x += W; else if(b.x > W) b.x -= W;
+  collideGround(b);
+  checkLava(b);
+  if(b.flapT > 0) b.flapT -= dt;
+  if(b.onGround && Math.abs(b.vx) > 10) b.walkPhase += dt * Math.min(Math.abs(b.vx), 300) * 0.03;
+}
+function lavaSplash(x){ for(let i = 0; i < 8; i++) embers.push({ x:x + (Math.random() - 0.5) * 24, y:LAVA_SURFACE, vy:-120 - Math.random() * 120, vx:(Math.random() - 0.5) * 120, life:0.5 + Math.random() * 0.4, max:0.9, size:2 + Math.random() * 2 }); }
+
+/* ---------- Control / AI ---------- */
+function control(dt){
+  const onG = player.onGround;
+  const acc = onG ? ACCEL_GROUND : ACCEL_AIR;
+  let dir = 0;
+  if(input.left && !input.right) dir = -1; else if(input.right && !input.left) dir = 1;
+  if(dir !== 0){
+    if(player.vx !== 0 && Math.sign(player.vx) !== dir) player.vx += dir * acc * 1.8 * dt;
+    else player.vx += dir * acc * dt;
+    player.facing = dir;
+  } else {
+    const f = onG ? GROUND_FRICTION : AIR_DRAG;
+    player.vx -= player.vx * f * dt;
+  }
+  player.vx = clamp(player.vx, -MAX_VX, MAX_VX);
+}
+function enemyAI(b, dt){
+  const tier = TIERS[b.type];
+  b.think -= dt; b.flapCd -= dt;
+  let tx;
+  if(b.type === "bounder"){
+    if(b.think <= 0){ b.wanderDir = Math.random() < 0.5 ? -1 : 1; b.think = 1 + Math.random() * 2; }
+    tx = b.x + b.wanderDir * 120;
+  } else {
+    tx = player.x;
+  }
+  let dx = wrapdx(b.x, tx);
+  const dir = Math.sign(dx) || 1;
+  if(Math.abs(dx) > 6){ b.vx += dir * ACCEL_AIR * tier.accelScale * dt; b.facing = dir; }
+  b.vx -= b.vx * 0.4 * dt;
+  b.vx = clamp(b.vx, -tier.speed, tier.speed);
+
+  const feet = b.y + FOOT;
+  let wantFlap = false;
+  if(feet > 508){
+    wantFlap = true;
+    const gdx = wrapdx(b.x, nearestGroundCenter(b.x));
+    b.vx += Math.sign(gdx) * ACCEL_AIR * dt * 0.5;
+  }
+  const targetY = player.y - 34 - tier.aggro * 22;
+  if(b.y > targetY && Math.random() < (0.55 + tier.aggro) * dt * 12) wantFlap = true;
+  if(Math.random() < 0.4 * dt) wantFlap = true;
+  if(wantFlap && b.flapCd <= 0){ flap(b, tier.flapPow); b.flapCd = 0.18 + Math.random() * 0.12; }
+}
+function pteroAI(p, dt){
+  const dx = wrapdx(p.x, player.x);
+  const dir = Math.sign(dx) || 1; p.facing = dir;
+  p.vx += dir * 400 * dt; p.vx = clamp(p.vx, -260, 260);
+  p.bob += dt * 6;
+  const targetY = player.y + Math.sin(p.bob) * 30;
+  p.vy += Math.sign(targetY - p.y) * 620 * dt; p.vy = clamp(p.vy, -260, 260);
+  p.x += p.vx * dt; p.y += p.vy * dt;
+  if(p.x < 0) p.x += W; else if(p.x > W) p.x -= W;
+  p.y = clamp(p.y, 50, H - 90);
+}
+function trollUpdate(dt){
+  const feet = player.y + FOOT;
+  const overGap = !overGround(player.x);
+  if(player.invuln <= 0 && overGap && !player.onGround && feet > LAVA_SURFACE - 70){
+    troll.active = true; troll.x = player.x;
+    troll.grab = Math.min(1, troll.grab + dt * 0.8);
+    player.vy += 700 * dt * troll.grab;
+  } else {
+    troll.grab = Math.max(0, troll.grab - dt * 1.5);
+    if(troll.grab <= 0) troll.active = false;
+  }
+  troll.y = LAVA_SURFACE - troll.grab * 120;
+}
+
+/* ---------- Combat ---------- */
+function bounce(a, b){
+  const dir = Math.sign(wrapdx(b.x, a.x)) || 1;
+  a.vx = dir * Math.max(150, Math.abs(a.vx)); a.vx = clamp(a.vx, -MAX_VX, MAX_VX);
+  if(b !== player) b.vx = -dir * 150;
+  a.vy -= 40;
+}
+function playerBounceUp(){ player.vy -= 120; }
+function defeatEnemy(e){
+  score += TIERS[e.type].points; updateHud(); checkExtra();
+  floatText(e.x, e.y - 24, "+" + TIERS[e.type].points, "#ffe08a");
+  eggs.push({ x:e.x, y:e.y, vx:(Math.random() - 0.5) * 140, vy:-190, r:12, onGround:false, hatchT:HATCH_TIME, tier:e.type, prevFeet:e.y + 10, phase:Math.random() * 6, dead:false });
+  e.dead = true; shake(7, 0.25);
+}
+function resolveJoust(e){
+  if(e.invuln > 0 || e.spawnFlash > 0 || e.delay > 0) return;
+  const diff = player.y - e.y;
+  if(Math.abs(diff) < EQUAL_BAND){ bounce(player, e); return; }
+  if(player.y < e.y){ defeatEnemy(e); playerBounceUp(); }
+  else { if(player.invuln > 0) bounce(player, e); else playerHit(); }
+}
+function pteroCollision(p){
+  const toP = Math.sign(wrapdx(player.x, p.x)) || 1;
+  const facingToward = player.facing === toP;
+  const aligned = Math.abs(player.y - p.y) < 16;
+  const speedOK = Math.abs(player.vx) > 60;
+  if(facingToward && aligned && speedOK){
+    p.dead = true; score += 1000; updateHud(); checkExtra();
+    floatText(p.x, p.y - 24, "+1000", "#ffd23f"); shake(10, 0.35); playerBounceUp();
+  } else { if(player.invuln > 0) return; playerHit(); }
+}
+function collectEgg(egg){
+  combo++;
+  const pts = Math.min(1000, 250 * combo);
+  score += pts; updateHud(); checkExtra();
+  floatText(egg.x, egg.y - 16, "+" + pts, "#b6ff3c");
+  egg.dead = true;
+}
+function playerHit(){
+  if(player.invuln > 0) return;
+  lives--; updateHud();
+  floatText(player.x, player.y - 30, "OUCH", "#ff6a5a"); shake(14, 0.5);
+  for(let i = 0; i < 12; i++) embers.push({ x:player.x, y:player.y, vx:(Math.random() - 0.5) * 220, vy:-120 - Math.random() * 160, life:0.5 + Math.random() * 0.4, max:0.9, size:2 + Math.random() * 2 });
+  if(lives <= 0){ gameOver(); return; }
+  const p = PLATFORMS[4];
+  player.x = p.x + p.w / 2; player.y = p.y - FOOT; player.vx = 0; player.vy = 0;
+  player.onGround = true; player.facing = 1; player.invuln = 2.0;
+}
+function combat(){
+  for(const e of enemies){ if(e.delay > 0 || e.spawnFlash > 0) continue; if(overlap(player, e)) resolveJoust(e); }
+  if(ptero && overlap(player, ptero)) pteroCollision(ptero);
+  for(const egg of eggs){ if(!egg.dead && overlap(player, egg)) collectEgg(egg); }
+}
+
+/* ---------- Eggs ---------- */
+function hatchEgg(egg, queue){
+  egg.dead = true;
+  const b = makeBird(egg.tier, egg.x, egg.y);
+  b.onGround = egg.onGround; b.spawnFlash = 0.5; b.invuln = 1.0; b.vy = 0;
+  queue.push(b);
+}
+function eggPhysics(egg, dt, queue){
+  if(egg.onGround){
+    const p = platformUnderPoint(egg.x, egg.y + 10);
+    if(!p){ egg.onGround = false; }
+    else {
+      egg.y = p.y - 10; egg.vx -= egg.vx * 4 * dt; egg.x += egg.vx * dt;
+      if(egg.x < 0) egg.x += W; else if(egg.x > W) egg.x -= W;
+      egg.hatchT -= dt;
+      if(egg.hatchT <= 0) hatchEgg(egg, queue);
+      return;
+    }
+  }
+  egg.vy += GRAVITY * dt; if(egg.vy > MAX_FALL) egg.vy = MAX_FALL;
+  egg.prevFeet = egg.y + 10;
+  egg.x += egg.vx * dt; egg.y += egg.vy * dt;
+  if(egg.x < 0) egg.x += W; else if(egg.x > W) egg.x -= W;
+  if(egg.vy >= 0){
+    for(const p of PLATFORMS){
+      if(egg.x > p.x - 2 && egg.x < p.x + p.w + 2 && egg.prevFeet <= p.y + 2 && (egg.y + 10) >= p.y){
+        egg.y = p.y - 10;
+        if(egg.vy > 140){ egg.vy = -egg.vy * 0.35; egg.vx *= 0.7; }
+        else { egg.vy = 0; egg.onGround = true; egg.vx *= 0.6; }
+        break;
+      }
+    }
+  }
+  if((egg.y + 10) >= LAVA_SURFACE && !overGround(egg.x)){ lavaSplash(egg.x); egg.dead = true; return; }
+  egg.hatchT -= dt;
+  if(egg.hatchT <= 0) hatchEgg(egg, queue);
+}
+
+/* ---------- Update ---------- */
+function maybeSpawnPtero(){
+  if(ptero) return;
+  if((enemies.length + eggs.length) > 0 && waveTime > CAMP_LIMIT) spawnPtero();
+}
+function update(dt){
+  waveTime += dt;
+  control(dt);
+  physics(player, dt);
+  trollUpdate(dt);
+
+  for(const e of enemies){
+    if(e.delay > 0){ e.delay -= dt; continue; }
+    if(e.spawnFlash > 0){ e.spawnFlash -= dt; continue; }
+    if(e.invuln > 0) e.invuln -= dt;
+    enemyAI(e, dt);
+    physics(e, dt);
+  }
+  if(ptero) pteroAI(ptero, dt);
+
+  const hatchQueue = [];
+  for(const egg of eggs) eggPhysics(egg, dt, hatchQueue);
+
+  combat();
+  maybeSpawnPtero();
+
+  for(const f of floats){ f.y -= 30 * dt; f.life -= dt; }
+  floats = floats.filter(f => f.life > 0);
+
+  enemies = enemies.filter(e => !e.dead);
+  for(const q of hatchQueue) enemies.push(q);
+  eggs = eggs.filter(e => !e.dead);
+  if(ptero && ptero.dead) ptero = null;
+
+  if(waveBannerT > 0) waveBannerT -= dt;
+  if(shakeTime > 0) shakeTime -= dt;
+
+  if(enemies.length === 0 && eggs.length === 0){ ptero = null; wave++; startWave(wave); }
+}
+function updateEmbers(dt){
+  if(Math.random() < dt * 22){
+    const gx = [35, 420, 805][Math.floor(Math.random() * 3)];
+    embers.push({ x:gx + (Math.random() - 0.5) * 44, y:LAVA_SURFACE, vx:(Math.random() - 0.5) * 20, vy:-30 - Math.random() * 44, life:1 + Math.random(), max:2, size:Math.random() < 0.5 ? 2 : 3 });
+  }
+  for(const e of embers){ e.x += (e.vx || 0) * dt; e.y += e.vy * dt; e.life -= dt; }
+  embers = embers.filter(e => e.life > 0);
+}
+
+/* ---------- Rendering ---------- */
+function drawBackground(){
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#0a0812"); g.addColorStop(0.7, "#160e16"); g.addColorStop(1, "#2a1014");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // lava
+  ctx.save();
+  const lg = ctx.createLinearGradient(0, LAVA_SURFACE - 8, 0, H);
+  lg.addColorStop(0, "#ffd36a"); lg.addColorStop(0.25, "#ff8a2c"); lg.addColorStop(1, "#c02a10");
+  ctx.fillStyle = lg;
+  ctx.beginPath(); ctx.moveTo(0, H);
+  for(let x = 0; x <= W; x += 16){
+    const y = LAVA_SURFACE + Math.sin(x * 0.05 + gameTime * 2) * 3 + Math.sin(x * 0.13 + gameTime * 3) * 2;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+  ctx.globalCompositeOperation = "lighter";
+  ctx.fillStyle = "rgba(255,120,40,0.10)"; ctx.fillRect(0, LAVA_SURFACE - 34, W, 60);
+  ctx.restore();
+
+  // embers
+  for(const e of embers){ ctx.globalAlpha = Math.max(0, e.life / e.max); ctx.fillStyle = Math.random() < 0.5 ? "#ffb454" : "#ff7a3c"; ctx.fillRect(e.x, e.y, e.size, e.size); }
+  ctx.globalAlpha = 1;
+
+  // platforms
+  for(const p of PLATFORMS){
+    roundRectPath(p.x, p.y, p.w, p.h, 4);
+    const pg = ctx.createLinearGradient(0, p.y, 0, p.y + p.h);
+    pg.addColorStop(0, "#5a462c"); pg.addColorStop(1, "#3a2c1a");
+    ctx.fillStyle = pg; ctx.fill();
+    ctx.strokeStyle = "#241a10"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#8a6f47"; ctx.fillRect(p.x + 2, p.y, p.w - 4, 4);
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    for(let x = p.x + 10; x < p.x + p.w - 6; x += 22) ctx.fillRect(x, p.y + 8, 2, p.h - 12);
+  }
+}
+function drawRider(pal){
+  ctx.fillStyle = pal.rider; ctx.strokeStyle = pal.outline; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(-4, -8); ctx.lineTo(4, -8); ctx.lineTo(3, -20); ctx.lineTo(-3, -20); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = pal.lance; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(30, -20); ctx.stroke();
+  ctx.fillStyle = pal.lance; ctx.beginPath(); ctx.moveTo(30, -22); ctx.lineTo(37, -20); ctx.lineTo(30, -18); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = pal.rider; ctx.strokeStyle = pal.outline; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, -23, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = pal.outline; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-4, -23); ctx.lineTo(3, -23); ctx.stroke();
+  ctx.strokeStyle = pal.plume || pal.beak; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -28); ctx.quadraticCurveTo(-6, -32, -8, -26); ctx.stroke();
+}
+function drawBirdLocal(b, pal){
+  // tail
+  ctx.fillStyle = pal.wing; ctx.strokeStyle = pal.outline; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(-14, -2); ctx.lineTo(-30, -8); ctx.lineTo(-26, 2); ctx.lineTo(-30, 8); ctx.lineTo(-14, 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // legs
+  ctx.strokeStyle = pal.legs; ctx.lineWidth = 3;
+  const sw = b.onGround ? Math.sin(b.walkPhase) * 4 : -4;
+  ctx.beginPath(); ctx.moveTo(-2, 8); ctx.lineTo(-2 + sw, 20); ctx.moveTo(5, 8); ctx.lineTo(5 - sw, 20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-2 + sw, 20); ctx.lineTo(2 + sw, 20); ctx.moveTo(5 - sw, 20); ctx.lineTo(9 - sw, 20); ctx.stroke();
+  // body
+  ctx.fillStyle = pal.body; ctx.strokeStyle = pal.outline; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.ellipse(0, 2, 18, 12, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = pal.belly || pal.body; ctx.globalAlpha = 0.5;
+  ctx.beginPath(); ctx.ellipse(2, 6, 12, 7, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+  // neck
+  ctx.strokeStyle = pal.body; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(10, -4); ctx.quadraticCurveTo(20, -6, 21, -14); ctx.stroke();
+  // head
+  ctx.strokeStyle = pal.outline; ctx.lineWidth = 2; ctx.fillStyle = pal.body;
+  ctx.beginPath(); ctx.arc(21, -15, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  // beak
+  ctx.fillStyle = pal.beak; ctx.beginPath(); ctx.moveTo(25, -16); ctx.lineTo(33, -14); ctx.lineTo(25, -12); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // eye
+  ctx.fillStyle = "#20140c"; ctx.beginPath(); ctx.arc(22, -16, 1.4, 0, Math.PI * 2); ctx.fill();
+  // wing
+  let ang;
+  if(b.flapT > 0){ const k = b.flapT / 0.22; ang = -1.2 + (1 - k) * 1.6; }
+  else ang = -0.15 + Math.sin(gameTime * 4 + b.phase) * 0.12;
+  ctx.save(); ctx.translate(-2, -6); ctx.rotate(ang);
+  ctx.fillStyle = pal.wing; ctx.strokeStyle = pal.outline; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-22, -3); ctx.lineTo(-16, 8); ctx.lineTo(-4, 6); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  // rider
+  drawRider(pal);
+}
+function drawBird(b){
+  const blink = (b.invuln > 0 && Math.floor(b.invuln * 12) % 2 === 0) || (b.spawnFlash > 0 && Math.floor(b.spawnFlash * 16) % 2 === 0);
+  if(blink) return;
+  const pal = PALETTES[b.type];
+  forWrap(b.x, b.y, 40, (px) => {
+    ctx.save(); ctx.translate(px, b.y); ctx.scale(b.facing || 1, 1);
+    drawBirdLocal(b, pal);
+    ctx.restore();
+  });
+}
+function drawPtero(p){
+  forWrap(p.x, p.y, 44, (px) => {
+    ctx.save(); ctx.translate(px, p.y); ctx.scale(p.facing || 1, 1);
+    const pal = PALETTES.ptero;
+    const wing = Math.sin(gameTime * 10) * 0.5;
+    ctx.fillStyle = pal.wing; ctx.strokeStyle = pal.outline; ctx.lineWidth = 2;
+    ctx.save(); ctx.rotate(-0.2 + wing); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-34, -6); ctx.lineTo(-10, 10); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.rotate(0.2 - wing); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-34, 6); ctx.lineTo(-10, -10); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = pal.body; ctx.beginPath(); ctx.ellipse(0, 0, 16, 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(14, -6, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = pal.beak;
+    ctx.beginPath(); ctx.moveTo(18, -8); ctx.lineTo(34, -9); ctx.lineTo(18, -5); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(18, -3); ctx.lineTo(32, 0); ctx.lineTo(18, -1); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = pal.outline; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(12, -11); ctx.lineTo(4, -18); ctx.stroke();
+    ctx.fillStyle = "#20140c"; ctx.beginPath(); ctx.arc(14, -7, 1.6, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  });
+}
+function drawEgg(egg){
+  forWrap(egg.x, egg.y, 20, (px) => {
+    ctx.save(); ctx.translate(px, egg.y);
+    const low = egg.hatchT < 1.6;
+    if(low) ctx.rotate(Math.sin(gameTime * 20) * 0.15);
+    ctx.fillStyle = low && Math.floor(gameTime * 10) % 2 === 0 ? "#fff4c0" : "#f0e6b0";
+    ctx.strokeStyle = "#8a7a3c"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(0, 0, 9, 12, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#cbb877";
+    ctx.beginPath(); ctx.arc(-2, -2, 1.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(3, 3, 1.2, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  });
+}
+function drawTroll(){
+  if(!troll.active || troll.grab < 0.05) return;
+  const topY = troll.y;
+  ctx.save(); ctx.translate(troll.x, 0);
+  ctx.fillStyle = "#93341f"; ctx.strokeStyle = "#4e1810"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(-7, H); ctx.lineTo(-7, topY + 6); ctx.lineTo(7, topY + 6); ctx.lineTo(7, H); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = "#93341f"; ctx.lineWidth = 4;
+  for(let i = -2; i <= 2; i++){ ctx.beginPath(); ctx.moveTo(i * 5, topY + 6); ctx.lineTo(i * 5, topY - 12); ctx.stroke(); }
+  ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = "rgba(255,120,40,0.18)";
+  ctx.beginPath(); ctx.arc(0, topY, 20, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+function drawFloats(){
+  ctx.textAlign = "center"; ctx.font = "700 16px 'Chakra Petch', system-ui";
+  for(const f of floats){ ctx.globalAlpha = Math.max(0, f.life / f.max); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y); }
+  ctx.globalAlpha = 1;
+}
+function drawWaveBanner(){
+  if(waveBannerT <= 0) return;
+  const a = Math.min(1, waveBannerT / 1.6);
+  ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = "#ffe6b0";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = "700 44px 'Chakra Petch', system-ui";
+  ctx.shadowColor = "#ff8a2c"; ctx.shadowBlur = 16;
+  ctx.fillText(waveBannerText, W / 2, H / 2 - 40); ctx.restore();
+}
+function render(){
+  ctx.save();
+  if(shakeTime > 0){ const m = shakeMag * (shakeTime / shakeDur); ctx.translate((Math.random() - 0.5) * m, (Math.random() - 0.5) * m); }
+  drawBackground();
+  drawTroll();
+  for(const egg of eggs) drawEgg(egg);
+  for(const e of enemies){ if(e.delay > 0) continue; drawBird(e); }
+  if(ptero) drawPtero(ptero);
+  if(player && (state === "playing" || state === "paused")) drawBird(player);
+  drawFloats();
+  drawWaveBanner();
+  ctx.restore();
+}
+
+/* ---------- Flow ---------- */
+function startGame(){
+  score = 0; lives = 3; wave = 1; combo = 0; nextExtra = EXTRA_EVERY;
+  enemies = []; eggs = []; floats = []; ptero = null;
+  troll = { active:false, x:0, y:LAVA_SURFACE, grab:0 };
+  input.left = false; input.right = false;
+  resetPlayer();
+  state = "playing"; clearOverlay();
+  startWave(1);
+  updateHud();
+  lastTime = performance.now();
+}
+function gameOver(){ state = "gameover"; setOverlay(gameoverHTML(), true); }
+function togglePause(){
+  if(state === "playing"){ state = "paused"; setOverlay(`<div class="ov-card"><h2>Paused</h2><button class="btn" onclick="togglePause()">Resume (P)</button></div>`, true); }
+  else if(state === "paused"){ state = "playing"; clearOverlay(); lastTime = performance.now(); }
+}
+
+/* ---------- Loop ---------- */
+function loop(t){
+  const dt = Math.min((t - lastTime) / 1000, 0.05);
+  lastTime = t; gameTime += dt;
+  updateEmbers(dt);
+  if(state === "playing") update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Keyboard ---------- */
+document.addEventListener("keydown", e => {
+  if(state === "menu" || state === "gameover"){ if(e.key === "Enter"){ startGame(); e.preventDefault(); } return; }
+  if(e.key === "p" || e.key === "P" || e.key === "Escape"){ togglePause(); e.preventDefault(); return; }
+  if(state !== "playing") return;
+  switch(e.key){
+    case "ArrowLeft": case "a": case "A": input.left = true; e.preventDefault(); break;
+    case "ArrowRight": case "d": case "D": input.right = true; e.preventDefault(); break;
+    case " ": case "ArrowUp": case "w": case "W": if(!e.repeat) flap(player, FLAP_IMPULSE); e.preventDefault(); break;
+  }
+}, { passive:false });
+document.addEventListener("keyup", e => {
+  switch(e.key){
+    case "ArrowLeft": case "a": case "A": input.left = false; break;
+    case "ArrowRight": case "d": case "D": input.right = false; break;
+  }
+});
+
+/* ---------- Touch ---------- */
+function holdBtn(id, on){
+  const el = document.getElementById(id);
+  el.addEventListener("pointerdown", e => { e.preventDefault(); on(true); });
+  el.addEventListener("pointerup", e => { e.preventDefault(); on(false); });
+  el.addEventListener("pointerleave", () => on(false));
+  el.addEventListener("pointercancel", () => on(false));
+}
+holdBtn("t-left", v => input.left = v);
+holdBtn("t-right", v => input.right = v);
+document.getElementById("t-flap").addEventListener("pointerdown", e => { e.preventDefault(); if(state === "playing") flap(player, FLAP_IMPULSE); });
+
+/* ---------- Init ---------- */
+function init(){
+  ctx = setupCanvas(stageEl, W, H);
+  resetPlayer();
+  updateHud();
+  showMenu();
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+init();
+</script>
+</body>
+</html>
