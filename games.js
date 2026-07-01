@@ -90,6 +90,13 @@ window.DASHBOARD_GAMES = [
         badge: "Adventure",
         emoji: "🪐"
     },
+    {
+        title: "Solar Adventure Two",
+        path: "/games/solar-adventure-two.html",
+        description: "The Open Reach — a Star Control-style sequel: explore star systems, trade, fight, and uncover what waits in the open reach.",
+        badge: "Adventure",
+        emoji: "🚀"
+    },
 
     // ── ADD NEW GAMES BELOW THIS LINE ──────────────────────────
     // Copy this template, uncomment it, and fill it in:
