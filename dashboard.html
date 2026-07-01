@@ -59,6 +59,11 @@
             <span class="nav-icon">◈</span> Prompt Builder
         </a>
 
+        <div class="dash-nav-group">Games</div>
+        <a class="dash-nav-item" data-section="games">
+            <span class="nav-icon">🎮</span> Games
+        </a>
+
         <div class="dash-nav-group">Settings</div>
         <a class="dash-nav-item" data-section="credentials">
             <span class="nav-icon">🔑</span> Credentials
@@ -1070,6 +1075,31 @@
 
 
         <!-- ══════════════════════════════════════════════════════
+             GAMES
+             Cards are rendered from the registry in /games.js.
+             To add a game, edit games.js — no changes needed here.
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-games" class="dash-section">
+
+            <p class="dash-section-eyebrow">Games</p>
+            <h1 class="dash-section-title">Games</h1>
+            <p class="dash-section-desc">
+                Browser games built for this site. Click any card to launch it in a new tab.
+                To add a new game, drop it in the <code>/Games</code> folder and register it in
+                <code>games.js</code> — the grid below updates automatically.
+            </p>
+
+            <!-- Populated at load from window.DASHBOARD_GAMES (see /games.js) -->
+            <div class="agent-overview-grid" id="gamesGrid"></div>
+
+            <p class="games-empty" id="gamesEmpty" style="display:none;color:var(--sage);font-size:0.9rem;">
+                No games registered yet. Add one to <code>games.js</code> to see it here.
+            </p>
+
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════
              NOTES
         ══════════════════════════════════════════════════════ -->
         <section id="section-notes" class="dash-section">
@@ -1104,6 +1134,9 @@
     </div><!-- /.dash-content -->
 </main>
 
+<!-- Games registry — edit this file to add/remove games. -->
+<script src="/games.js"></script>
+
 <script>
 // ============================================================
 //  DASHBOARD — auth check + navigation
@@ -1127,6 +1160,7 @@ var SECTION_TITLES = {
     'gap-scout':       'Content Gap Scout',
     'metadata-gen':    'Metadata Generator',
     'prompt-builder':  'Prompt Builder',
+    'games':           'Games',
     'credentials':     'Credentials & Settings',
     'launch':          'Launch Instructions',
     'notes':           'Notes',
@@ -1216,6 +1250,54 @@ overlay.addEventListener('click', closeSidebar);
             document.getElementById('notesSaveStatus').textContent = 'Auto-saved.';
             setTimeout(function() { document.getElementById('notesSaveStatus').textContent = ''; }, 1500);
         }, 1500);
+    });
+})();
+
+// ============================================================
+//  GAMES — render cards from the registry in /games.js
+//  (window.DASHBOARD_GAMES). Add games by editing games.js;
+//  this code renders whatever is in that array.
+// ============================================================
+(function() {
+    var grid  = document.getElementById('gamesGrid');
+    var empty = document.getElementById('gamesEmpty');
+    var games = window.DASHBOARD_GAMES || [];
+
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+            return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+        });
+    }
+
+    if (!games.length) {
+        empty.style.display = 'block';
+        return;
+    }
+
+    games.forEach(function(g) {
+        if (!g || !g.path) return;
+        var card = document.createElement('div');
+        card.className = 'agent-card game-card';
+
+        var emoji = g.emoji ? '<span class="game-card-emoji">' + esc(g.emoji) + '</span> ' : '';
+        var badge = g.badge ? '<span class="agent-badge badge-browser">' + esc(g.badge) + '</span>' : '';
+        var desc  = g.description ? '<p class="agent-card-desc">' + esc(g.description) + '</p>' : '';
+
+        card.innerHTML =
+            '<div class="agent-card-top">' +
+                '<div class="agent-card-name">' + emoji + esc(g.title || 'Untitled game') + '</div>' +
+                badge +
+            '</div>' +
+            desc +
+            '<a class="btn btn-primary game-launch" href="' + esc(g.path) + '" target="_blank" rel="noopener" style="font-size:0.82rem;">▶ Play</a>';
+
+        // Clicking anywhere on the card launches the game too.
+        card.addEventListener('click', function(e) {
+            if (e.target.closest('.game-launch')) return; // let the anchor handle it
+            window.open(g.path, '_blank', 'noopener');
+        });
+
+        grid.appendChild(card);
     });
 })();
 </script>

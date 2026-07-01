@@ -409,6 +409,28 @@
 
 .agent-card-open:hover { color: var(--forest); text-decoration: underline; }
 
+/* ── GAME CARDS (Games section) ──────────────────────────── */
+
+.game-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.game-card-emoji {
+    font-size: 1.15rem;
+    margin-right: 2px;
+}
+
+.game-card .agent-card-desc {
+    flex: 1;
+}
+
+.game-launch {
+    align-self: flex-start;
+    text-decoration: none;
+    margin-top: 4px;
+}
+
 /* ── AGENT DETAIL PAGE ───────────────────────────────────── */
 
 .agent-detail-header {

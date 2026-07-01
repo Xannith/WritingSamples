@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Color Catch</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+    :root {
+        --forest: #1f3b1f;
+        --moss:   #3d6b3d;
+        --sage:   #7a9a7a;
+        --foam:   #e4ece4;
+        --parchment: #f6f4ee;
+        --white:  #ffffff;
+        --ink:    #22261f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+        height: 100%;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: var(--parchment);
+        color: var(--ink);
+        overscroll-behavior: none;
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        min-height: 100%;
+    }
+    .game-wrap {
+        width: 100%;
+        max-width: 460px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .game-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .game-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--forest);
+        letter-spacing: 0.01em;
+    }
+    .back-link {
+        font-size: 0.8rem;
+        color: var(--moss);
+        text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .scorebar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--white);
+        border: 1px solid var(--foam);
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 0.95rem;
+    }
+    .scorebar strong { color: var(--forest); font-size: 1.15rem; }
+    .target-dot {
+        display: inline-block;
+        width: 18px; height: 18px;
+        border-radius: 50%;
+        vertical-align: middle;
+        margin-left: 6px;
+        border: 2px solid rgba(0,0,0,0.12);
+    }
+    .stage {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        background: var(--white);
+        border: 1px solid var(--foam);
+        border-radius: 14px;
+        overflow: hidden;
+        touch-action: none;
+    }
+    canvas { display: block; width: 100%; height: 100%; }
+    .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        text-align: center;
+        padding: 24px;
+        background: rgba(246,244,238,0.94);
+    }
+    .overlay.hidden { display: none; }
+    .overlay h2 { color: var(--forest); font-size: 1.4rem; }
+    .overlay p { color: var(--sage); font-size: 0.9rem; max-width: 300px; line-height: 1.5; }
+    .btn {
+        background: var(--forest);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 26px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .btn:hover { background: var(--moss); }
+    .hint { text-align: center; font-size: 0.78rem; color: var(--sage); }
+</style>
+</head>
+<body>
+<div class="game-wrap">
+    <div class="game-head">
+        <span class="game-title">🎯 Color Catch</span>
+        <!-- Relative link back to the dashboard. Works locally and when deployed. -->
+        <a class="back-link" href="../../dashboard.html">&larr; Dashboard</a>
+    </div>
+
+    <div class="scorebar">
+        <span>Score: <strong id="score">0</strong></span>
+        <span>Catch: <span class="target-dot" id="targetDot"></span></span>
+    </div>
+
+    <div class="stage" id="stage">
+        <canvas id="canvas"></canvas>
+        <div class="overlay" id="overlay">
+            <h2 id="overlayTitle">Color Catch</h2>
+            <p id="overlayText">Move the paddle and catch only the tiles matching the target color. Catch a wrong color and it's game over.</p>
+            <button class="btn" id="startBtn">Play</button>
+        </div>
+    </div>
+
+    <p class="hint">Move: mouse · touch · &larr; &rarr; arrow keys</p>
+</div>
+
+<script>
+(function () {
+    var canvas  = document.getElementById('canvas');
+    var ctx     = canvas.getContext('2d');
+    var stage   = document.getElementById('stage');
+    var scoreEl = document.getElementById('score');
+    var dotEl   = document.getElementById('targetDot');
+    var overlay = document.getElementById('overlay');
+    var oTitle  = document.getElementById('overlayTitle');
+    var oText   = document.getElementById('overlayText');
+    var startBtn= document.getElementById('startBtn');
+
+    var COLORS = ['#c0392b', '#2d7d46', '#2a6bb0', '#c99a1e', '#7a4fb0'];
+
+    var W = 0, H = 0, dpr = 1;
+    function resize() {
+        var r = stage.getBoundingClientRect();
+        dpr = window.devicePixelRatio || 1;
+        W = r.width; H = r.height;
+        canvas.width  = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener('resize', resize);
+
+    var state = {
+        playing: false,
+        score: 0,
+        paddleX: 0.5,      // 0..1 fraction of width
+        paddleW: 90,
+        tiles: [],
+        target: 0,
+        spawnT: 0,
+        speed: 140,        // px/sec fall
+        last: 0
+    };
+
+    function reset() {
+        state.playing = true;
+        state.score = 0;
+        state.paddleX = 0.5;
+        state.tiles = [];
+        state.speed = 140;
+        state.spawnT = 0;
+        state.target = Math.floor(Math.random() * COLORS.length);
+        dotEl.style.background = COLORS[state.target];
+        scoreEl.textContent = '0';
+        overlay.classList.add('hidden');
+        state.last = 0;
+        requestAnimationFrame(loop);
+    }
+
+    function spawnTile() {
+        var size = 30;
+        var colorIdx;
+        // Bias so the target color appears often enough to be catchable.
+        if (Math.random() < 0.5) colorIdx = state.target;
+        else colorIdx = Math.floor(Math.random() * COLORS.length);
+        state.tiles.push({
+            x: Math.random() * (W - size),
+            y: -size,
+            size: size,
+            color: colorIdx
+        });
+    }
+
+    function gameOver() {
+        state.playing = false;
+        oTitle.textContent = 'Game Over';
+        oText.textContent = 'Final score: ' + state.score + '. Nice run!';
+        startBtn.textContent = 'Play again';
+        overlay.classList.remove('hidden');
+    }
+
+    function loop(ts) {
+        if (!state.playing) return;
+        if (!state.last) state.last = ts;
+        var dt = Math.min((ts - state.last) / 1000, 0.05);
+        state.last = ts;
+
+        // spawn
+        state.spawnT -= dt;
+        if (state.spawnT <= 0) {
+            spawnTile();
+            state.spawnT = Math.max(0.45, 1.1 - state.score * 0.02);
+        }
+
+        var paddlePx = state.paddleX * W;
+        var paddleY = H - 26;
+        var half = state.paddleW / 2;
+
+        // update tiles
+        for (var i = state.tiles.length - 1; i >= 0; i--) {
+            var t = state.tiles[i];
+            t.y += state.speed * dt;
+
+            var caught = t.y + t.size >= paddleY &&
+                         t.y <= paddleY + 14 &&
+                         t.x + t.size >= paddlePx - half &&
+                         t.x <= paddlePx + half;
+
+            if (caught) {
+                if (t.color === state.target) {
+                    state.score++;
+                    scoreEl.textContent = state.score;
+                    state.speed += 4;
+                    state.tiles.splice(i, 1);
+                } else {
+                    gameOver();
+                    return;
+                }
+            } else if (t.y > H) {
+                // Missing a target tile is a soft penalty (no game over),
+                // wrong-color tiles just fall away harmlessly.
+                state.tiles.splice(i, 1);
+            }
+        }
+
+        // draw
+        ctx.clearRect(0, 0, W, H);
+        for (var j = 0; j < state.tiles.length; j++) {
+            var tile = state.tiles[j];
+            ctx.fillStyle = COLORS[tile.color];
+            roundRect(tile.x, tile.y, tile.size, tile.size, 6);
+            ctx.fill();
+        }
+        // paddle
+        ctx.fillStyle = COLORS[state.target];
+        roundRect(paddlePx - half, paddleY, state.paddleW, 14, 7);
+        ctx.fill();
+
+        requestAnimationFrame(loop);
+    }
+
+    function roundRect(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+    }
+
+    // ── input ──────────────────────────────────────────────
+    function moveTo(clientX) {
+        var r = stage.getBoundingClientRect();
+        var x = (clientX - r.left) / r.width;
+        state.paddleX = Math.max(0, Math.min(1, x));
+    }
+    stage.addEventListener('mousemove', function (e) {
+        if (state.playing) moveTo(e.clientX);
+    });
+    stage.addEventListener('touchmove', function (e) {
+        if (state.playing && e.touches[0]) { moveTo(e.touches[0].clientX); e.preventDefault(); }
+    }, { passive: false });
+    stage.addEventListener('touchstart', function (e) {
+        if (state.playing && e.touches[0]) { moveTo(e.touches[0].clientX); }
+    });
+    window.addEventListener('keydown', function (e) {
+        if (!state.playing) return;
+        if (e.key === 'ArrowLeft')  state.paddleX = Math.max(0, state.paddleX - 0.06);
+        if (e.key === 'ArrowRight') state.paddleX = Math.min(1, state.paddleX + 0.06);
+    });
+
+    startBtn.addEventListener('click', function () {
+        resize();
+        reset();
+    });
+
+    resize();
+})();
+</script>
+</body>
+</html>
