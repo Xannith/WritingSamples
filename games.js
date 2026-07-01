@@ -55,6 +55,41 @@ window.DASHBOARD_GAMES = [
         badge: "Arcade",
         emoji: "🏁"
     },
+    {
+        title: "Starswarm",
+        path: "/games/starswarm.html",
+        description: "A Galaga-style formation shooter — blast waves of alien ships as they swarm and dive.",
+        badge: "Arcade",
+        emoji: "👾"
+    },
+    {
+        title: "Talon",
+        path: "/games/talon.html",
+        description: "A Joust-style brawl — flap into the air, lance your rivals, and gather the eggs.",
+        badge: "Arcade",
+        emoji: "🦅"
+    },
+    {
+        title: "Tunneler",
+        path: "/games/tunneler.html",
+        description: "A Dig Dug-style digging game — burrow through the earth and outmaneuver your foes.",
+        badge: "Arcade",
+        emoji: "⛏️"
+    },
+    {
+        title: "Vector Belt",
+        path: "/games/vector-belt.html",
+        description: "An Asteroids-style shooter — break the rocks, upgrade your ship, and survive the belt.",
+        badge: "Arcade",
+        emoji: "☄️"
+    },
+    {
+        title: "Solar Adventure One",
+        path: "/games/solar-adventure-one.html",
+        description: "A space-trading adventure — jump between star systems, manage fuel and cargo, and restore the Helios Shield Array.",
+        badge: "Adventure",
+        emoji: "🪐"
+    },
 
     // ── ADD NEW GAMES BELOW THIS LINE ──────────────────────────
     // Copy this template, uncomment it, and fill it in:
