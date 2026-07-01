@@ -97,6 +97,13 @@ window.DASHBOARD_GAMES = [
         badge: "Adventure",
         emoji: "🚀"
     },
+    {
+        title: "Castle Siege",
+        path: "/games/castle-siege.html",
+        description: "An artillery duel — lob shots over the mountain to smash the enemy castle, then level up for extra multiplying missiles.",
+        badge: "Arcade",
+        emoji: "🏰"
+    },
 
     // ── ADD NEW GAMES BELOW THIS LINE ──────────────────────────
     // Copy this template, uncomment it, and fill it in:
